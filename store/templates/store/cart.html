@@ -944,7 +944,7 @@
                         {% if cart_items %}
                         {% for item in cart_items %}
                         {% with size_id=item.size.id|default:'' %}
-                        <div class="cart-product-card" id="cart-item-{{ item.product.id }}{% if size_id %}-{{ size_id }}{% endif %}">
+                        <div class="cart-product-card cart-item" id="cart-item-{{ item.product.id }}{% if size_id %}-{{ size_id }}{% endif %}">
                             <div class="product-image">
                                 <a href="/product/{{ item.product.id }}/">
                                     <img src="{% if item.product.image %}{{ item.product.image.url }}{% else %}{% static 'store/images/banner1.jpg' %}{% endif %}" alt="{{ item.product.name }}">
@@ -961,7 +961,8 @@
                                     <span class="old-price">₹{{ item.product.price }}</span>
                                     <span class="discount-badge">-{{ item.product.discount_percent }}%</span>
                                     {% endif %}
-                                    <span class="current-price">₹{{ item.product.discounted_price|floatformat:2 }}</span>
+                                    <span class="current-price">₹{{ item.price|floatformat:2 }}</span>
+                                    <span class="item-price" data-price="{{ item.price }}" style="display:none;"></span>
                                 </div>
                                 
                                 <div class="quantity-section">
@@ -970,7 +971,7 @@
                                         <button type="button" class="quantity-btn" onclick="decreaseQuantity('{{ item.product.id }}', '{{ size_id }}')">
                                             <i class="fas fa-minus"></i>
                                         </button>
-                                        <input type="number" name="quantity_{{ item.product.id }}" id="quantity-{{ item.product.id }}" value="{{ item.quantity }}" min="1" max="{{ item.product.quantity_available }}" class="quantity-input" readonly>
+                                        <input type="number" name="quantity_{{ item.product.id }}" id="quantity-{{ item.product.id }}{% if size_id %}-{{ size_id }}{% endif %}" value="{{ item.quantity }}" min="1" max="{{ item.available_stock }}" class="quantity-input" readonly>
                                         <button type="button" class="quantity-btn" onclick="increaseQuantity('{{ item.product.id }}', '{{ size_id }}')">
                                             <i class="fas fa-plus"></i>
                                         </button>
@@ -988,7 +989,7 @@
                                 </div>
                             </div>
                             
-                            <button type="button" class="remove-item" onclick="removeItem('{{ item.product.id }}', '{{ size_id }}')">
+                            <button type="button" class="remove-item" onclick="removeItem('{{ item.product.id }}', '{% if item.size %}{{ item.size.id }}{% endif %}')">
                                 <i class="fas fa-times"></i>
                             </button>
                             
@@ -1075,7 +1076,7 @@
                                     <span class="old-price">₹{{ item.product.price }}</span>
                                     <span class="discount-badge">-{{ item.product.discount_percent }}%</span>
                                     {% endif %}
-                                    <span class="current-price">₹{{ item.product.discounted_price|floatformat:2 }}</span>
+                                    <span class="current-price">₹{{ item.price|floatformat:2 }}</span>
                                 </div>
                                 
                                 <div class="item-quantity">
@@ -1112,7 +1113,7 @@
                     
                     <div class="summary-row">
                         <div>Subtotal ({{ item_count }} item{% if item_count != 1 %}s{% endif %})</div>
-                        <div class="order-subtotal amount">₹{{ subtotal|floatformat:2 }}</div>
+                        <div class="order-subtotal amount" id="subtotal-amount">₹{{ subtotal|floatformat:2 }}</div>
                     </div>
                     
                     {% if coupon_discount > 0 %}
@@ -1124,7 +1125,7 @@
                     
                     <div class="summary-row">
                         <div>Shipping</div>
-                        <div>{% if shipping_cost == 0 %}Free{% else %}₹{{ shipping_cost|floatformat:2 }}{% endif %}</div>
+                        <div id="shipping-amount">{% if shipping_cost == 0 %}Free{% else %}₹{{ shipping_cost|floatformat:2 }}{% endif %}</div>
                     </div>
                     
                     <div class="summary-row" id="gift-wrap-row" {% if not gift_wrap %}style="display: none;"{% endif %}>
@@ -1342,7 +1343,8 @@
         
         // Simple quantity adjustment functions
         function decreaseQuantity(productId, sizeId) {
-            const input = document.getElementById('quantity-' + productId);
+            const inputId = sizeId ? `quantity-${productId}-${sizeId}` : `quantity-${productId}`;
+            const input = document.getElementById(inputId);
             const currentValue = parseInt(input.value);
             if (currentValue > 1) {
                 input.value = currentValue - 1;
@@ -1356,7 +1358,8 @@
         }
         
         function increaseQuantity(productId, sizeId) {
-            const input = document.getElementById('quantity-' + productId);
+            const inputId = sizeId ? `quantity-${productId}-${sizeId}` : `quantity-${productId}`;
+            const input = document.getElementById(inputId);
             const currentValue = parseInt(input.value);
             const maxQuantity = parseInt(input.getAttribute('max')) || 100;
             
@@ -1378,11 +1381,12 @@
             const quantityInput = document.getElementById('quantity-' + productId);
             const quantity = parseInt(quantityInput.value);
             const priceElement = quantityInput.closest('.product-details').querySelector('.current-price');
+            const hiddenPrice = quantityInput.closest('.product-details').querySelector('.item-price');
             const itemTotalElement = quantityInput.closest('.product-details').querySelector('.item-total-value');
             
             if (priceElement && itemTotalElement) {
                 // Extract just the number from the price text
-                const price = parseFloat(priceElement.textContent.replace(/[^0-9.]/g, ''));
+                const price = hiddenPrice ? parseFloat(hiddenPrice.getAttribute('data-price')) : parseFloat(priceElement.textContent.replace(/[^0-9.]/g, ''));
                 const newTotal = (price * quantity).toFixed(2);
                 
                 // Update the item total with the new amount
@@ -1398,6 +1402,7 @@
         }
         
         function removeItem(productId, sizeId) {
+            console.log('Removing item:', productId, 'Size:', sizeId);
             if (confirm('Are you sure you want to remove this item from your cart?')) {
                 showLoadingOverlay('Removing item...');
                 
@@ -1420,12 +1425,18 @@
                         'X-Requested-With': 'XMLHttpRequest'
                     }
                 })
-                .then(response => response.json())
+                .then(response => {
+                    console.log('Response status:', response.status);
+                    return response.json();
+                })
                 .then(data => {
+                    console.log('Server response:', data);
                     if (data.success) {
                         // Remove the item from the DOM
                         const itemId = sizeId ? `cart-item-${productId}-${sizeId}` : `cart-item-${productId}`;
+                        console.log('Looking for element with ID:', itemId);
                         const itemElement = document.getElementById(itemId);
+                        console.log('Found element:', itemElement);
                         if (itemElement) {
                             itemElement.style.transition = 'opacity 0.3s ease';
                             itemElement.style.opacity = '0';
@@ -1466,16 +1477,24 @@
         function updateCartTotals() {
             // Calculate new subtotal
             let subtotal = 0;
-            document.querySelectorAll('.item-price').forEach(priceElement => {
+            const itemPrices = document.querySelectorAll('.item-price');
+            console.log('Found', itemPrices.length, 'items for total calculation');
+            
+            itemPrices.forEach(priceElement => {
                 const price = parseFloat(priceElement.getAttribute('data-price'));
                 const quantityInput = priceElement.closest('.cart-item').querySelector('.quantity-input');
                 const quantity = parseInt(quantityInput ? quantityInput.value : 0);
+                console.log('Item price:', price, 'quantity:', quantity);
                 subtotal += price * quantity;
             });
             
-            const subtotalElement = document.querySelector('.order-subtotal .amount');
-            const shippingElement = document.querySelector('.order-shipping .amount');
-            const totalElement = document.querySelector('.order-total .amount');
+            console.log('Calculated subtotal:', subtotal);
+            
+            const subtotalElement = document.querySelector('#subtotal-amount');
+            const shippingElement = document.querySelector('#shipping-amount');
+            const totalElement = document.querySelector('#total-amount');
+            
+            console.log('Found elements:', !!subtotalElement, !!shippingElement, !!totalElement);
             
             if (subtotalElement && shippingElement && totalElement) {
                 // Format subtotal
@@ -1488,6 +1507,10 @@
                 // Update total
                 const total = subtotal + shippingCost;
                 totalElement.textContent = '₹' + total.toFixed(2);
+                
+                console.log('Updated totals - Subtotal:', subtotal, 'Shipping:', shippingCost, 'Total:', total);
+            } else {
+                console.error('Could not find all required elements for total update');
             }
         }
         
@@ -1578,40 +1601,19 @@
                     .then(response => response.json())
                     .then(data => {
                         if (data.success) {
-                            // Debug output to console
-                            console.log("AJAX success:", data);
-                            
-                            // Update subtotal 
-                            const subtotalElem = document.querySelector('.summary-row:first-child > div:last-child');
-                            if (subtotalElem) {
-                                subtotalElem.innerText = '₹' + data.subtotal.toFixed(2);
-                                console.log("Updated subtotal:", subtotalElem.innerText);
-                            } else {
-                                console.error("Subtotal element not found");
+                            // Update cart count badge if present
+                            const cartCount = document.querySelector('.cart-count');
+                            if (cartCount) {
+                                cartCount.textContent = data.cart_count;
                             }
                             
-                            // Update shipping
-                            const shippingElem = document.querySelector('.summary-row:nth-child(2) > div:last-child');
-                            if (shippingElem) {
-                                shippingElem.innerText = data.shipping_cost === 0 ? 'Free' : '₹' + data.shipping_cost.toFixed(2);
-                                console.log("Updated shipping:", shippingElem.innerText);
-                            } else {
-                                console.error("Shipping element not found");
-                            }
-                            
-                            // Update total
-                            const totalElem = document.querySelector('#total-amount');
-                            if (totalElem) {
-                                totalElem.innerText = '₹' + data.total.toFixed(2);
-                                console.log("Updated total:", totalElem.innerText);
-                            } else {
-                                console.error("Total element not found");
-                            }
+                            // Recalculate totals from DOM (faster than server calculation)
+                            updateCartTotals();
                             
                             // Remove loading indicator with slight delay for visual feedback
                             setTimeout(() => {
-                                document.body.removeChild(miniLoader);
-                            }, 300);
+                                if (miniLoader) miniLoader.style.display = 'none';
+                            }, 200);
                         }
                     })
                     .catch(error => {
@@ -1746,6 +1748,17 @@
                 const overlayElement = document.getElementById('loading-overlay');
                 overlayElement.style.display = 'flex';
                 overlayElement.style.opacity = '1';
+            }
+        }
+        
+        // Hide loading overlay
+        function hideLoadingOverlay() {
+            const overlay = document.getElementById('loading-overlay');
+            if (overlay) {
+                overlay.style.opacity = '0';
+                setTimeout(() => {
+                    overlay.style.display = 'none';
+                }, 200);
             }
         }
         

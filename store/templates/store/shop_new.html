@@ -769,7 +769,7 @@
                     </div>
                     <a href="/cart/" class="header-icon cart-icon">
                         <i class="fas fa-shopping-cart"></i>
-                        <span class="cart-count">{% if request.session.cart %}{{ request.session.cart|length }}{% else %}0{% endif %}</span>
+                        <span class="cart-count">{{ cart_count|default:0 }}</span>
                     </a>
                     {% if user.is_authenticated %}
                     <a href="{% url 'logout' %}" class="header-icon user-icon" title="Logout">
@@ -1204,6 +1204,15 @@
                         e.preventDefault();
                         
                         const formData = new FormData(form);
+                        // Ensure size_id is always included (some forms use a hidden input updated by JS)
+                        try {
+                            const sizeField = form.querySelector('input[name="size_id"]') || document.querySelector(`.selected-size-input-${card.querySelector('input[name="product_id"]').value}`);
+                            if (sizeField && !formData.has('size_id')) {
+                                formData.append('size_id', sizeField.value || '');
+                            }
+                        } catch (e) {
+                            // ignore
+                        }
                         addBtn.disabled = true;
                         addBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding...';
                         
@@ -1217,17 +1226,26 @@
                         .then(response => response.json())
                         .then(data => {
                             if (data.success) {
-                                // Update cart count
+                                // Update cart count if badge exists
                                 const cartCount = document.querySelector('.cart-count');
-                                cartCount.textContent = data.cart_count;
-                                
-                                // Add pulse animation
-                                cartCount.classList.add('pulse');
-                                setTimeout(() => {
-                                    cartCount.classList.remove('pulse');
-                                }, 1000);
+                                if (cartCount) {
+                                    cartCount.textContent = data.cart_count;
+                                    cartCount.classList.add('pulse');
+                                    setTimeout(() => {
+                                        cartCount.classList.remove('pulse');
+                                    }, 1000);
+                                }
+
+                                // Show toast notification if message provided
+                                try {
+                                    if (typeof showToast === 'function') {
+                                        showToast(data.message || (`Added to cart: ${data.product_name || ''}`), data.product_name, data.product_image);
+                                    }
+                                } catch (e) {
+                                    console.error('Toast error:', e);
+                                }
                             }
-                            
+
                             // Reset button
                             addBtn.disabled = false;
                             addBtn.innerHTML = '<i class="fas fa-shopping-cart"></i> ADD TO CART';
@@ -1296,10 +1314,70 @@
             }
         });
         
-        // Product Size and Price Management
-        const productSizeData = JSON.parse('{{ product_size_data|escapejs }}');
+    // Product Size and Price Management
+    const productSizeData = {{ product_size_data|safe }};
         
-        // Handle size selection changes
+        // Function to update price display for a product
+        function updateProductPrice(productId, sizeId) {
+            if (productSizeData[productId] && productSizeData[productId][sizeId]) {
+                const sizeData = productSizeData[productId][sizeId];
+                const currentPriceElement = document.querySelector(`#current-price-${productId}`);
+                const originalPriceElement = document.querySelector(`#original-price-${productId}`);
+                
+                if (currentPriceElement) {
+                    currentPriceElement.textContent = `₹${Math.round(sizeData.price)}`;
+                }
+                
+                if (originalPriceElement) {
+                    if (sizeData.original_price > sizeData.price) {
+                        originalPriceElement.textContent = `₹${Math.round(sizeData.original_price)}`;
+                        originalPriceElement.style.display = 'inline';
+                    } else {
+                        originalPriceElement.style.display = 'none';
+                    }
+                }
+                
+                // Update quantity input max based on stock
+                const productCard = document.querySelector(`#current-price-${productId}`).closest('.product-card');
+                const quantityInput = productCard.querySelector('input[name="quantity"]');
+                if (quantityInput) {
+                    quantityInput.setAttribute('max', sizeData.stock);
+                    if (parseInt(quantityInput.value) > sizeData.stock) {
+                        quantityInput.value = Math.min(parseInt(quantityInput.value), sizeData.stock);
+                    }
+                }
+                
+                return true;
+            }
+            return false;
+        }
+        
+        // Handle clicks on size option labels (since radio buttons are hidden)
+        document.addEventListener('click', function(e) {
+            const sizeLabel = e.target.closest('.size-option');
+            if (sizeLabel) {
+                const radioInput = sizeLabel.querySelector('input[name^="product_size_"]');
+                if (radioInput && !radioInput.checked) {
+                    // Manually trigger the change
+                    radioInput.checked = true;
+                    
+                    // Extract product ID and size ID
+                    const productId = radioInput.name.replace('product_size_', '');
+                    const sizeId = radioInput.value;
+                    
+                    // Update hidden size input
+                    const sizeInput = document.querySelector(`.selected-size-input-${productId}`);
+                    if (sizeInput) {
+                        sizeInput.value = sizeId;
+                    }
+                    
+                    // Update price display
+                    updateProductPrice(productId, sizeId);
+                }
+            }
+        });
+        
+        // Handle radio button changes (backup)
         document.addEventListener('change', function(e) {
             if (e.target.matches('input[name^="product_size_"]')) {
                 const productId = e.target.name.replace('product_size_', '');
@@ -1312,40 +1390,59 @@
                 }
                 
                 // Update price display
-                if (productSizeData[productId] && productSizeData[productId][sizeId]) {
-                    const sizeData = productSizeData[productId][sizeId];
-                    const currentPriceElement = document.querySelector(`#current-price-${productId}`);
-                    const originalPriceElement = document.querySelector(`#original-price-${productId}`);
-                    
-                    if (currentPriceElement) {
-                        currentPriceElement.textContent = `₹${sizeData.price.toFixed(0)}`;
-                    }
-                    
-                    if (originalPriceElement && sizeData.original_price > sizeData.price) {
-                        originalPriceElement.textContent = `₹${sizeData.original_price.toFixed(0)}`;
-                        originalPriceElement.style.display = 'inline';
-                    } else if (originalPriceElement) {
-                        originalPriceElement.style.display = 'none';
-                    }
-                    
-                    // Update quantity input max based on stock
-                    const quantityInput = document.querySelector(`input[name="quantity"]`);
-                    if (quantityInput) {
-                        quantityInput.setAttribute('max', sizeData.stock);
-                        if (parseInt(quantityInput.value) > sizeData.stock) {
-                            quantityInput.value = sizeData.stock;
-                        }
-                    }
-                }
+                updateProductPrice(productId, sizeId);
             }
         });
         
         // Initialize prices for default selected sizes
-        document.addEventListener('DOMContentLoaded', function() {
-            document.querySelectorAll('input[name^="product_size_"]:checked').forEach(function(radio) {
-                radio.dispatchEvent(new Event('change'));
-            });
+        function initializePrices() {
+            // Wait a bit for the page to fully load
+            setTimeout(function() {
+                // For each product, set the price based on the first (default) selected size
+                Object.keys(productSizeData).forEach(function(productId) {
+                    let checkedRadio = document.querySelector(`input[name="product_size_${productId}"]:checked`);
+                    
+                    if (!checkedRadio) {
+                        // If no radio is checked, check the first one
+                        const firstRadio = document.querySelector(`input[name="product_size_${productId}"]`);
+                        if (firstRadio) {
+                            firstRadio.checked = true;
+                            checkedRadio = firstRadio;
+                        }
+                    }
+                    
+                    if (checkedRadio) {
+                        const sizeId = checkedRadio.value;
+                        updateProductPrice(productId, sizeId);
+                        
+                        // Update hidden input
+                        const sizeInput = document.querySelector(`.selected-size-input-${productId}`);
+                        if (sizeInput) {
+                            sizeInput.value = sizeId;
+                        }
+                    }
+                });
+            }, 100);
+        }
+        
+        // Initialize prices when page loads
+        initializePrices(); // Run immediately
+        
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializePrices);
+        } else {
+            initializePrices();
+        }
+        
+        // Also run on window load
+        window.addEventListener('load', function() {
+            initializePrices();
         });
+        
+        // Backup initialization
+        setTimeout(initializePrices, 500);
+        setTimeout(initializePrices, 1000);
+        setTimeout(initializePrices, 2000);
     </script>
 </body>
 </html>

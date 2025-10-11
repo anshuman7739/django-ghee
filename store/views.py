@@ -16,6 +16,8 @@ from django.db.models import Q
 from .utils import track_recently_viewed
 import uuid
 from django.core.paginator import Paginator
+import json
+import logging
 
 # Create your views here.
 
@@ -53,13 +55,16 @@ def simple_cart(request):
                             if product_id and str(product_id).isdigit():
                                 try:
                                     product = Product.objects.get(id=int(product_id))
-                                    if size_id:
-                                        price = product.get_price_for_size(int(size_id))
-                                    else:
-                                        price = product.discounted_price
+                                    # Prefer stored cart item price if present (stored at add-to-cart time)
+                                    price = item.get('price')
+                                    if price is None:
+                                        if size_id:
+                                            price = product.get_price_for_size(int(size_id))
+                                        else:
+                                            price = product.discounted_price
                                     subtotal += float(price) * item['quantity']
-                                except Exception as e:
-                                    print(f"Error calculating item price: {e}")
+                                except Exception:
+                                    logging.exception("Error calculating item price in simple_cart")
                         
                         shipping_threshold = 1000
                         shipping_cost = 0 if subtotal >= shipping_threshold else 50
@@ -72,7 +77,7 @@ def simple_cart(request):
                             'total': round(total, 2)
                         })
                 except (ValueError, TypeError) as e:
-                    print(f"Error processing quantity update: {e}")
+                    logging.exception("Error processing quantity update")
     
     # Normal page display
     products = []
@@ -106,8 +111,8 @@ def simple_cart(request):
             })
             
             subtotal += item_total
-        except Exception as e:
-            print(f"Error processing cart item: {e}")
+        except Exception:
+            logging.exception("Error processing cart item in simple_cart")
     
     shipping_threshold = 1000
     shipping_cost = 0 if subtotal >= shipping_threshold else 50
@@ -137,8 +142,16 @@ def shop(request):
     
     # Create a mapping of product sizes to their prices and stock
     product_size_data = {}
+    initial_prices = {}
     for product in products:
         product_size_data[product.id] = {}
+        # Get the first size for initial price
+        first_stock = product.size_stocks.first()
+        if first_stock:
+            discount_multiplier = Decimal('1') - Decimal(product.discount_percent) / Decimal('100')
+            initial_discounted_price = first_stock.price * discount_multiplier
+            initial_prices[product.id] = float(initial_discounted_price)
+        
         for stock in product.size_stocks.all():
             discount_multiplier = Decimal('1') - Decimal(product.discount_percent) / Decimal('100')
             discounted_price = stock.price * discount_multiplier
@@ -150,7 +163,9 @@ def shop(request):
     
     context = {
         'products': products,
-        'product_size_data': product_size_data,
+        'product_size_data': json.dumps(product_size_data),
+        'initial_prices': initial_prices,
+    'cart_count': sum(item.get('quantity', 0) for item in request.session.get('cart', [])),
     }
     
     return render(request, 'store/shop_new.html', context)
@@ -175,8 +190,8 @@ def contact(request):
 @csrf_exempt
 @login_required
 def cart(request):
-    # Debug: Print request details
-    print(f"Received {request.method} request to cart view from {request.META.get('REMOTE_ADDR')}")
+    # Debug: log request details at debug level
+    logging.debug(f"Received {request.method} request to cart view from {request.META.get('REMOTE_ADDR')}")
     
     # Always get a fresh copy of the cart
     cart = request.session.get('cart', [])
@@ -198,20 +213,16 @@ def cart(request):
             'recently_viewed_products': []
         })
     
-    print(f"Initial cart: {cart}")
-    print(f"Saved for later: {saved_for_later}")
+    logging.debug(f"Initial cart: {cart}")
+    logging.debug(f"Saved for later: {saved_for_later}")
     
     # Handle delete via GET (from our link)
     if request.method == 'GET' and request.GET.get('delete_product'):
         product_id = request.GET.get('delete_product')
-        print(f"Deleting product ID (GET): {product_id}")
-        
+        # Remove item and mark session modified; avoid forcing immediate session.save() which can be slow
         new_cart = [item for item in cart if str(item.get('product_id', '')) != str(product_id)]
-        
-        print(f"New cart after deletion (GET): {new_cart}")
         request.session['cart'] = new_cart
-        request.session.save()
-        
+        request.session.modified = True
         return redirect('cart')
     
     if request.method == 'POST':
@@ -219,26 +230,35 @@ def cart(request):
         if request.POST.get('delete_product'):
             product_id = request.POST.get('delete_product')
             size_id = request.POST.get('size_id')
-            print(f"Deleting product ID (POST): {product_id}, size: {size_id}")
+            logging.debug(f"Deleting product ID (POST): {product_id}, size: {size_id}")
+            logging.debug(f"Current cart contents: {cart}")
             
             # Filter out the product-size combination to delete
+            cart_before = len(cart)
             new_cart = [item for item in cart if not (
                 str(item.get('product_id', '')) == str(product_id) and 
                 str(item.get('size_id', '')) == str(size_id or '')
             )]
+            cart_after = len(new_cart)
             
-            # Explicitly save the new cart
-            print(f"New cart after deletion: {new_cart}")
+            logging.debug(f"Cart before deletion: {cart_before} items, after: {cart_after} items")
+            logging.debug(f"Items removed: {cart_before - cart_after}")
+            
+            # Save the new cart to session and force save for critical operation
             request.session['cart'] = new_cart
             request.session.modified = True
-            request.session.save()  # Force immediate save
+            request.session.save()  # Force save for delete operations to ensure persistence
             
-            # Return JSON for AJAX delete
+            # Verify the session was actually saved
+            logging.debug(f"Cart after save: {request.session.get('cart', [])}")
+            logging.debug(f"Session key: {request.session.session_key}")
+            logging.debug(f"Session modified: {request.session.modified}")
+
+            # Return minimal JSON for AJAX delete (fast response, no DB queries)
             if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
                 total_items = sum(item.get('quantity', 0) for item in new_cart)
                 return JsonResponse({
                     'success': True, 
-                    'message': 'Item removed from cart',
                     'cart_count': total_items
                 })
                 
@@ -283,53 +303,12 @@ def cart(request):
             
             # Return JSON response if it's an AJAX request
             if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                import time
-                start_time = time.time()
-                print(f"Starting AJAX cart update for product_id={request.POST.get('single_product_id')}")
-                
-                # Calculate new totals for the response - optimized for speed
-                subtotal = 0
-                valid_product_ids = [int(item['product_id']) for item in cart if item.get('product_id') and str(item.get('product_id')).isdigit()]
-                
-                if valid_product_ids:
-                    # Get full product objects to ensure property access works
-                    query_time = time.time()
-                    products_dict = {p.id: p for p in Product.objects.filter(id__in=valid_product_ids)}
-                    print(f"Database query took {(time.time() - query_time)*1000:.2f}ms")
-                    
-                    # Use size-specific pricing for accurate calculations
-                    calc_time = time.time()
-                    for item in cart:
-                        try:
-                            if item.get('product_id') and str(item.get('product_id')).isdigit():
-                                product_id = int(item['product_id'])
-                                size_id = item.get('size_id')
-                                product = products_dict.get(product_id)
-                                if product:
-                                    # Use size-specific pricing if available
-                                    if size_id:
-                                        price = product.get_price_for_size(int(size_id))
-                                    else:
-                                        price = product.discounted_price
-                                    subtotal += float(price) * item['quantity']
-                        except Exception as e:
-                            print(f"Error calculating item price: {e}")
-                            continue
-                    print(f"Price calculation took {(time.time() - calc_time)*1000:.2f}ms")
-                
-                shipping_threshold = 1000
-                shipping_cost = 0 if subtotal >= shipping_threshold else 50
-                total = subtotal + shipping_cost
-                
-                print(f"Total AJAX cart update took {(time.time() - start_time)*1000:.2f}ms")
-                
-                # Return minimal data to reduce payload size
+                # Skip heavy DB queries and calculations - let client update totals from DOM
+                total_items = sum(item.get('quantity', 0) for item in cart)
                 return JsonResponse({
                     'success': True,
-                    'subtotal': round(subtotal, 2),  # Round to 2 decimal places
-                    'shipping_cost': shipping_cost,
-                    'total': round(total, 2)  # Round to 2 decimal places
-                }, json_dumps_params={'separators': (',', ':')})
+                    'cart_count': total_items
+                })
             return redirect('cart')
         
         # Update gift wrap option
@@ -337,13 +316,13 @@ def cart(request):
             gift_wrap = 'gift_wrap' in request.POST
             request.session['gift_wrap'] = gift_wrap
             request.session.modified = True
-            print(f"Updated gift wrap option to: {gift_wrap}")
+            logging.debug(f"Updated gift wrap option to: {gift_wrap}")
             return redirect('cart')
             
         # Save item for later
         elif request.POST.get('save_for_later'):
             product_id = request.POST.get('save_for_later')
-            print(f"Saving product ID {product_id} for later")
+            logging.debug(f"Saving product ID {product_id} for later")
             
             # Find the item in the cart
             saved_item = None
@@ -369,7 +348,7 @@ def cart(request):
         # Move item to cart
         elif request.POST.get('move_to_cart'):
             product_id = request.POST.get('move_to_cart')
-            print(f"Moving product ID {product_id} to cart")
+            logging.debug(f"Moving product ID {product_id} to cart")
             
             # Find the item in saved for later
             item_to_move = None
@@ -453,7 +432,6 @@ def cart(request):
                 # If size is specified, check ProductStock, otherwise use general stock
                 if size_id:
                     try:
-                        from .models import ProductStock
                         product_stock = ProductStock.objects.get(product=product, size_id=size_id)
                         available_stock = product_stock.quantity
                     except ProductStock.DoesNotExist:
@@ -478,7 +456,16 @@ def cart(request):
                     if request.META.get('HTTP_REFERER'):
                         return redirect(request.META.get('HTTP_REFERER'))
                     return redirect('product_detail', product_id=product_id)
-                
+
+                # Determine price for this size (store with cart item for consistency)
+                if size_id:
+                    try:
+                        item_price = float(product.get_price_for_size(int(size_id)))
+                    except Exception:
+                        item_price = float(product.discounted_price)
+                else:
+                    item_price = float(product.discounted_price)
+
                 # Check if product-size combination already exists in cart
                 product_exists = False
                 for item in cart:
@@ -487,17 +474,18 @@ def cart(request):
                         item['quantity'] += quantity
                         product_exists = True
                         break
-                
+
                 if not product_exists:
                     cart.append({
                         'product_id': product_id, 
                         'quantity': quantity,
-                        'size_id': size_id
+                        'size_id': size_id,
+                        'price': item_price
                     })
                 
                 request.session['cart'] = cart
                 request.session.modified = True  # Force session save
-                print(f"Added product {product_id} (size: {size_id}) to cart, new cart: {cart}")
+                logging.debug(f"Added product {product_id} (size: {size_id}) to cart, new cart: {cart}")
                 
                 # Return JSON for AJAX cart adds
                 if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
@@ -524,7 +512,7 @@ def cart(request):
         cart = cleaned_cart
         request.session['cart'] = cart
         request.session.modified = True
-        print(f"Cleaned cart: {cart}")
+        logging.debug(f"Cleaned cart: {cart}")
         
     # Process cart items for display - optimized for speed
     import time
@@ -561,7 +549,7 @@ def cart(request):
         products_query_time = time.time()
         for product in Product.objects.filter(id__in=valid_product_ids):
             product_map[product.id] = product
-        print(f"Product query took {(time.time() - products_query_time)*1000:.2f}ms")
+        logging.debug(f"Product query took {(time.time() - products_query_time)*1000:.2f}ms")
     
     for item in cart:
         try:
@@ -577,33 +565,47 @@ def cart(request):
             quantity = item['quantity']
             size_id = item.get('size_id')
             
-            # Get size information and calculate price
+            # Get size information and determine price (prefer stored cart item price)
             selected_size = None
-            if size_id:
-                try:
-                    selected_size = ProductSize.objects.get(id=size_id)
-                    item_price = product.get_price_for_size(int(size_id))
-                except ProductSize.DoesNotExist:
+            available_stock = product.stock_quantity
+            # Determine price: prefer the price saved in the cart session
+            item_price = item.get('price')
+            if item_price is None:
+                if size_id:
+                    try:
+                        selected_size = ProductSize.objects.get(id=size_id)
+                        # Try to get ProductStock for exact stock
+                        try:
+                            stock_obj = ProductStock.objects.get(product=product, size_id=size_id)
+                            available_stock = stock_obj.quantity
+                        except ProductStock.DoesNotExist:
+                            available_stock = product.stock_quantity
+                        item_price = product.get_price_for_size(int(size_id))
+                    except ProductSize.DoesNotExist:
+                        item_price = product.discounted_price
+                        available_stock = product.stock_quantity
+                else:
                     item_price = product.discounted_price
-            else:
-                item_price = product.discounted_price
-            
+                    available_stock = product.stock_quantity
+
             item_total = Decimal(str(item_price)) * quantity
-            
+
             products.append({
-                'product': product, 
+                'product': product,
                 'quantity': quantity,
                 'item_total': item_total,
-                'size': selected_size
+                'size': selected_size,
+                'price': float(item_price),
+                'available_stock': available_stock
             })
             
             subtotal += item_total
             item_count += quantity
         except Product.DoesNotExist:
-            print(f"Product with ID {item['product_id']} not found")
+            logging.debug(f"Product with ID {item['product_id']} not found")
             continue
-        except Exception as e:
-            print(f"Error processing cart item: {str(e)}")
+        except Exception:
+            logging.exception("Error processing cart item in main loop")
             continue
     
     # Clean up saved_for_later by removing None product_ids
@@ -649,8 +651,8 @@ def cart(request):
             })
         except (Product.DoesNotExist, ValueError, TypeError):
             continue
-        except Exception as e:
-            print(f"Error processing saved item: {str(e)}")
+        except Exception:
+            logging.exception("Error processing saved item")
             continue
     
     # Calculate shipping cost
@@ -724,17 +726,10 @@ def checkout(request):
     # Handle delete product request
     if request.method == 'POST' and request.POST.get('delete_product'):
         product_id = request.POST.get('delete_product')
-        print(f"Deleting product ID from checkout: {product_id}")
-        
         # Filter out the product to delete
         new_cart = [item for item in cart if str(item.get('product_id', '')) != str(product_id)]
-        
-        # Explicitly save the new cart
-        print(f"New cart after deletion: {new_cart}")
         request.session['cart'] = new_cart
         request.session.modified = True
-        request.session.save()  # Force immediate save
-        
         return redirect(f'/checkout/?session_id={session_id}&step={checkout_step}')
     
     # Update quantities
