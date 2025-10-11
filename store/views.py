@@ -192,10 +192,16 @@ def contact(request):
 def cart(request):
     # Debug: log request details at debug level
     logging.debug(f"Received {request.method} request to cart view from {request.META.get('REMOTE_ADDR')}")
+    logging.debug(f"POST data: {dict(request.POST)}")
+    logging.debug(f"Headers: {dict(request.headers)}")
     
     # Always get a fresh copy of the cart
     cart = request.session.get('cart', [])
     saved_for_later = request.session.get('saved_for_later', [])
+    
+    # Debug: Add session tracking
+    session_id = request.session.session_key
+    logging.debug(f"Cart view - Session ID: {session_id}, Cart: {cart}")
     
     # Early return for empty cart & GET request to optimize performance
     if not cart and not saved_for_later and request.method == 'GET':
@@ -231,14 +237,26 @@ def cart(request):
             product_id = request.POST.get('delete_product')
             size_id = request.POST.get('size_id')
             logging.debug(f"Deleting product ID (POST): {product_id}, size: {size_id}")
+            logging.debug(f"Session ID before deletion: {request.session.session_key}")
             logging.debug(f"Current cart contents: {cart}")
+            logging.debug(f"Cart item types: {[(type(item), item.keys() if isinstance(item, dict) else 'not dict') for item in cart]}")
             
             # Filter out the product-size combination to delete
             cart_before = len(cart)
+            logging.debug(f"Filtering with product_id='{product_id}' (type: {type(product_id)}), size_id='{size_id}' (type: {type(size_id)})")
+            
             new_cart = [item for item in cart if not (
                 str(item.get('product_id', '')) == str(product_id) and 
-                str(item.get('size_id', '')) == str(size_id or '')
+                str(item.get('size_id') or '') == str(size_id or '')
             )]
+            
+            # Debug: show which items were filtered out
+            removed_items = [item for item in cart if (
+                str(item.get('product_id', '')) == str(product_id) and 
+                str(item.get('size_id') or '') == str(size_id or '')
+            )]
+            logging.debug(f"Items that would be removed: {removed_items}")
+            
             cart_after = len(new_cart)
             
             logging.debug(f"Cart before deletion: {cart_before} items, after: {cart_after} items")
@@ -251,8 +269,19 @@ def cart(request):
             
             # Verify the session was actually saved
             logging.debug(f"Cart after save: {request.session.get('cart', [])}")
-            logging.debug(f"Session key: {request.session.session_key}")
+            logging.debug(f"Session key after save: {request.session.session_key}")
             logging.debug(f"Session modified: {request.session.modified}")
+            
+            # Check database session
+            from django.contrib.sessions.models import Session
+            try:
+                db_session = Session.objects.get(session_key=request.session.session_key)
+                decoded = db_session.get_decoded()
+                logging.debug(f"Database session cart: {decoded.get('cart', [])}")
+            except Session.DoesNotExist:
+                logging.error(f"Session {request.session.session_key} not found in database!")
+            except Exception as e:
+                logging.error(f"Error checking database session: {e}")
 
             # Return minimal JSON for AJAX delete (fast response, no DB queries)
             if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
@@ -279,7 +308,7 @@ def cart(request):
                         # Find and update just this one product-size combination
                         for item in cart:
                             if (str(item.get('product_id', '')) == str(single_product_id) and 
-                                str(item.get('size_id', '')) == str(size_id or '')):
+                                str(item.get('size_id') or '') == str(size_id or '')):
                                 item['quantity'] = new_qty
                                 break
             else:
@@ -446,7 +475,7 @@ def cart(request):
                 current_in_cart = 0
                 for item in cart:
                     if (str(item.get('product_id', '')) == str(product_id) and 
-                        str(item.get('size_id', '')) == str(size_id or '')):
+                        str(item.get('size_id') or '') == str(size_id or '')):
                         current_in_cart = item['quantity']
                         break
                 
@@ -470,7 +499,7 @@ def cart(request):
                 product_exists = False
                 for item in cart:
                     if (str(item.get('product_id', '')) == str(product_id) and 
-                        str(item.get('size_id', '')) == str(size_id or '')):
+                        str(item.get('size_id') or '') == str(size_id or '')):
                         item['quantity'] += quantity
                         product_exists = True
                         break
@@ -479,7 +508,7 @@ def cart(request):
                     cart.append({
                         'product_id': product_id, 
                         'quantity': quantity,
-                        'size_id': size_id,
+                        'size_id': size_id or '',  # Store as empty string if None
                         'price': item_price
                     })
                 

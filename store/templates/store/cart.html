@@ -1412,9 +1412,7 @@
                 // Create form data
                 const formData = new FormData();
                 formData.append('delete_product', productId);
-                if (sizeId) {
-                    formData.append('size_id', sizeId);
-                }
+                formData.append('size_id', sizeId || '');  // Always send size_id, even if empty
                 formData.append('csrfmiddlewaretoken', csrfToken);
                 
                 // Send AJAX request
@@ -1442,23 +1440,28 @@
                             itemElement.style.opacity = '0';
                             setTimeout(() => {
                                 itemElement.remove();
+                                // Recalculate totals after element is actually removed
+                                if (data.cart_count === 0) {
+                                    location.reload(); // Reload to show empty cart template
+                                } else {
+                                    updateCartTotals();
+                                }
                             }, 300);
+                        } else {
+                            // Fallback: still recalc totals if element not found
+                            if (data.cart_count === 0) {
+                                location.reload();
+                            } else {
+                                updateCartTotals();
+                            }
                         }
-                        
+
                         // Update cart count
                         const cartCount = document.querySelector('.cart-count');
                         if (cartCount) {
                             cartCount.textContent = data.cart_count;
                         }
-                        
-                        // Update subtotal, shipping, and total
-                        updateCartTotals();
-                        
-                        // Check if cart is empty
-                        if (data.cart_count === 0) {
-                            location.reload(); // Reload to show empty cart template
-                        }
-                        
+
                         hideLoadingOverlay();
                     } else {
                         hideLoadingOverlay();
@@ -1475,43 +1478,65 @@
         
         // Update cart totals function
         function updateCartTotals() {
-            // Calculate new subtotal
+            const parseCurrency = (text) => {
+                if (!text) return 0;
+                const t = String(text).replace(/[^0-9.]/g, '');
+                const v = parseFloat(t);
+                return isNaN(v) ? 0 : v;
+            };
+
+            // Calculate new subtotal from visible cart items
             let subtotal = 0;
-            const itemPrices = document.querySelectorAll('.item-price');
+            const itemPrices = document.querySelectorAll('.cart-item .item-price');
             console.log('Found', itemPrices.length, 'items for total calculation');
             
             itemPrices.forEach(priceElement => {
-                const price = parseFloat(priceElement.getAttribute('data-price'));
-                const quantityInput = priceElement.closest('.cart-item').querySelector('.quantity-input');
-                const quantity = parseInt(quantityInput ? quantityInput.value : 0);
-                console.log('Item price:', price, 'quantity:', quantity);
+                const price = parseFloat(priceElement.getAttribute('data-price')) || 0;
+                const quantityInput = priceElement.closest('.cart-item')?.querySelector('.quantity-input');
+                const quantity = parseInt(quantityInput?.value || '0', 10) || 0;
                 subtotal += price * quantity;
             });
-            
-            console.log('Calculated subtotal:', subtotal);
             
             const subtotalElement = document.querySelector('#subtotal-amount');
             const shippingElement = document.querySelector('#shipping-amount');
             const totalElement = document.querySelector('#total-amount');
+            const couponEl = document.querySelector('.coupon-discount-row div:nth-child(2)');
+            const giftWrapRow = document.querySelector('#gift-wrap-row');
             
-            console.log('Found elements:', !!subtotalElement, !!shippingElement, !!totalElement);
-            
-            if (subtotalElement && shippingElement && totalElement) {
-                // Format subtotal
-                subtotalElement.textContent = '₹' + subtotal.toFixed(2);
-                
-                // Update shipping (free over 1000)
-                const shippingCost = subtotal >= 1000 ? 0 : 50;
-                shippingElement.textContent = shippingCost === 0 ? 'Free' : '₹' + shippingCost.toFixed(2);
-                
-                // Update total
-                const total = subtotal + shippingCost;
-                totalElement.textContent = '₹' + total.toFixed(2);
-                
-                console.log('Updated totals - Subtotal:', subtotal, 'Shipping:', shippingCost, 'Total:', total);
-            } else {
+            if (!(subtotalElement && shippingElement && totalElement)) {
                 console.error('Could not find all required elements for total update');
+                return;
             }
+
+            // Update subtotal
+            subtotalElement.textContent = '₹' + subtotal.toFixed(2);
+
+            // Determine shipping (free over threshold in DOM if present)
+            const thresholdText = document.querySelector('.shipping-note p')?.textContent || '';
+            const match = thresholdText.match(/Add ₹([0-9.]+)/);
+            let shippingCost = 50;
+            if (subtotal >= 1000 || /Free/i.test(shippingElement.textContent)) {
+                shippingCost = 0;
+            }
+            shippingElement.textContent = shippingCost === 0 ? 'Free' : '₹' + shippingCost.toFixed(2);
+
+            // Coupon discount (negative value in DOM)
+            let couponDiscount = 0;
+            if (couponEl) {
+                const txt = couponEl.textContent || '';
+                couponDiscount = parseCurrency(txt) || 0;
+            }
+
+            // Gift wrap
+            let giftWrap = 0;
+            if (giftWrapRow && giftWrapRow.style.display !== 'none') {
+                const giftAmountText = giftWrapRow.querySelector('div:nth-child(2)')?.textContent || '';
+                giftWrap = parseCurrency(giftAmountText) || 0;
+            }
+
+            // Update total: subtotal - coupon + shipping + giftWrap
+            const total = subtotal - couponDiscount + shippingCost + giftWrap;
+            totalElement.textContent = '₹' + total.toFixed(2);
         }
         
         // Save for later functionality
