@@ -1,0 +1,177 @@
+{% extends 'store/base.html' %}
+{% load static %}
+
+{% block title %}Order Confirmation | Premium A2 Desi Ghee{% endblock %}
+
+{% block extra_head %}
+<style>
+    .order-confirmation {
+        background-color: #FFF8E1;
+        padding: 40px 0;
+        min-height: 80vh;
+    }
+    .confirmation-container {
+        max-width: 800px;
+        margin: 0 auto;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        padding: 30px;
+    }
+    .confirmation-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    .confirmation-header h1 {
+        font-family: 'Playfair Display', serif;
+        color: #D4AF37;
+        margin-bottom: 10px;
+    }
+    .confirmation-header .check-icon {
+        font-size: 60px;
+        color: #4CAF50;
+        margin-bottom: 20px;
+    }
+    .order-details {
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid #eee;
+    }
+    .order-details h3 {
+        font-family: 'Playfair Display', serif;
+        color: #B8860B;
+        margin-bottom: 15px;
+    }
+    .item-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+    .item-table th {
+        background-color: #f9f9f9;
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #eee;
+    }
+    .item-table td {
+        padding: 12px;
+        border-bottom: 1px solid #eee;
+    }
+    .order-total {
+        text-align: right;
+        font-weight: bold;
+        font-size: 18px;
+        margin-top: 20px;
+    }
+    .customer-info {
+        display: flex;
+        flex-wrap: wrap;
+        margin: 0 -15px;
+    }
+    .info-column {
+        flex: 1;
+        min-width: 250px;
+        padding: 0 15px;
+        margin-bottom: 20px;
+    }
+    .actions {
+        text-align: center;
+        margin-top: 30px;
+    }
+    .btn-continue {
+        background-color: #D4AF37;
+        color: #fff;
+        padding: 12px 25px;
+        border: none;
+        border-radius: 5px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+    }
+    .btn-continue:hover {
+        background-color: #B8860B;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    @media (max-width: 768px) {
+        .confirmation-container {
+            padding: 20px;
+        }
+        .info-column {
+            flex: 100%;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="order-confirmation">
+    <div class="confirmation-container">
+        <div class="confirmation-header">
+            <div class="check-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h1>Order Confirmed!</h1>
+            <p>Thank you for your purchase. Your order has been received.</p>
+        </div>
+        
+        <div class="order-details">
+            <h3>Order Information</h3>
+            <p><strong>Order Number:</strong> #{{ order.order_id }}</p>
+            <p><strong>Order Date:</strong> {{ order.created_at|date:"F j, Y" }}</p>
+            <p><strong>Order Status:</strong> {{ order.status|title }}</p>
+        </div>
+        
+        <div class="order-items">
+            <h3>Order Items</h3>
+            <table class="item-table">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in order_items %}
+                    <tr>
+                        <td>{{ item.product.name }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>₹{{ item.price }}</td>
+                        <td>₹{{ item.total_price }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <div class="order-total">
+                <p>Order Total: ₹{{ order.total_amount }}</p>
+            </div>
+        </div>
+        
+        <div class="customer-info">
+            <div class="info-column">
+                <h3>Shipping Information</h3>
+                <p>
+                    {{ order.full_name }}<br>
+                    {{ order.address }}<br>
+                    {{ order.city }}, {{ order.state }}<br>
+                    {{ order.pincode }}
+                </p>
+                <p><strong>Phone:</strong> {{ order.phone }}</p>
+                <p><strong>Email:</strong> {{ order.email }}</p>
+            </div>
+            <div class="info-column">
+                <h3>What's Next?</h3>
+                <p>We're preparing your order for shipment. You will receive an email when your order ships with tracking information.</p>
+                <p>If you have any questions about your order, please contact our customer service team.</p>
+            </div>
+        </div>
+        
+        <div class="actions">
+            <a href="{% url 'homepage' %}" class="btn-continue">Continue Shopping</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

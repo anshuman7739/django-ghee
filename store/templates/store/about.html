@@ -1,0 +1,454 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - Pure Desi Ghee</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #D4AF37;
+            --primary-light: #F5E7A9;
+            --secondary: #B8860B;
+            --accent: #FFD700;
+            --text-dark: #333333;
+            --text-medium: #7f8c8d;
+            --text-light: #bdc3c7;
+            --white: #ffffff;
+            --background: #FAFAFA;
+            --border-color: #e9ecef;
+            --success: #27ae60;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+            background-color: var(--background);
+        }
+
+        /* Header Banner */
+        .hero-banner {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            text-align: center;
+            padding: 80px 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05' fill-rule='nonzero'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        .hero-banner h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-banner p {
+            font-size: 1.3rem;
+            margin-bottom: 0;
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* CEO Section */
+        .ceo-section {
+            padding: 100px 0;
+            background: var(--white);
+        }
+
+        .ceo-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+        }
+
+        .ceo-image {
+            text-align: center;
+        }
+
+        .ceo-image img {
+            width: 100%;
+            max-width: 400px;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .ceo-text h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        .ceo-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--secondary);
+            margin-bottom: 30px;
+        }
+
+        .ceo-text p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--text-medium);
+            margin-bottom: 20px;
+        }
+
+        /* Values Section */
+        .values-section {
+            padding: 100px 0;
+            background: linear-gradient(135deg, var(--background) 0%, #ffffff 100%);
+        }
+
+        .values-header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .values-header h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        .values-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+        }
+
+        .values-text p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--text-medium);
+            margin-bottom: 25px;
+        }
+
+        .products-list {
+            margin: 30px 0;
+        }
+
+        .products-list ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .products-list li {
+            padding: 10px 0;
+            font-size: 1.1rem;
+            color: var(--text-dark);
+            position: relative;
+            padding-left: 30px;
+        }
+
+        .products-list li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--success);
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .values-image {
+            text-align: center;
+        }
+
+        .values-image img {
+            width: 100%;
+            max-width: 500px;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Features Grid */
+        .features-section {
+            padding: 100px 0;
+            background: var(--white);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            margin-top: 60px;
+        }
+
+        .feature-card {
+            background: var(--white);
+            padding: 40px 30px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+        }
+
+        .feature-icon i {
+            font-size: 2rem;
+            color: white;
+        }
+
+        .feature-card h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        .feature-card p {
+            color: var(--text-medium);
+            line-height: 1.6;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 968px) {
+            .ceo-content,
+            .values-content {
+                grid-template-columns: 1fr;
+                gap: 40px;
+                text-align: center;
+            }
+
+            .hero-banner h1 {
+                font-size: 2.5rem;
+            }
+
+            .ceo-text h2,
+            .values-header h2 {
+                font-size: 2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-banner {
+                padding: 60px 20px;
+            }
+
+            .hero-banner h1 {
+                font-size: 2rem;
+            }
+
+            .hero-banner p {
+                font-size: 1.1rem;
+            }
+
+            .ceo-section,
+            .values-section,
+            .features-section {
+                padding: 60px 0;
+            }
+
+            .ceo-image img,
+            .values-image img {
+                height: 300px;
+            }
+
+            .feature-card {
+                padding: 30px 20px;
+            }
+        }
+
+        /* Back Button */
+        .back-btn {
+            background: var(--primary);
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            display: inline-block;
+            transition: all 0.3s ease;
+            margin: 40px auto;
+            display: block;
+            text-align: center;
+            max-width: 200px;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(139, 69, 19, 0.3);
+            color: white;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Banner -->
+    <section class="hero-banner">
+        <div class="container">
+            <h1>The Scoop on Us</h1>
+            <p>Discover Pure Desi Ghee, where purity meets tradition. Explore our premium range of A2 Desi Cow Ghee, Buffalo Ghee, and other authentic products, crafted with care and authenticity.</p>
+        </div>
+    </section>
+
+    <!-- CEO Section -->
+    <section class="ceo-section">
+        <div class="container">
+            <div class="ceo-content">
+                <div class="ceo-image">
+                    <img src="{% static 'store/images/ceo-placeholder.jpg' %}" alt="Mr. CEO" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgdmlld0JveD0iMCAwIDQwMCA0MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iNDAwIiBmaWxsPSIjRDJCNDhDIi8+CjxjaXJjbGUgY3g9IjIwMCIgY3k9IjE1MCIgcj0iNjAiIGZpbGw9IiM4QjQ1MTMiLz4KPHBhdGggZD0iTTEwMCAzNTBDMTAwIDI5MC45IDEzNC43NzIgMjM1LjgxNSAxODcuNSAyMTEuNTEyQzI0MC4yMjggMjM1LjgxNSAyNzUgMjkwLjkgMjc1IDM1MEgxMDBaIiBmaWxsPSIjOEI0NTEzIi8+Cjx0ZXh0IHg9IjIwMCIgeT0iMzgwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjOEI0NTEzIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTgiIGZvbnQtd2VpZ2h0PSJib2xkIj5DRU8gUGhvdG88L3RleHQ+Cjwvc3ZnPgo='">
+                </div>
+                <div class="ceo-text">
+                    <h2>Meet Our CEO</h2>
+                    <div class="ceo-name">Mr. Founder Name</div>
+                    <p>Pure Desi Ghee's journey began in 2019, fueled by an unwavering passion for purity and a love for organic, wholesome living. Our founder and CEO envisioned reconnecting people with the timeless wisdom of India's Vedic traditions. With years of expertise and a dedication to creating meaningful change, he set out to redefine the way we view food and wellness.</p>
+                    
+                    <p>His dream? To inspire people to embrace the power of nature and ancient knowledge in their daily lives. Under his leadership, Pure Desi Ghee has grown into a brand synonymous with authenticity, transparency, and the promise of quality over profit.</p>
+                    
+                    <p><strong>Welcome to Pure Desi Ghee</strong></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Values Section -->
+    <section class="values-section">
+        <div class="container">
+            <div class="values-header">
+                <h2>Purity in Every Drop</h2>
+            </div>
+            <div class="values-content">
+                <div class="values-text">
+                    <p>At Pure Desi Ghee, our name reflects our philosophy. Derived from Sanskrit wisdom, our brand represents the "origin of virtues" and "reconstruction," symbolizing a commitment to replacing the old with new, higher standards. It encapsulates our vision of reformulating traditional Indian culinary essentials with purity, authenticity, and excellence.</p>
+                    
+                    <p>We are proud to bring you the finest, most authentic Indian culinary treasures, including:</p>
+                    
+                    <div class="products-list">
+                        <ul>
+                            <li>A2 Desi Cow Ghee – A golden elixir of health and flavor</li>
+                            <li>Buffalo Ghee – Rich in texture and nutritional value</li>
+                            <li>Mustard Oil – With its bold aroma and robust taste</li>
+                            <li>Traditional Pickles – A tangy delight steeped in tradition</li>
+                        </ul>
+                    </div>
+                    
+                    <p>Each product is thoughtfully sourced from trusted artisans and farmers, ensuring the highest standards of quality and care in every drop and bite.</p>
+                </div>
+                <div class="values-image">
+                    <img src="{% static 'store/images/values-placeholder.jpg' %}" alt="Our Values" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTAwIiBoZWlnaHQ9IjQwMCIgdmlld0JveD0iMCAwIDUwMCA0MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI1MDAiIGhlaWdodD0iNDAwIiBmaWxsPSIjRjhGOUZBIi8+CjxjaXJjbGUgY3g9IjI1MCIgY3k9IjEyMCIgcj0iNDAiIGZpbGw9IiNGRkQ3MDAiLz4KPGVsbGlwc2UgY3g9IjI1MCIgY3k9IjI4MCIgcng9IjEyMCIgcnk9IjgwIiBmaWxsPSIjOEI0NTEzIi8+CjxyZWN0IHg9IjIwMCIgeT0iMTYwIiB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEyMCIgZmlsbD0iI0QyQjQ4QyIvPgo8dGV4dCB4PSIyNTAiIHk9IjM2MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzhCNDUxMyIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE4IiBmb250LXdlaWdodD0iYm9sZCI+UHVyZSBUcmFkaXRpb248L3RleHQ+Cjwvc3ZnPgo='">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section">
+        <div class="container">
+            <div class="values-header">
+                <h2>Why Choose Us</h2>
+                <p>Discover what makes Pure Desi Ghee special</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-leaf"></i>
+                    </div>
+                    <h3>100% Pure & Natural</h3>
+                    <p>Our ghee is made from the milk of grass-fed cows, ensuring the highest quality and purity in every spoonful.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <h3>Traditional Methods</h3>
+                    <p>We follow age-old traditional methods of ghee making, preserving the authentic taste and nutritional benefits.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Quality Assured</h3>
+                    <p>Every batch is carefully tested and quality checked to ensure you receive only the finest products.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-truck"></i>
+                    </div>
+                    <h3>Fresh Delivery</h3>
+                    <p>We ensure fresh delivery directly from our farm to your table, maintaining the quality and freshness.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3>Family Legacy</h3>
+                    <p>Our recipes and methods have been passed down through generations, maintaining authenticity and trust.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-award"></i>
+                    </div>
+                    <h3>Award Winning</h3>
+                    <p>Recognized for excellence in quality and purity, our products have won multiple awards and certifications.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Back to Home -->
+    <div style="text-align: center; padding: 40px;">
+        <a href="{% url 'homepage' %}" class="back-btn">
+            <i class="fas fa-home"></i> Back to Home
+        </a>
+    </div>
+</body>
+</html>

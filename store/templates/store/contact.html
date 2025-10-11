@@ -1,0 +1,581 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - Pure Desi Ghee</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'store/css/oziva-2.css' %}">
+    <!-- Royal Gold + White Theme -->
+    <style>
+        :root {
+            --royal-gold: #D4AF37;
+            --light-gold: #F5E7A9;
+            --white: #FFFFFF;
+            --off-white: #F8F8F8;
+            --dark-text: #333333;
+        }
+        
+        body {
+            background-color: var(--white);
+            color: var(--dark-text);
+        }
+        
+        .announcement-bar {
+            background-color: var(--royal-gold);
+            color: var(--white);
+        }
+        
+        .header {
+            background-color: var(--white);
+            border-bottom: 1px solid var(--light-gold);
+        }
+        
+        .nav-links a:hover, 
+        .nav-links a.active {
+            color: var(--royal-gold);
+        }
+        
+        .header-icon {
+            color: var(--royal-gold);
+        }
+        
+        .page-banner {
+            background-color: var(--light-gold);
+            background-image: linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, rgba(212, 175, 55, 0.3) 100%);
+        }
+        
+        .page-banner h1 {
+            color: var(--dark-text);
+        }
+        
+        .contact-method .icon {
+            background-color: var(--royal-gold);
+            color: var(--white);
+        }
+        
+        .social-icon, .social-link {
+            background-color: var(--royal-gold);
+            color: var(--white);
+        }
+        
+        .social-icon:hover, .social-link:hover {
+            background-color: var(--dark-text);
+            color: var(--royal-gold);
+        }
+        
+        .contact-form-container {
+            background-color: var(--white);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.15);
+        }
+        
+        .submit-btn, .primary-btn, button[type="submit"] {
+            background-color: var(--royal-gold);
+            color: var(--white);
+            border: none;
+        }
+        
+        .submit-btn:hover, .primary-btn:hover, button[type="submit"]:hover {
+            background-color: var(--dark-text);
+            color: var(--royal-gold);
+        }
+        
+        .contact-card {
+            background-color: var(--white);
+            border: 1px solid var(--light-gold);
+            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.1);
+        }
+        
+        .contact-icon {
+            color: var(--royal-gold);
+        }
+        
+        .contact-card h3 {
+            color: var(--royal-gold);
+        }
+        
+        .map-section h2, .faq-section h2 {
+            color: var(--royal-gold);
+        }
+        
+        .faq-question {
+            background-color: var(--off-white);
+            border-left: 3px solid var(--royal-gold);
+        }
+        
+        .faq-toggle {
+            color: var(--royal-gold);
+        }
+        
+        .newsletter-section {
+            background-color: var(--light-gold);
+            background-image: linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, rgba(212, 175, 55, 0.3) 100%);
+        }
+        
+        .footer {
+            background-color: var(--dark-text);
+            color: var(--white);
+        }
+        
+        .footer-heading {
+            color: var(--royal-gold);
+        }
+        
+        .footer-links a:hover {
+            color: var(--royal-gold);
+        }
+        
+        .footer-bottom {
+            border-top: 1px solid var(--royal-gold);
+        }
+        
+        .gold-text {
+            color: var(--royal-gold);
+        }
+        
+        .contact-info h2, .contact-form-container h2 {
+            position: relative;
+            color: var(--royal-gold);
+            display: inline-block;
+        }
+        
+        .contact-info h2:after, .contact-form-container h2:after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: -5px;
+            width: 50px;
+            height: 2px;
+            background-color: var(--royal-gold);
+        }
+        
+        input, textarea {
+            border: 1px solid var(--light-gold) !important;
+        }
+        
+        input:focus, textarea:focus {
+            border-color: var(--royal-gold) !important;
+            box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2) !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Announcement Bar -->
+    <div class="announcement-bar">
+        Free shipping on all orders above ₹1000 | WhatsApp: +91 9654270726
+    </div>
+    
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-wrapper">
+                <div class="logo">
+                    <a href="/">
+                        <img src="{% static 'store/images/banner2.jpg' %}" alt="Pure Desi Ghee" style="max-height: 40px; object-fit: contain;">
+                    </a>
+                </div>
+                
+                <nav class="navigation">
+                    <ul class="nav-links">
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/shop/">Shop</a></li>
+                        <li><a href="/benefits/">Benefits</a></li>
+                        <li><a href="#">About</a></li>
+                        <li><a href="/contact/" class="active">Contact</a></li>
+                    </ul>
+                </nav>
+                
+                <div class="header-actions">
+                    <a href="#" class="header-icon search-icon">
+                        <i class="fas fa-search"></i>
+                    </a>
+                    <a href="/cart/" class="header-icon cart-icon">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="cart-count">0</span>
+                    </a>
+                    {% if user.is_authenticated %}
+                    <a href="{% url 'logout' %}" class="header-icon user-icon" title="Logout">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </a>
+                    {% else %}
+                    <a href="{% url 'login' %}" class="header-icon user-icon" title="Login">
+                        <i class="fas fa-user"></i>
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Page Banner -->
+    <section class="page-banner">
+        <div class="container">
+            <h1><span class="gold-text">Contact</span> Us</h1>
+            <p class="breadcrumbs"><a href="/">Home</a> / Contact Us</p>
+        </div>
+    </section>
+    
+    <!-- Contact Information -->
+    <section class="contact-section">
+        <div class="container">
+            <div class="contact-wrapper">
+                <div class="contact-info">
+                    <h2>Get In <span class="gold-text">Touch</span></h2>
+                    <p>We're here to answer any questions you have about our premium A2 Desi Ghee products. Reach out to us and we'll respond as soon as we can.</p>
+                    
+                    <div class="contact-methods">
+                        <div class="contact-method">
+                            <div class="icon">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <div class="details">
+                                <h3>Address</h3>
+                                <p>123 Dairy Farm Road<br>New Delhi, 110001<br>India</p>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-method">
+                            <div class="icon">
+                                <i class="fas fa-phone-alt"></i>
+                            </div>
+                            <div class="details">
+                                <h3>Phone</h3>
+                                <p>+91 9654270726</p>
+                                <p>+91 1145678901</p>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-method">
+                            <div class="icon">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div class="details">
+                                <h3>Email</h3>
+                                <p>info@puredesi.com</p>
+                                <p>support@puredesi.com</p>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-method">
+                            <div class="icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="details">
+                                <h3>Business Hours</h3>
+                                <p>Monday - Friday: 9:00 AM - 6:00 PM</p>
+                                <p>Saturday: 10:00 AM - 4:00 PM</p>
+                                <p>Sunday: Closed</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="social-links">
+                        <h3>Follow Us</h3>
+                        <div class="social-icons">
+                            <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+                            <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+                            <a href="#" class="social-icon"><i class="fab fa-youtube"></i></a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="contact-form-container">
+                    <h2>Send Us a <span class="gold-text">Message</span></h2>
+                    <form action="" method="post" class="contact-form">
+                        {% csrf_token %}
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="name">Your Name</label>
+                                <input type="text" id="name" name="name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Your Email</label>
+                                <input type="email" id="email" name="email" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="phone">Phone Number</label>
+                            <input type="tel" id="phone" name="phone">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="subject">Subject</label>
+                            <input type="text" id="subject" name="subject" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="message">Your Message</label>
+                            <textarea id="message" name="message" rows="6" required></textarea>
+                        </div>
+                        
+                        <button type="submit" class="submit-btn">Send Message</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Contact Info -->
+    <section class="contact-section">
+        <div class="container">
+            <div class="contact-grid">
+                <div class="contact-card">
+                    <div class="contact-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <h3><span class="gold-text">Our</span> Location</h3>
+                    <p>Pure Desi Ghee Headquarters</p>
+                    <p>123, Green Valley Avenue</p>
+                    <p>New Delhi, 110001</p>
+                </div>
+                
+                <div class="contact-card">
+                    <div class="contact-icon">
+                        <i class="fas fa-phone-alt"></i>
+                    </div>
+                    <h3><span class="gold-text">Phone</span></h3>
+                    <p>Customer Support: +91 9654270726</p>
+                    <p>General Inquiries: +91 11 4567 8900</p>
+                    <p>Business Hours: 9:00 AM - 6:00 PM (Mon-Sat)</p>
+                </div>
+                
+                <div class="contact-card">
+                    <div class="contact-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <h3><span class="gold-text">Email</span> Us</h3>
+                    <p>Customer Support: <a href="mailto:support@puredesighee.com">support@puredesighee.com</a></p>
+                    <p>Orders & Shipping: <a href="mailto:orders@puredesighee.com">orders@puredesighee.com</a></p>
+                    <p>Business Inquiries: <a href="mailto:info@puredesighee.com">info@puredesighee.com</a></p>
+                </div>
+                
+                <div class="contact-card">
+                    <div class="contact-icon">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <h3><span class="gold-text">Social</span> Media</h3>
+                    <div class="social-links">
+                        <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                    <p>Follow us for updates, recipes & more!</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Contact Form -->
+    <section class="contact-form-section">
+        <div class="container">
+            <div class="form-container">
+                <h2>Send Us a <span class="gold-text">Message</span></h2>
+                <p>Have questions about our premium A2 Desi Ghee or need assistance with your order? Fill out the form below and we'll get back to you as soon as possible.</p>
+                
+                <form action="/contact/" method="post" class="contact-form">
+                    {% csrf_token %}
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="name">Your Name *</label>
+                            <input type="text" id="name" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Your Email *</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="phone">Phone Number</label>
+                            <input type="tel" id="phone" name="phone">
+                        </div>
+                        <div class="form-group">
+                            <label for="subject">Subject *</label>
+                            <input type="text" id="subject" name="subject" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="message">Your Message *</label>
+                        <textarea id="message" name="message" rows="5" required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <button type="submit" class="primary-btn">Send Message</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Map Section -->
+    <section class="map-section">
+        <div class="container">
+            <h2>Visit Our <span class="gold-text">Store</span></h2>
+            <div class="map-container">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d224096.91668608308!2d77.06889754565885!3d28.52758242387375!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390cfd5b347eb62d%3A0x52c2b7494e204dce!2sNew%20Delhi%2C%20Delhi!5e0!3m2!1sen!2sin!4v1632211234567!5m2!1sen!2sin" width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+            </div>
+        </div>
+    </section>
+    
+    <!-- FAQ Section -->
+    <section class="faq-section">
+        <div class="container">
+            <h2>Frequently Asked <span class="gold-text">Questions</span></h2>
+            <div class="faq-container">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>How can I track my order?</h3>
+                        <span class="faq-toggle"><i class="fas fa-plus"></i></span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Once your order is shipped, you'll receive a tracking number via email. You can use this number on our website to track your order or check the delivery status directly with our shipping partner.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>What is your return policy?</h3>
+                        <span class="faq-toggle"><i class="fas fa-plus"></i></span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>We accept returns within 7 days of delivery if the product is unopened and in its original packaging. Please contact our customer support team to initiate a return.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>Do you ship internationally?</h3>
+                        <span class="faq-toggle"><i class="fas fa-plus"></i></span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Currently, we only ship within India. We're working on expanding our shipping network to international locations soon.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>How long does shipping take?</h3>
+                        <span class="faq-toggle"><i class="fas fa-plus"></i></span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Standard shipping usually takes 3-5 business days for metro cities and 5-7 business days for other locations. Express shipping options are available at checkout.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Newsletter Section -->
+    <section class="newsletter-section">
+        <div class="container">
+            <div class="newsletter-content">
+                <h2>Subscribe to Our <span class="gold-text">Newsletter</span></h2>
+                <p>Get the latest updates, special offers, and traditional A2 ghee recipes delivered directly to your inbox.</p>
+                <form class="newsletter-form">
+                    <input type="email" placeholder="Your email address" required>
+                    <button type="submit" class="submit-btn">Subscribe</button>
+                </form>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-top">
+                <div class="footer-column">
+                    <div class="footer-logo">
+                        <img src="{% static 'store/images/banner2.jpg' %}" alt="Pure Desi Ghee" style="max-height: 40px; object-fit: contain;">
+                    </div>
+                    <p class="footer-description">Premium quality A2 Desi Ghee made from the milk of indigenous cows using traditional methods to preserve all nutrients and medicinal properties.</p>
+                    <div class="footer-social">
+                        <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-column">
+                    <h4 class="footer-heading">Quick Links</h4>
+                    <ul class="footer-links">
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/shop/">Shop</a></li>
+                        <li><a href="#">Benefits</a></li>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="/contact/">Contact Us</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h4 class="footer-heading">Customer Service</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Shipping Policy</a></li>
+                        <li><a href="#">Return Policy</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms & Conditions</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h4 class="footer-heading">Contact Us</h4>
+                    <ul class="footer-contact">
+                        <li><i class="fas fa-map-marker-alt"></i> 123, Green Valley Avenue, New Delhi</li>
+                        <li><i class="fas fa-phone-alt"></i> +91 9654270726</li>
+                        <li><i class="fas fa-envelope"></i> support@puredesighee.com</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p class="copyright">© 2025 <span class="gold-text">Pure Desi Ghee</span>. All Rights Reserved.</p>
+                <div class="payment-methods">
+                    <img src="https://cdn.shopify.com/shopifycloud/shopify/assets/payment_icons/visa-319d545c6fd255c9aad5eeaad21fd6f7f7b4fdbdb1a35ce83b89cca12a187f00.svg" alt="Visa">
+                    <img src="https://cdn.shopify.com/shopifycloud/shopify/assets/payment_icons/master-173035bc8124581983d4efa50cf8626e8553c2b311353fbf67485f9c1a2b88d1.svg" alt="MasterCard">
+                    <img src="https://cdn.shopify.com/shopifycloud/shopify/assets/payment_icons/american_express-2264c9b8b57b23b0b0831827e90cd7bcda2836adc42a912ebedf545dead35b20.svg" alt="American Express">
+                    <img src="https://cdn.shopify.com/shopifycloud/shopify/assets/payment_icons/discover-8265cfcac046637b87df7718c1436f6a1e054de3fbbb48c3a6103b3f42d9d2a5.svg" alt="Discover">
+                    <img src="https://cdn.shopify.com/shopifycloud/shopify/assets/payment_icons/paypal-49e4c1e03244b6d2de0d270ca0d22dd15da6e92cc7266e93eb43762df5aa355d.svg" alt="PayPal">
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // FAQ toggle functionality
+            const faqQuestions = document.querySelectorAll('.faq-question');
+            
+            faqQuestions.forEach(question => {
+                question.addEventListener('click', () => {
+                    const faqItem = question.parentElement;
+                    faqItem.classList.toggle('active');
+                    
+                    const icon = question.querySelector('.faq-toggle i');
+                    if (faqItem.classList.contains('active')) {
+                        icon.classList.remove('fa-plus');
+                        icon.classList.add('fa-minus');
+                    } else {
+                        icon.classList.remove('fa-minus');
+                        icon.classList.add('fa-plus');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - Premium A2 Desi Ghee</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'store/css/premium-cart.css' %}">
+    <style>
+        :root {
+            --royal-gold: #D4AF37;
+                });
+            }
+            
+            // Add selection styling to payment methods
+            const paymentMethodInputs = document.querySelectorAll('input[name="payment_method"]');
+            paymentMethodInputs.forEach(input => {
+                input.addEventListener('change', function() {
+                    document.querySelectorAll('.payment-method').forEach(method => {
+                        method.classList.remove('selected');
+                    });
+                    
+                    this.closest('.payment-method').classList.add('selected');
+                });
+            });
+        });
+    </script>
+</body>
+</html>ight-gold: #F5E7A9;
+            --white: #FFFFFF;
+            --off-white: #F8F8F8;
+            --dark-text: #333333;
+            --light-text: #777777;
+            --gray-bg: #F5F5F5;
+            --border-color: #E5E5E5;
+        }
+        
+        /* Checkout Process Styles */
+        .checkout-steps {
+            display: flex;
+            justify-content: space-between;
+            margin: 30px 0;
+            position: relative;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .checkout-steps::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background-color: var(--border-color);
+            z-index: 1;
+        }
+        
+        .step {
+            position: relative;
+            z-index: 2;
+            background-color: var(--white);
+            padding: 0 10px;
+            text-align: center;
+            flex: 1;
+        }
+        
+        .step-number {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: var(--border-color);
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .step-text {
+            font-size: 14px;
+            color: var(--light-text);
+            transition: all 0.3s;
+        }
+        
+        .step.active .step-number,
+        .step.completed .step-number {
+            background-color: var(--royal-gold);
+        }
+        
+        .step.active .step-text,
+        .step.completed .step-text {
+            color: var(--royal-gold);
+            font-weight: 500;
+        }
+        
+        .step.completed .step-number {
+            background-color: var(--royal-gold);
+        }
+        
+        .step.completed .step-number::after {
+            content: '✓';
+        }
+        
+        /* Form Styles */
+        .checkout-form {
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+        }
+        
+        .form-title {
+            font-size: 20px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+            font-weight: 600;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 14px;
+            color: var(--dark-text);
+            font-weight: 500;
+        }
+        
+        .form-input,
+        .form-select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            font-size: 15px;
+            transition: border-color 0.3s;
+            font-family: inherit;
+        }
+        
+        .form-input:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: var(--royal-gold);
+        }
+        
+        .required::after {
+            content: ' *';
+            color: #ff4d4d;
+        }
+        
+        /* Payment Method Styles */
+        .payment-methods {
+            margin-top: 20px;
+        }
+        
+        .payment-method {
+            display: block;
+            padding: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .payment-method:hover {
+            border-color: var(--royal-gold);
+            background-color: rgba(212, 175, 55, 0.05);
+        }
+        
+        .payment-method input[type="radio"] {
+            margin-right: 10px;
+        }
+        
+        .payment-method.selected {
+            border-color: var(--royal-gold);
+            background-color: rgba(212, 175, 55, 0.05);
+        }
+        
+        /* Order Summary Styles */
+        .order-summary-container {
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+        }
+        
+        .order-summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .order-summary-item:last-child {
+            border-bottom: none;
+        }
+        
+        .item-name {
+            font-weight: 500;
+        }
+        
+        .item-detail {
+            font-size: 14px;
+            color: var(--light-text);
+        }
+        
+        /* Order Confirmation Styles */
+        .order-confirmation {
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            margin: 30px auto;
+            max-width: 600px;
+        }
+        
+        .confirmation-icon {
+            width: 70px;
+            height: 70px;
+            background-color: #4BB543;
+            color: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 30px;
+        }
+        
+        .confirmation-title {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: var(--dark-text);
+        }
+        
+        .order-id {
+            font-size: 16px;
+            color: var(--royal-gold);
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+        
+        .confirmation-message {
+            margin-bottom: 30px;
+            color: var(--light-text);
+        }
+        
+        .buttons-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .home-btn, 
+        .orders-btn {
+            padding: 12px 25px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .home-btn {
+            background-color: var(--royal-gold);
+            color: var(--white);
+        }
+        
+        .orders-btn {
+            border: 1px solid var(--royal-gold);
+            color: var(--royal-gold);
+            background-color: transparent;
+        }
+        
+        .home-btn:hover {
+            background-color: #c19a30;
+        }
+        
+        .orders-btn:hover {
+            background-color: rgba(212, 175, 55, 0.1);
+        }
+        
+        /* Continue/Back Buttons */
+        .checkout-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+        
+        .checkout-back-btn {
+            background-color: var(--gray-bg);
+            color: var(--dark-text);
+            border: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+        
+        .checkout-back-btn:hover {
+            background-color: #e5e5e5;
+        }
+        
+        .checkout-continue-btn {
+            background-color: var(--royal-gold);
+            color: var(--white);
+            border: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .checkout-continue-btn:hover {
+            background-color: #c19a30;
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Announcement Bar -->
+    <div class="top-bar">WhatsApp: +91 9654270726 | Free Shipping on Orders Above ₹1000 | We're Happy to Help!</div>
+    
+    <!-- Header with Navigation -->
+    <header class="site-header">
+        <div class="container">
+            <nav class="navbar">
+                <a href="/" class="logo">
+                    <img src="{% static 'store/images/banner2.jpg' %}" alt="Premium Ghee Store" style="max-height: 50px; object-fit: contain;">
+                </a>
+                
+                <div class="nav-links">
+                    <a href="/" class="nav-link">Home</a>
+                    <a href="/shop/" class="nav-link">Shop</a>
+                    <a href="/benefits/" class="nav-link">Benefits</a>
+                    <a href="/about/" class="nav-link">About Us</a>
+                    <a href="/contact/" class="nav-link">Contact</a>
+                </div>
+                
+                <a href="/cart/" class="cart-icon">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="badge">{{ cart_items|length }}</span>
+                </a>
+            </nav>
+        </div>
+    </header>
+    
+    <!-- Main Checkout Content -->
+    <main class="checkout-page">
+        <div class="container">
+            <h1 class="page-title">Secure Checkout</h1>
+            
+            <!-- Checkout Progress Steps -->
+            <div class="checkout-steps">
+                <div class="step {% if step == 'address' or step == 'payment' or step == 'confirmation' %}active{% endif %}" id="step-address">
+                    <div class="step-number">1</div>
+                    <div class="step-text">Shipping</div>
+                </div>
+                <div class="step {% if step == 'payment' or step == 'confirmation' %}active{% endif %}" id="step-payment">
+                    <div class="step-number">2</div>
+                    <div class="step-text">Payment</div>
+                </div>
+                <div class="step {% if step == 'confirmation' %}active{% endif %}" id="step-confirmation">
+                    <div class="step-number">3</div>
+                    <div class="step-text">Confirmation</div>
+                </div>
+            </div>
+            
+            <!-- Dynamic Content Based on Step -->
+            <div class="checkout-content">
+                <!-- Step 1: Shipping Address -->
+                {% if step == 'address' %}
+                <div class="checkout-form" id="address-form">
+                    <h2 class="form-title">Shipping Information</h2>
+                    <form id="shipping-form">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label class="form-label required" for="first-name">First Name</label>
+                                <input type="text" class="form-input" id="first-name" name="first_name" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label required" for="last-name">Last Name</label>
+                                <input type="text" class="form-input" id="last-name" name="last_name" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label required" for="phone">Phone Number</label>
+                            <input type="tel" class="form-input" id="phone" name="phone" pattern="[0-9]{10}" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label required" for="email">Email Address</label>
+                            <input type="email" class="form-input" id="email" name="email" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label required" for="address">Street Address</label>
+                            <input type="text" class="form-input" id="address" name="address" required>
+                        </div>
+                        
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label class="form-label required" for="city">City</label>
+                                <input type="text" class="form-input" id="city" name="city" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label required" for="state">State</label>
+                                <select class="form-select" id="state" name="state" required>
+                                    <option value="">Select State</option>
+                                    <option value="AN">Andaman and Nicobar Islands</option>
+                                    <option value="AP">Andhra Pradesh</option>
+                                    <option value="AR">Arunachal Pradesh</option>
+                                    <option value="AS">Assam</option>
+                                    <option value="BR">Bihar</option>
+                                    <option value="CH">Chandigarh</option>
+                                    <option value="CT">Chhattisgarh</option>
+                                    <option value="DN">Dadra and Nagar Haveli</option>
+                                    <option value="DD">Daman and Diu</option>
+                                    <option value="DL">Delhi</option>
+                                    <option value="GA">Goa</option>
+                                    <option value="GJ">Gujarat</option>
+                                    <option value="HR">Haryana</option>
+                                    <option value="HP">Himachal Pradesh</option>
+                                    <option value="JK">Jammu and Kashmir</option>
+                                    <option value="JH">Jharkhand</option>
+                                    <option value="KA">Karnataka</option>
+                                    <option value="KL">Kerala</option>
+                                    <option value="LD">Lakshadweep</option>
+                                    <option value="MP">Madhya Pradesh</option>
+                                    <option value="MH">Maharashtra</option>
+                                    <option value="MN">Manipur</option>
+                                    <option value="ML">Meghalaya</option>
+                                    <option value="MZ">Mizoram</option>
+                                    <option value="NL">Nagaland</option>
+                                    <option value="OR">Odisha</option>
+                                    <option value="PY">Puducherry</option>
+                                    <option value="PB">Punjab</option>
+                                    <option value="RJ">Rajasthan</option>
+                                    <option value="SK">Sikkim</option>
+                                    <option value="TN">Tamil Nadu</option>
+                                    <option value="TG">Telangana</option>
+                                    <option value="TR">Tripura</option>
+                                    <option value="UP">Uttar Pradesh</option>
+                                    <option value="UT">Uttarakhand</option>
+                                    <option value="WB">West Bengal</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label required" for="zip">Postal Code</label>
+                            <input type="text" class="form-input" id="zip" name="zip" pattern="[0-9]{6}" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="notes">Order Notes (Optional)</label>
+                            <textarea class="form-input" id="notes" name="notes" rows="3"></textarea>
+                        </div>
+                    </form>
+                    
+                    <div class="checkout-actions">
+                        <a href="/cart/" class="checkout-back-btn"><i class="fas fa-arrow-left"></i> Back to Cart</a>
+                        <button type="button" class="checkout-continue-btn" id="address-continue-btn">Continue to Payment <i class="fas fa-arrow-right"></i></button>
+                    </div>
+                </div>
+                
+                <!-- Order Summary Sidebar -->
+                <div class="order-summary-container">
+                    <h2 class="form-title">Order Summary</h2>
+                    
+                    {% if cart_items %}
+                        {% for item in cart_items %}
+                        <div class="order-summary-item">
+                            <div>
+                                <div class="item-name">{{ item.product.name }} × {{ item.quantity }}</div>
+                                <div class="item-detail">{{ item.quantity }} × ₹{{ item.product.discounted_price|floatformat:2 }}</div>
+                            </div>
+                            <div>₹{{ item.total|floatformat:2 }}</div>
+                        </div>
+                        {% endfor %}
+                        
+                        <div class="order-summary-item">
+                            <div class="item-name">Subtotal</div>
+                            <div>₹{{ subtotal|floatformat:2 }}</div>
+                        </div>
+                        
+                        {% if coupon_discount > 0 %}
+                        <div class="order-summary-item">
+                            <div class="item-name">Coupon Discount</div>
+                            <div style="color: green;">-₹{{ coupon_discount|floatformat:2 }}</div>
+                        </div>
+                        {% endif %}
+                        
+                        <div class="order-summary-item">
+                            <div class="item-name">Shipping</div>
+                            <div>{% if shipping_cost == 0 %}Free{% else %}₹{{ shipping_cost|floatformat:2 }}{% endif %}</div>
+                        </div>
+                        
+                        <div class="order-summary-item" style="font-weight: 600; border-top: 2px solid #eee; padding-top: 10px;">
+                            <div class="item-name">Total</div>
+                            <div>₹{{ total|floatformat:2 }}</div>
+                        </div>
+                    {% else %}
+                        <div class="empty-cart-message">Your cart is empty</div>
+                        <a href="/shop/" class="checkout-continue-btn" style="display: block; text-align: center; margin-top: 20px;">Shop Now</a>
+                    {% endif %}
+                </div>
+                
+                <!-- Step 2: Payment Method -->
+                {% elif step == 'payment' %}
+                <div class="checkout-form" id="payment-form">
+                    <h2 class="form-title">Payment Method</h2>
+                    <div class="payment-methods">
+                        <label class="payment-method selected">
+                            <input type="radio" name="payment_method" value="cod" checked>
+                            <strong>Cash on Delivery</strong>
+                            <p style="margin: 5px 0 0 25px; font-size: 14px; color: #777;">Pay with cash upon delivery.</p>
+                        </label>
+                        
+                        <label class="payment-method">
+                            <input type="radio" name="payment_method" value="upi">
+                            <strong>UPI Payment</strong>
+                            <p style="margin: 5px 0 0 25px; font-size: 14px; color: #777;">Pay with UPI apps like Google Pay, PhonePe or Paytm.</p>
+                        </label>
+                        
+                        <div class="form-group" style="margin-top: 20px;">
+                            <label class="form-label" for="payment-notes">Additional Payment Instructions (Optional)</label>
+                            <textarea class="form-input" id="payment-notes" name="payment_notes" rows="2"></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="checkout-actions">
+                        <a href="/checkout/?session_id={{ session_id }}&step=address" class="checkout-back-btn"><i class="fas fa-arrow-left"></i> Back to Shipping</a>
+                        <button type="button" class="checkout-continue-btn" id="payment-continue-btn">Complete Order <i class="fas fa-arrow-right"></i></button>
+                    </div>
+                </div>
+                
+                <!-- Order Summary Sidebar (same as in address step) -->
+                <div class="order-summary-container">
+                    <h2 class="form-title">Order Summary</h2>
+                    
+                    {% if cart_items %}
+                        {% for item in cart_items %}
+                        <div class="order-summary-item">
+                            <div>
+                                <div class="item-name">{{ item.product.name }} × {{ item.quantity }}</div>
+                                <div class="item-detail">{{ item.quantity }} × ₹{{ item.product.discounted_price|floatformat:2 }}</div>
+                            </div>
+                            <div>₹{{ item.total|floatformat:2 }}</div>
+                        </div>
+                        {% endfor %}
+                        
+                        <div class="order-summary-item">
+                            <div class="item-name">Subtotal</div>
+                            <div>₹{{ subtotal|floatformat:2 }}</div>
+                        </div>
+                        
+                        {% if coupon_discount > 0 %}
+                        <div class="order-summary-item">
+                            <div class="item-name">Coupon Discount</div>
+                            <div style="color: green;">-₹{{ coupon_discount|floatformat:2 }}</div>
+                        </div>
+                        {% endif %}
+                        
+                        <div class="order-summary-item">
+                            <div class="item-name">Shipping</div>
+                            <div>{% if shipping_cost == 0 %}Free{% else %}₹{{ shipping_cost|floatformat:2 }}{% endif %}</div>
+                        </div>
+                        
+                        <div class="order-summary-item" style="font-weight: 600; border-top: 2px solid #eee; padding-top: 10px;">
+                            <div class="item-name">Total</div>
+                            <div>₹{{ total|floatformat:2 }}</div>
+                        </div>
+                    {% else %}
+                        <div class="empty-cart-message">Your cart is empty</div>
+                        <a href="/shop/" class="checkout-continue-btn" style="display: block; text-align: center; margin-top: 20px;">Shop Now</a>
+                    {% endif %}
+                </div>
+                
+                <!-- Step 3: Order Confirmation -->
+                {% elif step == 'confirmation' %}
+                <div class="order-confirmation">
+                    <div class="confirmation-icon">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <h2 class="confirmation-title">Thank You for Your Order!</h2>
+                    <div class="order-id">Order #{{ session_id|slice:"-6:" }}</div>
+                    
+                    <div class="confirmation-message">
+                        <p>Your order has been placed successfully. We've sent a confirmation to your phone.</p>
+                        <p>You will receive an update when your order has shipped.</p>
+                    </div>
+                    
+                    <div class="buttons-container">
+                        <a href="/" class="home-btn">Continue Shopping</a>
+                        <a href="/orders/" class="orders-btn">View Orders</a>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </main>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get the current session and step from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const sessionId = urlParams.get('session_id');
+            const currentStep = urlParams.get('step');
+            
+            // Address form continue button
+            const addressContinueBtn = document.getElementById('address-continue-btn');
+            if (addressContinueBtn) {
+                addressContinueBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Simple form validation
+                    const shippingForm = document.getElementById('shipping-form');
+                    const formElements = shippingForm.querySelectorAll('input[required], select[required]');
+                    let isValid = true;
+                    
+                    formElements.forEach(element => {
+                        if (!element.value) {
+                            isValid = false;
+                            element.classList.add('invalid');
+                        } else {
+                            element.classList.remove('invalid');
+                        }
+                    });
+                    
+                    // Handle phone validation
+                    const phone = document.getElementById('phone');
+                    if (!/^[0-9]{10}$/.test(phone.value)) {
+                        isValid = false;
+                        phone.classList.add('invalid');
+                    }
+                    
+                    // Handle postal code validation
+                    const zip = document.getElementById('zip');
+                    if (!/^[0-9]{6}$/.test(zip.value)) {
+                        isValid = false;
+                        zip.classList.add('invalid');
+                    }
+                    
+                    if (!isValid) {
+                        alert("Please fill in all required fields correctly.");
+                        return;
+                    }
+                    
+                    // Save form data to sessionStorage
+                    const formData = {
+                        firstName: document.getElementById('first-name').value,
+                        lastName: document.getElementById('last-name').value,
+                        phone: document.getElementById('phone').value,
+                        email: document.getElementById('email').value,
+                        address: document.getElementById('address').value,
+                        city: document.getElementById('city').value,
+                        state: document.getElementById('state').value,
+                        zip: document.getElementById('zip').value,
+                        notes: document.getElementById('notes').value
+                    };
+                    
+                    sessionStorage.setItem('checkoutAddress', JSON.stringify(formData));
+                    
+                    // Navigate to payment step
+                    window.location.href = `/checkout/?session_id=${sessionId}&step=payment`;
+                });
+            }
+            
+            // Payment form continue button
+            const paymentContinueBtn = document.getElementById('payment-continue-btn');
+            if (paymentContinueBtn) {
+                paymentContinueBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Get selected payment method
+                    const paymentMethod = document.querySelector('input[name="payment_method"]:checked').value;
+                    const paymentNotes = document.getElementById('payment-notes').value;
+                    
+                    // Save payment data to sessionStorage
+                    const paymentData = {
+                        method: paymentMethod,
+                        notes: paymentNotes
+                    };
+                    
+                    sessionStorage.setItem('checkoutPayment', JSON.stringify(paymentData));
+                    
+                    // Get address data
+                    const addressData = JSON.parse(sessionStorage.getItem('checkoutAddress') || '{}');
+                    
+                    // Prepare WhatsApp message with complete order details
+                    let orderMessage = "🛒 *NEW ORDER*\n\n";
+                    orderMessage += `🆔 *Order ID*: #${sessionId.slice(-6)}\n\n`;
+                    orderMessage += `👤 *Customer Details*:\n`;
+                    orderMessage += `Name: ${addressData.firstName} ${addressData.lastName}\n`;
+                    orderMessage += `Phone: ${addressData.phone}\n`;
+                    orderMessage += `Email: ${addressData.email}\n`;
+                    orderMessage += `Address: ${addressData.address}, ${addressData.city}, ${addressData.state} - ${addressData.zip}\n\n`;
+                    
+                    orderMessage += `💳 *Payment Method*: ${paymentMethod === 'cod' ? 'Cash on Delivery' : 'UPI Payment'}\n\n`;
+                    
+                    orderMessage += `*ITEMS ORDERED*\n`;
+                    
+                    // Use the total amount calculated by Django view
+                    let totalAmount = {{ total|floatformat:2 }};
+                    
+                    // Add items
+                    {% for item in cart_items %}
+                    orderMessage += `- {{ item.product.name }} x{{ item.quantity }} = ₹{{ item.total|floatformat:2 }}\n`;
+                    {% endfor %}
+                    
+                    // Add subtotal
+                    orderMessage += `\nSubtotal = ₹{{ subtotal|floatformat:2 }}\n`;
+                    
+                    // Add coupon discount if applied
+                    {% if coupon_discount > 0 %}
+                    orderMessage += `Coupon Discount = -₹{{ coupon_discount|floatformat:2 }}\n`;
+                    {% endif %}
+                    
+                    // Add shipping
+                    {% if shipping_cost == 0 %}
+                    orderMessage += `Shipping = Free\n`;
+                    {% else %}
+                    orderMessage += `Shipping = ₹{{ shipping_cost|floatformat:2 }}\n`;
+                    {% endif %}
+                    
+                    orderMessage += `\n💰 *TOTAL*: ₹${totalAmount.toFixed(2)}`;
+                    
+                    if (addressData.notes) {
+                        orderMessage += `\n\n📝 *Order Notes*: ${addressData.notes}`;
+                    }
+                    
+                    if (paymentNotes) {
+                        orderMessage += `\n\n💳 *Payment Notes*: ${paymentNotes}`;
+                    }
+                    
+                    orderMessage += `\n\n📅 *Date*: ${new Date().toLocaleString()}`;
+                    
+                    // Navigate to confirmation step
+                    window.location.href = `/checkout/?session_id=${sessionId}&step=confirmation`;
+                    
+                    // Send WhatsApp message in the background
+                    setTimeout(function() {
+                        const whatsappURL = `https://wa.me/919654270726?text=${encodeURIComponent(orderMessage)}`;
+                        window.open(whatsappURL, '_blank');
+                    }, 1500);
+                });
+            }
+            
+            // Restore form data if returning to a step
+            if (currentStep === 'address') {
+                const savedAddress = JSON.parse(sessionStorage.getItem('checkoutAddress') || '{}');
+                
+                if (savedAddress.firstName) {
+                    document.getElementById('first-name').value = savedAddress.firstName;
+                    document.getElementById('last-name').value = savedAddress.lastName;
+                    document.getElementById('phone').value = savedAddress.phone;
+                    document.getElementById('email').value = savedAddress.email;
+                    document.getElementById('address').value = savedAddress.address;
+                    document.getElementById('city').value = savedAddress.city;
+                    document.getElementById('state').value = savedAddress.state;
+                    document.getElementById('zip').value = savedAddress.zip;
+                    document.getElementById('notes').value = savedAddress.notes;
+                }
+            }
+            
+            // Select the appropriate payment method when returning to payment step
+            if (currentStep === 'payment') {
+                const savedPayment = JSON.parse(sessionStorage.getItem('checkoutPayment') || '{}');
+                
+                if (savedPayment.method) {
+                    document.querySelector(`input[name="payment_method"][value="${savedPayment.method}"]`).checked = true;
+                    if (savedPayment.notes) {
+                        document.getElementById('payment-notes').value = savedPayment.notes;
+                    }
+                }
+            }
+            
+            // Add selection styling to payment methods
+            const paymentMethodInputs = document.querySelectorAll('input[name="payment_method"]');
+            paymentMethodInputs.forEach(input => {
+                input.addEventListener('change', function() {
+                    document.querySelectorAll('.payment-method').forEach(method => {
+                        method.classList.remove('selected');
+                    });
+                    
+                    this.closest('.payment-method').classList.add('selected');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
+    </script>
+</body>
+</html>

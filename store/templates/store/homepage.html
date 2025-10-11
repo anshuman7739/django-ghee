@@ -1,0 +1,516 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pure Desi Ghee - Premium A2 Cow Ghee</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'store/css/oziva-style.css' %}">
+</head>
+<body>
+    <!-- Announcement Bar -->
+    <div class="announcement-bar">
+        Free shipping on all orders above ₹1000 | WhatsApp us: +91 9654270726
+    </div>
+    
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-wrapper">
+                <div class="logo">
+                    <a href="/">
+                        <img src="{% static 'store/images/banner2.jpg' %}" alt="Pure Desi Ghee" style="max-height: 50px; object-fit: contain;">
+                    </a>
+                </div>
+                
+                <nav class="navigation">
+                    <ul class="nav-links">
+                        <li><a href="/" class="active">Home</a></li>
+                        <li><a href="/shop/">Shop</a></li>
+                        <li><a href="#">About</a></li>
+                        <li><a href="#">Benefits</a></li>
+                        <li><a href="#">Contact</a></li>
+                    </ul>
+                </nav>
+                
+                <div class="header-actions">
+                    <a href="#" class="header-icon search-icon">
+                        <i class="fas fa-search"></i>
+                    </a>
+                    <a href="/cart/" class="header-icon cart-icon">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="cart-count">0</span>
+                    </a>
+                    <a href="#" class="header-icon user-icon">
+                        <i class="fas fa-user"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-slide active" style="background-image: url('{% static 'store/images/banner1.jpg' %}')">
+            <div class="container">
+                <div class="hero-content">
+                    <h4 class="hero-subtitle">100% PURE & ORGANIC</h4>
+                    <h1 class="hero-title">Premium A2 Desi Ghee</h1>
+                    <p class="hero-description">Made from the milk of indigenous cows using traditional 'Bilona' method to preserve all nutrients and medicinal properties.</p>
+                    <a href="/shop/" class="btn primary-btn">Shop Now</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="hero-slide" style="background-image: url('{% static 'store/images/banner2.jpg' %}')">
+            <div class="container">
+                <div class="hero-content">
+                    <h4 class="hero-subtitle">STRAIGHT FROM FARMS</h4>
+                    <h1 class="hero-title">Experience the Purity</h1>
+                    <p class="hero-description">Traditionally crafted ghee that nourishes your body and supports your overall well-being.</p>
+                    <a href="/shop/" class="btn primary-btn">Explore Collection</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="hero-indicators">
+            <span class="indicator active" data-slide="0"></span>
+            <span class="indicator" data-slide="1"></span>
+        </div>
+    </section>
+    <!-- JavaScript for Hero Slider -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const slides = document.querySelectorAll('.hero-slide');
+            const indicators = document.querySelectorAll('.indicator');
+            let currentSlide = 0;
+            
+            // Function to show a specific slide
+            function setCurrentSlide(index) {
+                // Remove active class from all slides
+                slides.forEach(slide => slide.classList.remove('active'));
+                indicators.forEach(indicator => indicator.classList.remove('active'));
+                
+                // Add active class to the current slide
+                slides[index].classList.add('active');
+                indicators[index].classList.add('active');
+                
+                currentSlide = index;
+            };
+            
+            indicators.forEach((indicator, index) => {
+                indicator.addEventListener('click', () => {
+                    setCurrentSlide(index);
+                });
+            });
+            
+            // Auto slide function
+            function autoSlide() {
+                currentSlide = (currentSlide + 1) % slides.length;
+                setCurrentSlide(currentSlide);
+            }
+            
+            // Set interval for auto slide
+            const slideInterval = setInterval(autoSlide, 5000);
+            
+            // Pause auto slide on hover
+            const heroSection = document.querySelector('.hero-section');
+            heroSection.addEventListener('mouseenter', () => {
+                clearInterval(slideInterval);
+            });
+            
+            heroSection.addEventListener('mouseleave', () => {
+                clearInterval(slideInterval);
+                slideInterval = setInterval(autoSlide, 5000);
+            });
+        });
+    </script>
+    <!-- Featured Products -->
+    <section class="featured-products">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Featured Products</h2>
+                <p class="section-subtitle">Our selection of premium A2 ghee, crafted with tradition</p>
+            </div>
+            
+            <div class="product-grid">
+                <!-- Product 1 -->
+                <div class="product-card">
+                    <div class="product-badge">Best Seller</div>
+                    <div class="product-image">
+                        <img src="https://shahjighee.com/wp-content/uploads/2024/11/10.webp" alt="A2 Gir Cow Ghee">
+                        <div class="product-actions">
+                            <button class="quick-view"><i class="fas fa-eye"></i></button>
+                            <button class="add-to-cart"><i class="fas fa-shopping-cart"></i></button>
+                        </div>
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-title">A2 Gir Cow Ghee</h3>
+                        <div class="product-meta">1 LTR Glass Jar</div>
+                        <div class="product-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
+                            <span class="rating-count">(42)</span>
+                        </div>
+                        <div class="product-price">
+                            <span class="current-price">₹2,700</span>
+                            <span class="original-price">₹3,000</span>
+                            <span class="discount">-10%</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Product 2 -->
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="https://shahjighee.com/wp-content/uploads/2024/11/11.webp" alt="A2 Sahiwal Cow Ghee">
+                        <div class="product-actions">
+                            <button class="quick-view"><i class="fas fa-eye"></i></button>
+                            <button class="add-to-cart"><i class="fas fa-shopping-cart"></i></button>
+                        </div>
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-title">A2 Sahiwal Cow Ghee</h3>
+                        <div class="product-meta">1 LTR Glass Jar</div>
+                        <div class="product-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="far fa-star"></i>
+                            <span class="rating-count">(28)</span>
+                        </div>
+                        <div class="product-price">
+                            <span class="current-price">₹2,025</span>
+                            <span class="original-price">₹2,250</span>
+                            <span class="discount">-10%</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Product 3 -->
+                <div class="product-card">
+                    <div class="product-badge">New</div>
+                    <div class="product-image">
+                        <img src="https://shahjighee.com/wp-content/uploads/2024/11/8.webp" alt="Murrah Buffalo Ghee">
+                        <div class="product-actions">
+                            <button class="quick-view"><i class="fas fa-eye"></i></button>
+                            <button class="add-to-cart"><i class="fas fa-shopping-cart"></i></button>
+                        </div>
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-title">Murrah Buffalo Ghee</h3>
+                        <div class="product-meta">1 LTR Glass Jar</div>
+                        <div class="product-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <span class="rating-count">(35)</span>
+                        </div>
+                        <div class="product-price">
+                            <span class="current-price">₹1,530</span>
+                            <span class="original-price">₹1,700</span>
+                            <span class="discount">-10%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="view-all-container">
+                <a href="/shop/" class="view-all-btn">View All Products <i class="fas fa-arrow-right"></i></a>
+            </div>
+        </div>
+    </section>
+    <!-- Benefits Section -->
+    <section class="benefits-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Benefits of A2 Ghee</h2>
+                <p class="section-subtitle">Experience the natural goodness and health advantages</p>
+            </div>
+            
+            <div class="benefits-container">
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <i class="fas fa-heartbeat"></i>
+                    </div>
+                    <h3 class="benefit-title">Rich in Nutrients</h3>
+                    <p class="benefit-description">Packed with fat-soluble vitamins A, D, E, and K, along with essential fatty acids that support overall health.</p>
+                </div>
+                
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3 class="benefit-title">Boosts Immunity</h3>
+                    <p class="benefit-description">Strengthens the immune system with its natural properties and helps build resistance against common ailments.</p>
+                </div>
+                
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <i class="fas fa-fire-alt"></i>
+                    </div>
+                    <h3 class="benefit-title">Aids Digestion</h3>
+                    <p class="benefit-description">Promotes healthy digestion by stimulating secretion of digestive enzymes and maintaining gut flora.</p>
+                </div>
+                
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <i class="fas fa-seedling"></i>
+                    </div>
+                    <h3 class="benefit-title">100% Natural</h3>
+                    <p class="benefit-description">Pure A2 ghee made traditionally without any additives, preservatives or chemicals. Just as nature intended.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Testimonials Section -->
+    <section class="testimonials-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">What Our Customers Say</h2>
+                <p class="section-subtitle">Real experiences from our satisfied customers</p>
+            </div>
+            
+            <div class="testimonials-slider">
+                <div class="testimonial-card">
+                    <div class="testimonial-rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="testimonial-text">I like this product very much. It's taste of ghee is really good and it is really pure and made of good quality milk. Would definitely recommend!</p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">
+                            <img src="https://shahjighee.com/wp-content/uploads/2024/11/review17-84x84.jpg" alt="Harsh">
+                        </div>
+                        <div class="testimonial-info">
+                            <h4 class="testimonial-name">Harsh Sharma</h4>
+                            <div class="testimonial-title">Verified Buyer</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card">
+                    <div class="testimonial-rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star-half-alt"></i>
+                    </div>
+                    <p class="testimonial-text">I have used many popular brand ghee but its taste is best. Scent of this ghee is pure. Healthy for my family and we can really feel the difference.</p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">
+                            <img src="https://shahjighee.com/wp-content/uploads/2024/11/review13-84x84.jpg" alt="Nayika">
+                        </div>
+                        <div class="testimonial-info">
+                            <h4 class="testimonial-name">Nayika Desai</h4>
+                            <div class="testimonial-title">Verified Buyer</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card">
+                    <div class="testimonial-rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="testimonial-text">The ghee comes in a great packing, and has a good quality, texture and smell. It serves as a great cooking medium and also to top up your dishes and enable a great flavour to come through.</p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">
+                            <img src="https://shahjighee.com/wp-content/uploads/2024/11/dr_sunil_sharma-84x84.jpg" alt="Sanjeev">
+                        </div>
+                        <div class="testimonial-info">
+                            <h4 class="testimonial-name">Sanjeev Srivastav</h4>
+                            <div class="testimonial-title">Nutritionist</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card">
+                    <div class="testimonial-rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="testimonial-text">A product worth spending for! The ghee is so delicious in taste and has very good fragrance. From smelling it we come to know the product is 100% original. A must buy!</p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">
+                            <img src="https://shahjighee.com/wp-content/uploads/2024/11/2_f6655b77-2de5-4434-8cce-8fbf56ac5b16-84x84.jpg" alt="Gayatri">
+                        </div>
+                        <div class="testimonial-info">
+                            <h4 class="testimonial-name">Gayatri Sarda</h4>
+                            <div class="testimonial-title">Verified Buyer</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="testimonial-controls">
+                <button class="testimonial-btn prev" id="prev-testimonial">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button class="testimonial-btn next" id="next-testimonial">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+    </section>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Testimonials slider
+            const slider = document.querySelector('.testimonials-slider');
+            const testimonials = document.querySelectorAll('.testimonial-card');
+            const prevBtn = document.getElementById('prev-testimonial');
+            const nextBtn = document.getElementById('next-testimonial');
+            
+            let currentIndex = 0;
+            const maxIndex = testimonials.length - 1;
+            
+            // Show testimonials based on screen size
+            function updateSlider() {
+                const cardWidth = testimonials[0].offsetWidth;
+                const gap = 30; // Same as the gap in CSS
+                
+                slider.style.transform = `translateX(-${currentIndex * (cardWidth + gap)}px)`;
+            }
+            
+            // Next button
+            nextBtn.addEventListener('click', function() {
+                if (currentIndex < maxIndex) {
+                    currentIndex++;
+                } else {
+                    currentIndex = 0; // Loop back to the beginning
+                }
+                updateSlider();
+            });
+            
+            // Prev button
+            prevBtn.addEventListener('click', function() {
+                if (currentIndex > 0) {
+                    currentIndex--;
+                } else {
+                    currentIndex = maxIndex; // Loop to the end
+                }
+                updateSlider();
+            });
+            
+            // Auto slide
+            const autoSlideInterval = setInterval(function() {
+                if (currentIndex < maxIndex) {
+                    currentIndex++;
+                } else {
+                    currentIndex = 0;
+                }
+                updateSlider();
+            }, 6000);
+            
+            // Pause auto slide on hover
+            slider.addEventListener('mouseenter', function() {
+                clearInterval(autoSlideInterval);
+            });
+            
+            // Initial setup
+            updateSlider();
+            
+            // Update on window resize
+            window.addEventListener('resize', updateSlider);
+        });
+    </script>
+    <!-- Notification Popup -->
+    <div id="notification-popup" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.25); z-index:9999; justify-content:center; align-items:center;">
+        <div style="background:#fffbe6; border-radius:16px; box-shadow:0 2px 16px rgba(0,0,0,0.12); padding:32px 24px; max-width:400px; text-align:center; position:relative;">
+            <img src="{% static 'store/notification/Screenshot 2025-08-04 at 10.10.38 AM.png' %}" alt="Notification Banner" style="max-width:100%; border-radius:12px; margin-bottom:18px;">
+            <div style="font-size:1.2em; color:#bfa14a; margin-bottom:18px;">Welcome to Ghee Store! Enjoy premium A2 Desi Ghee and exclusive offers.</div>
+            <button onclick="document.getElementById('notification-popup').style.display='none'" style="background:#bfa14a; color:#fff; border:none; border-radius:6px; padding:8px 18px; font-size:1em; cursor:pointer;">Close</button>
+        </div>
+    </div>
+    <script>
+        window.addEventListener('DOMContentLoaded', function() {
+                document.getElementById('notification-popup').style.display = 'flex';
+        });
+    </script>
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3 class="footer-title">About Us</h3>
+                    <p class="footer-text">We are dedicated to bringing you the purest A2 desi ghee sourced directly from ethical farms across India. Our mission is to preserve tradition while ensuring quality.</p>
+                    <div class="footer-social">
+                        <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-column">
+                    <h3 class="footer-title">Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/shop/">Shop</a></li>
+                        <li><a href="/about/">About Us</a></li>
+                        <li><a href="/cart/">Shopping Cart</a></li>
+                        <li><a href="/contact/">Contact Us</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3 class="footer-title">Contact Us</h3>
+                    <ul class="footer-contact">
+                        <li><i class="fas fa-map-marker-alt"></i> Vikaspuri, Delhi, India</li>
+                        <li><i class="fas fa-phone-alt"></i> +91 9654270726</li>
+                        <li><i class="fas fa-envelope"></i> jhashubham1991.com</li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3 class="footer-title">Newsletter</h3>
+                    <p class="footer-text">Subscribe to receive updates on new products and special promotions.</p>
+                    <form class="footer-subscribe">
+                        <input type="email" placeholder="Your Email Address" required>
+                        <button type="submit"><i class="fas fa-paper-plane"></i></button>
+                    </form>
+                    <div class="footer-payment">
+                        <i class="fab fa-cc-visa"></i>
+                        <i class="fab fa-cc-mastercard"></i>
+                        <i class="fab fa-cc-paypal"></i>
+                        <i class="fas fa-money-bill-alt"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <div class="copyright">© 2025 Ghee Store. All rights reserved.</div>
+                <div class="footer-bottom-links">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms & Conditions</a>
+                    <a href="#">Shipping Policy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

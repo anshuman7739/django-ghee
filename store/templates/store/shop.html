@@ -1,0 +1,90 @@
+{% load static %}
+{% load store_extras %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop - Ghee Store</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: #fffbe6; margin: 0; padding: 0; }
+        .top-bar { background: #bfa14a; color: #fff; padding: 10px 0; text-align: center; font-size: 1.05em; letter-spacing: 0.5px; }
+        .shop-title { color: #bfa14a; font-size: 2.5em; margin: 32px 0 12px 0; text-align: center; font-family: 'Segoe UI', Arial, sans-serif; }
+        .shop-products { display: flex; flex-wrap: wrap; justify-content: center; gap: 32px; margin: 40px 0; }
+        .shop-card { background: #fff; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.07); padding: 24px; width: 320px; text-align: center; position: relative; }
+        .shop-card img { max-width: 160px; border-radius: 8px; margin-bottom: 12px; }
+        .discount-badge { position: absolute; top: 18px; left: 18px; background: #e74c3c; color: #fff; padding: 6px 14px; border-radius: 8px; font-weight: bold; font-size: 1em; }
+        .shop-card h2 { font-size: 1.2em; color: #bfa14a; margin-bottom: 8px; }
+        .shop-card .price { font-size: 1.1em; color: #333; margin-bottom: 8px; }
+        .shop-card .old-price { text-decoration: line-through; color: #999; font-size: 0.95em; margin-right: 8px; }
+        .rating { color: #f5b301; font-size: 1.1em; margin-bottom: 6px; }
+        .num-ratings { color: #888; font-size: 0.95em; margin-left: 6px; }
+        .quantity-select { margin: 10px 0; padding: 6px; border-radius: 6px; border: 1px solid #ccc; }
+        .shop-card button { background: #bfa14a; color: #fff; border: none; border-radius: 6px; padding: 8px 18px; font-size: 1em; cursor: pointer; margin-top: 8px; }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        WhatsApp: +91 9654270726 | We're Happy to Help!
+    </div>
+    <div class="shop-title">Shop Premium A2 Ghee</div>
+    <div class="shop-products">
+        {% for product in products %}
+        <div class="shop-card">
+            {% if product.discount_percent %}
+            <div class="discount-badge">-{{ product.discount_percent }}%</div>
+            {% endif %}
+            {% if forloop.counter == 1 %}
+                <img src="{% static 'store/images/productbuff.jpg' %}" alt="Buffalo Ghee">
+            {% elif forloop.counter == 2 %}
+                <img src="{% static 'store/images/productcow.jpg' %}" alt="Cow Ghee">
+            {% elif product.image %}
+                <img src="{{ product.image.url }}" alt="{{ product.name }}">
+            {% else %}
+                <img src="{% static 'store/images/banner1.jpg' %}" alt="Default Ghee">
+            {% endif %}
+            <h2>{{ product.name }}</h2>
+            <div class="rating">
+                {% for i in "12345" %}
+                    &#9733;
+                {% endfor %}
+                <span class="num-ratings">(5000)</span>
+            </div>
+            <div class="price">
+                {% if product.discount_percent %}
+                    <span class="old-price">₹{{ product.price }}</span>
+                    ₹{{ product.discounted_price|floatformat:2 }}
+                {% else %}
+                    ₹{{ product.price }}
+                {% endif %}
+            </div>
+            <form method="post" action="/cart/" style="margin:0;">
+                {% csrf_token %}
+                <input type="hidden" name="product_id" value="{{ product.id }}">
+                <input type="hidden" name="quantity" class="selected-quantity" value="1">
+                
+                <!-- Size Selection -->
+                {% if product.sizes.all %}
+                <select name="size_id" class="quantity-select" style="margin-bottom: 10px;" required>
+                    <option value="">Select Size</option>
+                    {% for size in product.sizes.all %}
+                        <option value="{{ size.id }}">{{ size.size }}</option>
+                    {% endfor %}
+                </select>
+                {% endif %}
+                
+                <!-- Quantity Selection -->
+                <select class="quantity-select" onchange="this.form.querySelector('.selected-quantity').value=this.value;">
+                    {% for i in 1|to:5 %}
+                        <option value="{{ i }}">Quantity: {{ i }}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit">Add to Cart</button>
+            </form>
+        </div>
+        {% empty %}
+        <p>No products available.</p>
+        {% endfor %}
+    </div>
+</body>
+</html>

@@ -1,0 +1,853 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ product.name }} - Premium A2 Desi Ghee</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --royal-gold: #D4AF37;
+            --light-gold: #F5E7A9;
+            --white: #FFFFFF;
+            --off-white: #F8F8F8;
+            --dark-text: #333333;
+            --light-text: #777777;
+            --gray-bg: #F5F5F5;
+            --border-color: #E5E5E5;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--dark-text);
+            background-color: var(--off-white);
+            line-height: 1.6;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Announcement Bar */
+        .announcement-bar {
+            background-color: var(--royal-gold);
+            color: var(--white);
+            padding: 10px 0;
+            text-align: center;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+        }
+        
+        /* Header */
+        .header {
+            background-color: var(--white);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 0;
+        }
+        
+        .logo img {
+            max-height: 40px;
+            object-fit: contain;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin: 0 15px;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark-text);
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover, 
+        .nav-links a.active {
+            color: var(--royal-gold);
+        }
+        
+        .header-actions {
+            display: flex;
+            align-items: center;
+        }
+        
+        .header-icon {
+            margin-left: 20px;
+            color: var(--dark-text);
+            font-size: 18px;
+            text-decoration: none;
+            position: relative;
+        }
+        
+        .header-icon:hover {
+            color: var(--royal-gold);
+        }
+        
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: var(--royal-gold);
+            color: var(--white);
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+        }
+        
+        /* Product Detail */
+        .product-detail {
+            padding: 50px 0;
+        }
+        
+        .product-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+        
+        @media (max-width: 768px) {
+            .product-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .product-images {
+            position: relative;
+        }
+        
+        .main-image {
+            height: 400px;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .main-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .product-info h1 {
+            font-size: 28px;
+            margin-bottom: 15px;
+        }
+        
+        .product-price {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .current-price {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--royal-gold);
+        }
+        
+        .old-price {
+            margin-left: 10px;
+            text-decoration: line-through;
+            color: var(--light-text);
+        }
+        
+        .discount-badge {
+            margin-left: 10px;
+            background-color: #FFE8E8;
+            color: #FF5757;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .product-rating {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .stars {
+            color: #FFD700;
+            margin-right: 8px;
+        }
+        
+        .rating-count {
+            color: var(--light-text);
+            font-size: 14px;
+        }
+        
+        .product-description {
+            margin-bottom: 25px;
+            color: var(--light-text);
+        }
+        
+        .quantity-selector {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .quantity-label {
+            margin-right: 15px;
+            font-weight: 500;
+        }
+        
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+        }
+        
+        .quantity-btn {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--border-color);
+            background: var(--white);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .quantity-btn:hover {
+            background-color: var(--royal-gold);
+            color: var(--white);
+            border-color: var(--royal-gold);
+        }
+        
+        .quantity-input {
+            width: 50px;
+            height: 36px;
+            margin: 0 10px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+        }
+        
+        .product-actions {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .add-to-cart {
+            flex: 1;
+            background-color: var(--royal-gold);
+            color: var(--white);
+            border: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .add-to-cart:hover {
+            background-color: #c19a30;
+        }
+        
+        .wishlist-btn {
+            width: 46px;
+            height: 46px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--white);
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            color: var(--light-text);
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .wishlist-btn:hover {
+            color: #ff4d4d;
+            border-color: #ff4d4d;
+        }
+        
+        .product-meta {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .meta-item {
+            display: flex;
+            margin-bottom: 10px;
+        }
+        
+        .meta-label {
+            font-weight: 500;
+            width: 120px;
+        }
+        
+        .meta-value {
+            color: var(--light-text);
+        }
+        
+        .share-links {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .share-link {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--gray-bg);
+            border-radius: 50%;
+            color: var(--light-text);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        
+        .share-link:hover {
+            background-color: var(--royal-gold);
+            color: var(--white);
+        }
+        
+        /* Related Products */
+        .related-products {
+            padding: 60px 0;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 24px;
+            position: relative;
+        }
+        
+        .section-title:after {
+            content: "";
+            position: absolute;
+            left: 50%;
+            bottom: -10px;
+            width: 60px;
+            height: 2px;
+            background-color: var(--royal-gold);
+            transform: translateX(-50%);
+        }
+        
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+        
+        @media (max-width: 992px) {
+            .products-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .product-card {
+            background-color: var(--white);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .product-card-image {
+            height: 200px;
+            overflow: hidden;
+        }
+        
+        .product-card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+        
+        .product-card:hover .product-card-image img {
+            transform: scale(1.05);
+        }
+        
+        .product-card-content {
+            padding: 15px;
+        }
+        
+        .product-card-title {
+            font-weight: 500;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+        
+        .product-card-price {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        
+        .product-card-current-price {
+            font-weight: 600;
+            color: var(--royal-gold);
+            font-size: 18px;
+        }
+        
+        .product-card-old-price {
+            margin-left: 8px;
+            font-size: 14px;
+            color: var(--light-text);
+            text-decoration: line-through;
+        }
+        
+        .product-card-actions {
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .add-to-cart-btn {
+            padding: 8px 15px;
+            background-color: var(--royal-gold);
+            color: var(--white);
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+        
+        .add-to-cart-btn:hover {
+            background-color: #c19a30;
+        }
+        
+        /* Footer */
+        .footer {
+            background-color: var(--dark-text);
+            color: var(--white);
+            padding: 60px 0 20px;
+        }
+        
+        .footer-top {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        @media (max-width: 992px) {
+            .footer-top {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .footer-top {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .footer-column {
+            margin-bottom: 20px;
+        }
+        
+        .footer-heading {
+            color: var(--royal-gold);
+            margin-bottom: 20px;
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .footer-description {
+            margin-top: 15px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #bbb;
+        }
+        
+        .footer-social {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .footer-social a {
+            width: 36px;
+            height: 36px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+        
+        .footer-social a:hover {
+            background-color: var(--royal-gold);
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-links a {
+            color: #bbb;
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: var(--royal-gold);
+        }
+        
+        .footer-contact li {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: flex-start;
+            font-size: 14px;
+            color: #bbb;
+        }
+        
+        .footer-contact i {
+            margin-right: 10px;
+            margin-top: 5px;
+        }
+        
+        .footer-bottom {
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .copyright {
+            font-size: 14px;
+            color: #bbb;
+            margin-bottom: 15px;
+        }
+        
+        .payment-methods {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .payment-methods img {
+            height: 24px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Announcement Bar -->
+    <div class="announcement-bar">
+        Free shipping on all orders above ₹1000 | WhatsApp: +91 9654270726
+    </div>
+    
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-wrapper">
+                <div class="logo">
+                    <a href="/">
+                        <img src="{% static 'store/images/banner2.jpg' %}" alt="Pure Desi Ghee">
+                    </a>
+                </div>
+                
+                <ul class="nav-links">
+                    <li><a href="/" class="active">Home</a></li>
+                    <li><a href="/shop/">Shop</a></li>
+                    <li><a href="/benefits/">Benefits</a></li>
+                    <li><a href="/contact/">Contact</a></li>
+                </ul>
+                
+                <div class="header-actions">
+                    <form action="/search/" method="get" style="display: flex;">
+                        <input type="text" name="q" placeholder="Search..." style="padding: 8px; border-radius: 4px 0 0 4px; border: 1px solid #ddd; border-right: none;">
+                        <button type="submit" style="background: var(--royal-gold); border: none; padding: 0 12px; border-radius: 0 4px 4px 0; color: white;">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </form>
+                    
+                    <a href="/login/" class="header-icon">
+                        <i class="fas fa-user"></i>
+                    </a>
+                    
+                    <a href="/cart/" class="header-icon">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="cart-count">{{ request.session.cart|length|default:0 }}</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Product Detail -->
+    <section class="product-detail">
+        <div class="container">
+            <div class="product-layout">
+                <div class="product-images">
+                    <div class="main-image">
+                        <img src="{% if product.image %}{{ product.image.url }}{% else %}{{ fallback_image }}{% endif %}" alt="{{ product.name }}">
+                    </div>
+                </div>
+                
+                <div class="product-info">
+                    <h1>{{ product.name }}</h1>
+                    
+                    <div class="product-price">
+                        <div class="current-price">₹{{ product.discounted_price|floatformat:2 }}</div>
+                        {% if product.discount_percent %}
+                        <div class="old-price">₹{{ product.price }}</div>
+                        <div class="discount-badge">-{{ product.discount_percent }}%</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="product-rating">
+                        <div class="stars">
+                            {% for i in "12345" %}
+                            {% if forloop.counter <= product.rating %}
+                            <i class="fas fa-star"></i>
+                            {% elif forloop.counter <= product.rating|add:0.5 %}
+                            <i class="fas fa-star-half-alt"></i>
+                            {% else %}
+                            <i class="far fa-star"></i>
+                            {% endif %}
+                            {% endfor %}
+                        </div>
+                        <div class="rating-count">{{ product.num_ratings }} Reviews</div>
+                    </div>
+                    
+                    <div class="product-description">
+                        {{ product.description }}
+                    </div>
+                    
+                    <form action="/cart/" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="product_id" value="{{ product.id }}">
+                        
+                        <div class="quantity-selector">
+                            <div class="quantity-label">Quantity:</div>
+                            <div class="quantity-controls">
+                                <button type="button" class="quantity-btn" onclick="decreaseQuantity()">-</button>
+                                <input type="number" name="quantity" class="quantity-input" value="1" min="1" max="{{ product.stock_quantity }}">
+                                <button type="button" class="quantity-btn" onclick="increaseQuantity()">+</button>
+                            </div>
+                        </div>
+                        
+                        {% if product.stock_status == 'out_of_stock' %}
+                        <div class="stock-warning" style="color: #d9534f; margin-bottom: 15px; font-weight: bold;">
+                            Sorry, this product is currently out of stock.
+                        </div>
+                        {% elif product.stock_status == 'low_stock' %}
+                        <div class="stock-warning" style="color: #f0ad4e; margin-bottom: 15px; font-weight: bold;">
+                            Hurry! Only {{ product.stock_quantity }} left in stock.
+                        </div>
+                        {% endif %}
+                        
+                        <div class="product-actions">
+                            <button type="submit" class="add-to-cart" {% if product.stock_quantity < 1 %}disabled style="background-color: #ccc; cursor: not-allowed;"{% endif %}>
+                                <i class="fas fa-shopping-cart"></i> Add to Cart
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <div class="product-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Availability:</div>
+                            <div class="meta-value">
+                                {% if product.stock_status == 'in_stock' %}
+                                    <span style="color: #5cb85c;">In Stock ({{ product.stock_quantity }} available)</span>
+                                {% elif product.stock_status == 'low_stock' %}
+                                    <span style="color: #f0ad4e;">Low Stock ({{ product.stock_quantity }} left)</span>
+                                {% else %}
+                                    <span style="color: #d9534f;">Out of Stock</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="meta-item">
+                            <div class="meta-label">Share:</div>
+                            <div class="share-links">
+                                <a href="#" class="share-link"><i class="fab fa-facebook-f"></i></a>
+                                <a href="#" class="share-link"><i class="fab fa-twitter"></i></a>
+                                <a href="#" class="share-link"><i class="fab fa-instagram"></i></a>
+                                <a href="#" class="share-link"><i class="fab fa-pinterest"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Related Products -->
+    <section class="related-products">
+        <div class="container">
+            <h2 class="section-title">Related Products</h2>
+            
+            <div class="products-grid">
+                {% for related in related_products %}
+                <div class="product-card">
+                    <a href="/product/{{ related.id }}/" style="text-decoration: none; color: inherit;">
+                        <div class="product-card-image">
+                            <img src="{% if related.image %}{{ related.image.url }}{% else %}{{ fallback_image }}{% endif %}" alt="{{ related.name }}">
+                        </div>
+                    </a>
+                    <div class="product-card-content">
+                        <a href="/product/{{ related.id }}/" style="text-decoration: none; color: inherit;">
+                            <h3 class="product-card-title">{{ related.name }}</h3>
+                        </a>
+                        <div class="product-card-price">
+                            <div class="product-card-current-price">₹{{ related.discounted_price|floatformat:2 }}</div>
+                            {% if related.discount_percent %}
+                            <div class="product-card-old-price">₹{{ related.price }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="product-card-actions">
+                            <form action="/cart/" method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="product_id" value="{{ related.id }}">
+                                <input type="hidden" name="quantity" value="1">
+                                <button type="submit" class="add-to-cart-btn">Add to Cart</button>
+                            </form>
+                            <button class="wishlist-btn">
+                                <i class="far fa-heart"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-top">
+                <div class="footer-column">
+                    <div class="footer-logo">
+                        <img src="{% static 'store/images/banner2.jpg' %}" alt="Pure Desi Ghee" style="max-height: 40px; object-fit: contain;">
+                    </div>
+                    <p class="footer-description">Premium quality A2 Desi Ghee made from the milk of indigenous cows using traditional methods to preserve all nutrients and medicinal properties.</p>
+                    <div class="footer-social">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-column">
+                    <h4 class="footer-heading">Quick Links</h4>
+                    <ul class="footer-links">
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/shop/">Shop</a></li>
+                        <li><a href="/benefits/">Benefits</a></li>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="/contact/">Contact Us</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h4 class="footer-heading">Customer Service</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Shipping Policy</a></li>
+                        <li><a href="#">Return Policy</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms & Conditions</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h4 class="footer-heading">Contact Us</h4>
+                    <ul class="footer-links footer-contact">
+                        <li><i class="fas fa-map-marker-alt"></i> 123, Green Valley Avenue, New Delhi</li>
+                        <li><i class="fas fa-phone-alt"></i> +91 9654270726</li>
+                        <li><i class="fas fa-envelope"></i> support@puredesighee.com</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p class="copyright">© 2025 <span style="color: var(--royal-gold);">Pure Desi Ghee</span>. All Rights Reserved.</p>
+                <div class="payment-methods">
+                    <img src="https://cdn.shopify.com/shopifycloud/shopify/assets/payment_icons/visa-319d545c6fd255c9aad5eeaad21fd6f7f7b4fdbdb1a35ce83b89cca12a187f00.svg" alt="Visa">
+                    <img src="https://cdn.shopify.com/shopifycloud/shopify/assets/payment_icons/master-173035bc8124581983d4efa50cf8626e8553c2b311353fbf67485f9c1a2b88d1.svg" alt="MasterCard">
+                    <img src="https://cdn.shopify.com/shopifycloud/shopify/assets/payment_icons/american_express-2264c9b8b57b23b0b0831827e90cd7bcda2836adc42a912ebedf545dead35b20.svg" alt="American Express">
+                    <img src="https://cdn.shopify.com/shopifycloud/shopify/assets/payment_icons/paypal-49e4c1e03244b6d2de0d270ca0d22dd15da6e92cc7266e93eb43762df5aa355d.svg" alt="PayPal">
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        function decreaseQuantity() {
+            var input = document.querySelector('.quantity-input');
+            var value = parseInt(input.value);
+            if (value > 1) {
+                input.value = value - 1;
+            }
+        }
+        
+        function increaseQuantity() {
+            var input = document.querySelector('.quantity-input');
+            var value = parseInt(input.value);
+            var max = parseInt(input.getAttribute('max') || 100);
+            if (value < max) {
+                input.value = value + 1;
+            }
+        }
+    </script>
+</body>
+</html>

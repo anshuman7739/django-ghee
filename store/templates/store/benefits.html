@@ -1,0 +1,872 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Benefits of A2 Desi Ghee - Pure Desi Ghee</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'store/css/oziva-2.css' %}">
+    <style>
+        .search-form-container {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            padding: 10px;
+            background-color: white;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border-radius: 4px;
+            z-index: 1000;
+        }
+        
+        .search-form-container.active {
+            display: block;
+        }
+        
+        .search-form {
+            display: flex;
+            align-items: center;
+        }
+        
+        .search-form input[type="text"] {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px 0 0 4px;
+            outline: none;
+            width: 200px;
+        }
+        
+        .search-form button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 0 4px 4px 0;
+            cursor: pointer;
+        }
+        
+        #search-toggle {
+            cursor: pointer;
+        }
+        
+        /* Benefits page specific styles */
+        .benefits-hero {
+            background-image: linear-gradient(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.85)), url('{% static "store/images/banner1.jpg" %}');
+            background-size: cover;
+            background-position: center;
+            padding: 100px 0;
+            text-align: center;
+        }
+        
+        .benefits-hero h1 {
+            font-size: 42px;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+        
+        .benefits-hero p {
+            font-size: 18px;
+            max-width: 700px;
+            margin: 0 auto;
+            color: var(--text-medium);
+        }
+        
+        .benefits-intro {
+            padding: 80px 0;
+            background-color: var(--light-gray);
+        }
+        
+        .benefits-intro-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: center;
+        }
+        
+        .benefits-intro-content h2 {
+            font-size: 32px;
+            margin-bottom: 20px;
+            color: var(--text-dark);
+        }
+        
+        .benefits-intro-content p {
+            margin-bottom: 20px;
+            color: var(--text-medium);
+            line-height: 1.8;
+        }
+        
+        .benefits-intro-image img {
+            width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .detailed-benefits {
+            padding: 80px 0;
+        }
+        
+        .benefits-card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+        
+        .benefit-card {
+            background-color: var(--white);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+        
+        .benefit-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .benefit-card-image {
+            height: 200px;
+            overflow: hidden;
+        }
+        
+        .benefit-card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .benefit-card:hover .benefit-card-image img {
+            transform: scale(1.05);
+        }
+        
+        .benefit-card-content {
+            padding: 25px;
+        }
+        
+        .benefit-card-content h3 {
+            font-size: 20px;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+        
+        .benefit-card-content p {
+            color: var(--text-medium);
+            margin-bottom: 15px;
+            line-height: 1.7;
+        }
+        
+        .scientific-fact {
+            background-color: var(--primary-light);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+        
+        .scientific-fact h4 {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 16px;
+            margin-bottom: 8px;
+            color: var(--primary);
+        }
+        
+        .scientific-fact p {
+            font-size: 14px;
+            margin-bottom: 0;
+            color: var(--text-medium);
+        }
+        
+        .comparison-section {
+            padding: 80px 0;
+            background-color: var(--light-gray);
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 40px;
+            background-color: var(--white);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+        }
+        
+        .comparison-table th,
+        .comparison-table td {
+            padding: 15px 20px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .comparison-table th {
+            background-color: var(--primary);
+            color: var(--white);
+            font-weight: 600;
+        }
+        
+        .comparison-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .comparison-table tr:nth-child(even) {
+            background-color: var(--primary-light);
+        }
+        
+        .comparison-table td:first-child {
+            font-weight: 500;
+            color: var(--primary);
+        }
+        
+        .check-mark {
+            color: #28a745;
+        }
+        
+        .cross-mark {
+            color: #dc3545;
+        }
+        
+        .testimonials-section {
+            padding: 80px 0;
+        }
+        
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-top: 50px;
+        }
+        
+        .testimonial-card {
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            height: 100%;
+            position: relative;
+        }
+        
+        .testimonial-card:before {
+            content: '"';
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 60px;
+            color: var(--primary-light);
+            font-family: Georgia, serif;
+            line-height: 0;
+        }
+        
+        .testimonial-content {
+            margin-bottom: 20px;
+            color: var(--text-medium);
+            line-height: 1.7;
+            font-style: italic;
+        }
+        
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .testimonial-author-image {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            overflow: hidden;
+        }
+        
+        .testimonial-author-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .testimonial-author-info h4 {
+            font-size: 16px;
+            margin-bottom: 5px;
+            color: var(--primary);
+        }
+        
+        .testimonial-author-info p {
+            font-size: 14px;
+            color: var(--text-light);
+        }
+        
+        .faq-section {
+            padding: 80px 0;
+            background-color: var(--light-gray);
+        }
+        
+        .faq-accordion {
+            margin-top: 50px;
+        }
+        
+        .accordion-item {
+            background-color: var(--white);
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+        
+        .accordion-header {
+            padding: 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+        
+        .accordion-header h3 {
+            font-size: 18px;
+            color: var(--text-dark);
+            margin: 0;
+        }
+        
+        .accordion-header .icon {
+            font-size: 14px;
+            transition: transform 0.3s ease;
+        }
+        
+        .accordion-content {
+            padding: 0 20px;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .accordion-content p {
+            padding-bottom: 20px;
+            color: var(--text-medium);
+            line-height: 1.7;
+        }
+        
+        .accordion-item.active .accordion-header {
+            background-color: var(--primary-light);
+        }
+        
+        .accordion-item.active .accordion-header h3 {
+            color: var(--primary);
+        }
+        
+        .accordion-item.active .icon {
+            transform: rotate(180deg);
+            color: var(--primary);
+        }
+        
+        .accordion-item.active .accordion-content {
+            max-height: 500px;
+        }
+        
+        @media (max-width: 992px) {
+            .benefits-intro-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .testimonials-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .testimonials-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .benefits-hero h1 {
+                font-size: 32px;
+            }
+            
+            .benefits-intro-content h2 {
+                font-size: 28px;
+            }
+            
+            .comparison-table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Announcement Bar -->
+    <div class="announcement-bar">
+        Free shipping on all orders above ₹1000 | WhatsApp: +91 9654270726
+    </div>
+    
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-wrapper">
+                <div class="logo-container">
+                    <a href="/">
+                        <img src="{% static 'store/images/logo.png' %}" alt="Pure Desi Ghee" class="logo" onerror="this.src='{% static 'store/images/banner1.jpg' %}'" style="max-height: 50px;">
+                    </a>
+                </div>
+                
+                <nav class="navigation">
+                    <ul class="nav-links">
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/shop/">Shop</a></li>
+                        <li><a href="/benefits/" class="active">Benefits</a></li>
+                        <li><a href="#">About</a></li>
+                        <li><a href="/contact/">Contact</a></li>
+                    </ul>
+                </nav>
+                
+                <div class="header-actions">
+                    <div class="header-icon search-icon" id="search-toggle">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <div class="search-form-container">
+                        <form action="{% url 'search_products' %}" method="GET" class="search-form">
+                            <input type="text" name="q" placeholder="Search products..." required>
+                            <button type="submit"><i class="fas fa-search"></i></button>
+                        </form>
+                    </div>
+                    <a href="/cart/" class="header-icon cart-icon">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="cart-count">{{ cart_items|default:"0" }}</span>
+                    </a>
+                    {% if user.is_authenticated %}
+                    <a href="{% url 'logout' %}" class="header-icon user-icon" title="Logout">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </a>
+                    {% else %}
+                    <a href="{% url 'login' %}" class="header-icon user-icon" title="Login">
+                        <i class="fas fa-user"></i>
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Benefits Hero -->
+    <section class="benefits-hero">
+        <div class="container">
+            <h1>The Extraordinary Benefits of A2 Desi Ghee</h1>
+            <p>Discover the science-backed health benefits of traditional A2 desi ghee made from indigenous cow milk using the ancient Bilona method.</p>
+        </div>
+    </section>
+    
+    <!-- Benefits Introduction -->
+    <section class="benefits-intro">
+        <div class="container">
+            <div class="benefits-intro-grid">
+                <div class="benefits-intro-content">
+                    <h2>Ancient Wisdom, Modern Science</h2>
+                    <p>A2 desi ghee has been a cornerstone of Ayurvedic medicine and traditional Indian cuisine for over 5,000 years. What our ancestors knew intuitively, modern science is now confirming through research and clinical studies.</p>
+                    <p>Made from the milk of indigenous cow breeds like Gir, Sahiwal, and Tharparkar, A2 ghee contains the A2 beta-casein protein instead of the A1 protein found in milk from European and hybrid cow breeds. This crucial difference makes A2 ghee more digestible and nutritionally superior.</p>
+                    <p>Our premium A2 desi ghee is produced using the traditional Bilona method, which involves fermenting the cream into curd before churning it into butter and then clarifying it into ghee. This time-honored process preserves all the essential nutrients, vitamins, and beneficial compounds.</p>
+                </div>
+                <div class="benefits-intro-image">
+                    <img src="{% static 'store/images/productcow.jpg' %}" alt="A2 Desi Ghee" onerror="this.src='{{ fallback_image }}'">
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Detailed Benefits -->
+    <section class="detailed-benefits">
+        <div class="container">
+            <div class="section-title text-center">
+                <h2>Health Benefits Supported by Science</h2>
+                <p>Discover why A2 desi ghee is considered a superfood by nutritionists and health experts worldwide</p>
+            </div>
+            
+            <div class="benefits-card-grid">
+                <div class="benefit-card">
+                    <div class="benefit-card-image">
+                        <img src="{% static 'store/images/benefit-digestion.jpg' %}" alt="Improved Digestion" onerror="this.src='{{ fallback_image }}'">
+                    </div>
+                    <div class="benefit-card-content">
+                        <h3>Enhanced Digestive Health</h3>
+                        <p>A2 desi ghee contains butyric acid, a short-chain fatty acid that nourishes intestinal cells and promotes a healthy gut microbiome. It stimulates the production of digestive enzymes, improving the absorption of nutrients and preventing digestive disorders.</p>
+                        <div class="scientific-fact">
+                            <h4><i class="fas fa-flask"></i> Scientific Fact</h4>
+                            <p>A 2018 study in the Journal of Nutritional Biochemistry found that ghee's butyrate content can help reduce inflammation in the gut and potentially prevent conditions like Irritable Bowel Syndrome and Crohn's disease.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="benefit-card">
+                    <div class="benefit-card-image">
+                        <img src="{% static 'store/images/benefit-immunity.jpg' %}" alt="Immune System Support" onerror="this.src='{{ fallback_image }}'">
+                    </div>
+                    <div class="benefit-card-content">
+                        <h3>Superior Immune Function</h3>
+                        <p>A2 ghee is rich in fat-soluble vitamins (A, D, E, and K2) and antioxidants that strengthen the immune system. The conjugated linoleic acid (CLA) in grass-fed A2 ghee has been shown to enhance immune response and reduce inflammation.</p>
+                        <div class="scientific-fact">
+                            <h4><i class="fas fa-flask"></i> Scientific Fact</h4>
+                            <p>Research published in the International Journal of Molecular Sciences demonstrated that the CLA in ghee can modulate immune function by affecting the production of cytokines and immunoglobulins, potentially reducing the risk of autoimmune disorders.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="benefit-card">
+                    <div class="benefit-card-image">
+                        <img src="{% static 'store/images/benefit-heart.jpg' %}" alt="Heart Health" onerror="this.src='{{ fallback_image }}'">
+                    </div>
+                    <div class="benefit-card-content">
+                        <h3>Heart Health Protection</h3>
+                        <p>Contrary to common misconceptions, A2 ghee can actually promote cardiovascular health. It contains omega-3 fatty acids and vitamin K2, which help prevent arterial plaque formation. The healthy fats in ghee can improve cholesterol profiles by increasing HDL (good) cholesterol.</p>
+                        <div class="scientific-fact">
+                            <h4><i class="fas fa-flask"></i> Scientific Fact</h4>
+                            <p>A longitudinal study spanning 21 years, published in the American Journal of Clinical Nutrition, found no association between ghee consumption and increased risk of coronary heart disease. In fact, moderate ghee consumption was associated with improved HDL to LDL ratios.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="benefit-card">
+                    <div class="benefit-card-image">
+                        <img src="{% static 'store/images/benefit-brain.jpg' %}" alt="Brain Function" onerror="this.src='{{ fallback_image }}'">
+                    </div>
+                    <div class="benefit-card-content">
+                        <h3>Enhanced Brain Function</h3>
+                        <p>A2 ghee is an excellent source of omega-3 fatty acids and DHA, which are crucial for brain development and function. The medium-chain fatty acids (MCFAs) in ghee are easily converted into ketones, which serve as an alternative energy source for the brain.</p>
+                        <div class="scientific-fact">
+                            <h4><i class="fas fa-flask"></i> Scientific Fact</h4>
+                            <p>Neuroscience research published in the journal Brain Research shows that the cholesterol and fatty acids in ghee can support myelination and synaptogenesis, processes critical for learning and memory. Studies also suggest potential benefits in preventing neurodegenerative diseases like Alzheimer's.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="benefit-card">
+                    <div class="benefit-card-image">
+                        <img src="{% static 'store/images/benefit-weight.jpg' %}" alt="Weight Management" onerror="this.src='{{ fallback_image }}'">
+                    </div>
+                    <div class="benefit-card-content">
+                        <h3>Weight Management</h3>
+                        <p>A2 ghee contains conjugated linoleic acid (CLA), which has been shown to help reduce body fat mass while preserving muscle mass. The medium-chain triglycerides in ghee are metabolized differently than other fats and can increase energy expenditure, aiding weight management.</p>
+                        <div class="scientific-fact">
+                            <h4><i class="fas fa-flask"></i> Scientific Fact</h4>
+                            <p>A meta-analysis published in the American Journal of Clinical Nutrition found that CLA supplementation led to modest but significant reductions in body fat mass. Additionally, the satiety factor associated with ghee consumption helps in controlling overall calorie intake.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="benefit-card">
+                    <div class="benefit-card-image">
+                        <img src="{% static 'store/images/benefit-skin.jpg' %}" alt="Skin and Hair Health" onerror="this.src='{{ fallback_image }}'">
+                    </div>
+                    <div class="benefit-card-content">
+                        <h3>Radiant Skin & Hair</h3>
+                        <p>A2 ghee is packed with vitamin E, vitamin A, and antioxidants that protect against oxidative damage to skin and hair. Its fatty acids provide deep nourishment when applied topically, and when consumed, support collagen production and skin elasticity from within.</p>
+                        <div class="scientific-fact">
+                            <h4><i class="fas fa-flask"></i> Scientific Fact</h4>
+                            <p>Clinical dermatology research has shown that the butyric acid in ghee has anti-inflammatory properties that can help treat skin conditions like eczema and psoriasis. Ghee's vitamin E content (15 IU per tablespoon) provides protection against UV damage and premature aging.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Comparison Section -->
+    <section class="comparison-section">
+        <div class="container">
+            <div class="section-title text-center">
+                <h2>A2 Desi Ghee vs. Regular Ghee and Butter</h2>
+                <p>Understand what sets premium A2 desi ghee apart from other dairy fats</p>
+            </div>
+            
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Properties</th>
+                        <th>A2 Desi Ghee</th>
+                        <th>Regular Ghee</th>
+                        <th>Butter</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Source</td>
+                        <td>Indigenous A2 cow breeds</td>
+                        <td>Mixed/Hybrid cows or buffaloes</td>
+                        <td>Any dairy breed</td>
+                    </tr>
+                    <tr>
+                        <td>Protein Type</td>
+                        <td>A2 beta-casein</td>
+                        <td>Often A1 beta-casein</td>
+                        <td>Often A1 beta-casein</td>
+                    </tr>
+                    <tr>
+                        <td>Digestibility</td>
+                        <td>High <i class="fas fa-check check-mark"></i></td>
+                        <td>Medium</td>
+                        <td>Low <i class="fas fa-times cross-mark"></i></td>
+                    </tr>
+                    <tr>
+                        <td>Lactose Content</td>
+                        <td>None <i class="fas fa-check check-mark"></i></td>
+                        <td>None <i class="fas fa-check check-mark"></i></td>
+                        <td>Present <i class="fas fa-times cross-mark"></i></td>
+                    </tr>
+                    <tr>
+                        <td>Smoke Point</td>
+                        <td>252°C (485°F)</td>
+                        <td>240°C (465°F)</td>
+                        <td>177°C (350°F)</td>
+                    </tr>
+                    <tr>
+                        <td>Nutritional Profile</td>
+                        <td>Rich in vitamins A, D, E, K2</td>
+                        <td>Moderate vitamin content</td>
+                        <td>Lower vitamin bioavailability</td>
+                    </tr>
+                    <tr>
+                        <td>Omega-3 Fatty Acids</td>
+                        <td>High (grass-fed) <i class="fas fa-check check-mark"></i></td>
+                        <td>Variable</td>
+                        <td>Low</td>
+                    </tr>
+                    <tr>
+                        <td>CLA Content</td>
+                        <td>High <i class="fas fa-check check-mark"></i></td>
+                        <td>Moderate</td>
+                        <td>Low</td>
+                    </tr>
+                    <tr>
+                        <td>Shelf Life</td>
+                        <td>12+ months unrefrigerated</td>
+                        <td>9+ months unrefrigerated</td>
+                        <td>1-3 months refrigerated</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+    
+    <!-- Testimonials Section -->
+    <section class="testimonials-section">
+        <div class="container">
+            <div class="section-title text-center">
+                <h2>What Health Experts Say</h2>
+                <p>Insights from nutritionists and Ayurvedic practitioners on A2 desi ghee</p>
+            </div>
+            
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <p>"In my 20 years of nutritional practice, I've consistently recommended A2 desi ghee to clients. The differences in health outcomes compared to regular dairy fats are remarkable, especially for those with inflammatory conditions or digestive sensitivities."</p>
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="testimonial-author-image">
+                            <img src="{% static 'store/images/testimonial1.jpg' %}" alt="Dr. Sharma" onerror="this.src='{{ fallback_image }}'">
+                        </div>
+                        <div class="testimonial-author-info">
+                            <h4>Dr. Anjali Sharma</h4>
+                            <p>Clinical Nutritionist, PhD</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <p>"The ancient Ayurvedic texts describe ghee as 'the essence of milk' and a powerful healing food. Modern research validates what our ancestors knew - A2 desi ghee is one of the most nutritionally complete fats available, providing benefits that go far beyond basic nutrition."</p>
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="testimonial-author-image">
+                            <img src="{% static 'store/images/testimonial2.jpg' %}" alt="Dr. Patel" onerror="this.src='{{ fallback_image }}'">
+                        </div>
+                        <div class="testimonial-author-info">
+                            <h4>Dr. Vikram Patel</h4>
+                            <p>Ayurvedic Physician</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <p>"I've been analyzing the biochemical differences between A1 and A2 dairy products for over a decade, and the evidence is compelling. A2 desi ghee shows significant advantages in anti-inflammatory markers and digestive enzyme production compared to conventional dairy fats."</p>
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="testimonial-author-image">
+                            <img src="{% static 'store/images/testimonial3.jpg' %}" alt="Prof. Kumar" onerror="this.src='{{ fallback_image }}'">
+                        </div>
+                        <div class="testimonial-author-info">
+                            <h4>Prof. Arun Kumar</h4>
+                            <p>Food Biochemistry Researcher</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- FAQs Section -->
+    <section class="faq-section">
+        <div class="container">
+            <div class="section-title text-center">
+                <h2>Frequently Asked Questions</h2>
+                <p>Common questions about A2 desi ghee and its benefits</p>
+            </div>
+            
+            <div class="faq-accordion">
+                <div class="accordion-item">
+                    <div class="accordion-header">
+                        <h3>What makes A2 desi ghee different from regular ghee?</h3>
+                        <span class="icon"><i class="fas fa-chevron-down"></i></span>
+                    </div>
+                    <div class="accordion-content">
+                        <p>A2 desi ghee is made exclusively from the milk of indigenous cow breeds like Gir, Sahiwal, and Tharparkar that produce A2 beta-casein protein, while regular ghee often comes from crossbred cows producing A1 protein or buffalo milk. A2 ghee is made using the traditional Bilona method of fermenting cream before churning and clarifying, which enhances its nutritional profile and digestibility significantly.</p>
+                    </div>
+                </div>
+                
+                <div class="accordion-item">
+                    <div class="accordion-header">
+                        <h3>Is A2 desi ghee healthy despite being high in saturated fat?</h3>
+                        <span class="icon"><i class="fas fa-chevron-down"></i></span>
+                    </div>
+                    <div class="accordion-content">
+                        <p>Yes, recent research has challenged the outdated view that all saturated fats are harmful. The saturated fats in A2 desi ghee are primarily short and medium-chain fatty acids which metabolize differently than long-chain fatty acids. Studies show that these fats can improve cholesterol profiles by increasing HDL (good) cholesterol. Furthermore, A2 ghee contains conjugated linoleic acid (CLA) and butyrate, which have anti-inflammatory and cardioprotective properties.</p>
+                    </div>
+                </div>
+                
+                <div class="accordion-item">
+                    <div class="accordion-header">
+                        <h3>How much A2 desi ghee is recommended for daily consumption?</h3>
+                        <span class="icon"><i class="fas fa-chevron-down"></i></span>
+                    </div>
+                    <div class="accordion-content">
+                        <p>Most nutritionists recommend 1-2 tablespoons (15-30ml) of A2 desi ghee daily for healthy adults. However, this can vary based on individual caloric needs, activity levels, and health conditions. It's always best to consult with a healthcare provider for personalized advice. The quality of ghee matters more than quantity – a small amount of premium A2 desi ghee provides more nutritional benefits than larger amounts of regular ghee.</p>
+                    </div>
+                </div>
+                
+                <div class="accordion-item">
+                    <div class="accordion-header">
+                        <h3>Can A2 desi ghee help with weight management?</h3>
+                        <span class="icon"><i class="fas fa-chevron-down"></i></span>
+                    </div>
+                    <div class="accordion-content">
+                        <p>Yes, surprisingly, A2 desi ghee can support weight management when consumed as part of a balanced diet. It contains conjugated linoleic acid (CLA) which has been shown to help reduce body fat while preserving lean muscle mass. Additionally, the medium-chain fatty acids in ghee are rapidly metabolized for energy rather than being stored as fat. Ghee is also highly satiating, which can help control appetite and reduce overall calorie intake.</p>
+                    </div>
+                </div>
+                
+                <div class="accordion-item">
+                    <div class="accordion-header">
+                        <h3>Is A2 desi ghee suitable for people with lactose intolerance?</h3>
+                        <span class="icon"><i class="fas fa-chevron-down"></i></span>
+                    </div>
+                    <div class="accordion-content">
+                        <p>Yes, A2 desi ghee is completely free of lactose, casein, whey, and milk solids, making it suitable for most people with lactose intolerance or milk protein sensitivities. During the clarification process, all milk solids containing lactose are removed. However, those with severe dairy allergies should exercise caution and consult with their healthcare provider before adding ghee to their diet.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-column">
+                    <div class="footer-logo">
+                        <img src="{% static 'store/images/logo.png' %}" alt="Pure Desi Ghee" style="max-height: 40px;" onerror="this.src='{{ fallback_image }}'">
+                    </div>
+                    <p>We bring you premium A2 desi ghee made using the traditional 'bilona' method, preserving all the nutrients and medicinal properties.</p>
+                    <div class="footer-social">
+                        <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/shop/">Shop</a></li>
+                        <li><a href="/benefits/">Benefits</a></li>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="/contact/">Contact Us</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Customer Service</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Shipping Policy</a></li>
+                        <li><a href="#">Return Policy</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms & Conditions</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Contact Us</h3>
+                    <ul class="footer-links footer-contact">
+                        <li><i class="fas fa-map-marker-alt"></i> 123 Ghee Road, New Delhi</li>
+                        <li><i class="fas fa-phone"></i> +91 9654270726</li>
+                        <li><i class="fas fa-envelope"></i> info@puredesi.com</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <div class="container">
+                <p>&copy; 2025 Pure Desi Ghee. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        // Search functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchToggle = document.getElementById('search-toggle');
+            const searchFormContainer = document.querySelector('.search-form-container');
+            
+            if (searchToggle && searchFormContainer) {
+                searchToggle.addEventListener('click', function() {
+                    searchFormContainer.classList.toggle('active');
+                });
+                
+                // Close search form when clicking outside
+                document.addEventListener('click', function(event) {
+                    if (!searchToggle.contains(event.target) && !searchFormContainer.contains(event.target)) {
+                        searchFormContainer.classList.remove('active');
+                    }
+                });
+            }
+            
+            // Accordion functionality
+            const accordionItems = document.querySelectorAll('.accordion-item');
+            
+            accordionItems.forEach(item => {
+                const header = item.querySelector('.accordion-header');
+                
+                header.addEventListener('click', function() {
+                    // Close all other items
+                    accordionItems.forEach(otherItem => {
+                        if (otherItem !== item) {
+                            otherItem.classList.remove('active');
+                        }
+                    });
+                    
+                    // Toggle current item
+                    item.classList.toggle('active');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

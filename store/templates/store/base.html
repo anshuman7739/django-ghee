@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Gaumaatri | Premium A2 Desi Ghee{% endblock %}</title>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts - Enhanced with premium fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;900&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,900;1,400;1,500&family=Poppins:wght@300;400;500;600&family=Cormorant+Garamond:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    {% block extra_head %}{% endblock %}
+    
+    <style>
+        :root {
+            --royal-gold: #D4AF37;
+            --deep-gold: #B8860B;
+            --light-gold: #F5E7A9;
+            --cream: #FFF8E1;
+            --white: #FFFFFF;
+            --off-white: #F9F9F9;
+            --dark-text: #333333;
+            --light-text: #777777;
+            --border-color: #EAEAEA;
+            --luxury-black: #1A1A1A;
+            --luxury-accent: #C0A080;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Cormorant Garamond', 'Poppins', sans-serif;
+            color: var(--dark-text);
+            line-height: 1.6;
+            background-color: var(--off-white);
+            letter-spacing: 0.2px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        /* Header styles */
+        header {
+            background-color: var(--white);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            position: relative;
+            z-index: 100;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 90px;
+            padding: 0 20px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo img {
+            height: 60px;
+            margin-right: 15px;
+            filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.1));
+        }
+        
+        .logo h1 {
+            font-family: 'Cinzel', 'Playfair Display', serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--royal-gold);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            text-shadow: 0px 1px 1px rgba(0,0,0,0.1);
+        }
+        
+        .main-nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        .main-nav li {
+            margin-left: 30px;
+            position: relative;
+        }
+        
+        .main-nav a {
+            text-decoration: none;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            position: relative;
+            color: var(--dark-text);
+            padding: 5px 0;
+            transition: color 0.3s ease;
+        }
+        
+        .main-nav a:hover {
+            color: var(--royal-gold);
+        }
+        
+        .main-nav a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background-color: var(--royal-gold);
+            transition: width 0.3s ease;
+        }
+        
+        .main-nav a:hover::after {
+            width: 100%;
+        }
+        
+        /* Footer styles */
+        footer {
+            background-color: var(--luxury-black);
+            padding: 60px 0 25px;
+            margin-top: 100px;
+            color: var(--white);
+            border-top: 3px solid var(--royal-gold);
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .footer-column h3 {
+            font-family: 'Cinzel', serif;
+            font-size: 20px;
+            margin-bottom: 25px;
+            color: var(--royal-gold);
+            letter-spacing: 1px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .footer-column h3::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 40px;
+            height: 2px;
+            background-color: var(--royal-gold);
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 15px;
+        }
+        
+        .footer-links a {
+            text-decoration: none;
+            color: var(--off-white);
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+            font-size: 15px;
+            position: relative;
+            padding-left: 0;
+        }
+        
+        .footer-links a:hover {
+            color: var(--royal-gold);
+            padding-left: 5px;
+        }
+        
+        .footer-links i {
+            color: var(--royal-gold);
+            width: 25px;
+            margin-right: 5px;
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: 25px;
+            margin-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 14px;
+        }
+        
+        /* Button styles */
+        .btn {
+            display: inline-block;
+            background-color: var(--royal-gold);
+            color: white;
+            padding: 12px 28px;
+            border-radius: 3px;
+            text-decoration: none;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(212, 175, 55, 0.2);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .btn:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+            z-index: -1;
+        }
+        
+        .btn:hover {
+            background-color: var(--deep-gold);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(184, 134, 11, 0.3);
+        }
+        
+        .btn:hover:before {
+            left: 100%;
+        }
+        
+        /* Alerts and messages */
+        .alert {
+            padding: 15px 20px;
+            margin-bottom: 25px;
+            border-radius: 4px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+            position: relative;
+            border-left-width: 4px;
+            border-left-style: solid;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .alert-success {
+            background-color: rgba(212, 237, 218, 0.7);
+            color: #155724;
+            border-color: #28a745;
+        }
+        
+        .alert-warning {
+            background-color: rgba(255, 243, 205, 0.7);
+            color: #856404;
+            border-color: #ffc107;
+        }
+        
+        .alert-danger {
+            background-color: rgba(248, 215, 218, 0.7);
+            color: #721c24;
+            border-color: #dc3545;
+        }
+        
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                height: auto;
+                padding: 15px 0;
+            }
+            
+            .logo {
+                margin-bottom: 15px;
+            }
+            
+            .main-nav ul {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .main-nav li {
+                margin: 5px 10px;
+            }
+        }
+        
+        /* Premium design elements */
+        .premium-section {
+            padding: 60px 0;
+            position: relative;
+        }
+        
+        .premium-section::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background-color: var(--royal-gold);
+        }
+        
+        .section-title {
+            font-family: 'Cinzel', serif;
+            color: var(--luxury-black);
+            font-size: 32px;
+            text-align: center;
+            margin-bottom: 50px;
+            font-weight: 700;
+            position: relative;
+        }
+        
+        .section-title span {
+            color: var(--royal-gold);
+        }
+        
+        .gold-accent {
+            color: var(--royal-gold);
+        }
+        
+        .luxury-card {
+            background: var(--white);
+            border-radius: 4px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .luxury-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+        }
+        
+        .divider {
+            width: 60px;
+            height: 3px;
+            background-color: var(--royal-gold);
+            margin: 20px auto;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <div class="logo">
+                <img src="{{ fallback_image }}" alt="Gaumaatri Premium A2 Desi Ghee">
+                <h1>Gaumaatri</h1>
+            </div>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="{% url 'homepage' %}">Home</a></li>
+                    <li><a href="{% url 'shop' %}">Shop</a></li>
+                    <li><a href="{% url 'cart' %}">Cart</a></li>
+                    <li><a href="{% url 'contact' %}">Contact</a></li>
+                    <li><a href="{% url 'privacy_policy' %}">Privacy Policy</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    
+    <main>
+        {% if messages %}
+            <div class="container" style="margin-top: 20px;">
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        
+        {% block content %}{% endblock %}
+    </main>
+    
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>About Us</h3>
+                    <p>Gaumaatri - Pure, authentic, and traditional A2 Desi Ghee made from milk sourced from indigenous cows.</p>
+                </div>
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="{% url 'homepage' %}">Home</a></li>
+                        <li><a href="{% url 'shop' %}">Shop</a></li>
+                        <li><a href="{% url 'contact' %}">Contact</a></li>
+                        <li><a href="/privacy-policy/">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Contact Us</h3>
+                    <ul class="footer-links">
+                        <li><i class="fas fa-map-marker-alt"></i> Delhi, India</li>
+                        <li><i class="fas fa-phone"></i> +91 7739305520</li>
+                        <li><i class="fas fa-envelope"></i> gaumaatri@gmail.com</li>
+                        <li><i class="fab fa-whatsapp"></i> <a href="https://wa.me/+917739305520" target="_blank">Chat on WhatsApp</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Gaumaatri. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+    
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,280 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Results - Pure Desi Ghee</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'store/css/oziva-2.css' %}">
+    <style>
+        .search-form-container {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            padding: 10px;
+            background-color: white;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border-radius: 4px;
+            z-index: 1000;
+        }
+        
+        .search-form-container.active {
+            display: block;
+        }
+        
+        .search-form {
+            display: flex;
+            align-items: center;
+        }
+        
+        .search-form input[type="text"] {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px 0 0 4px;
+            outline: none;
+            width: 200px;
+        }
+        
+        .search-form button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 0 4px 4px 0;
+            cursor: pointer;
+        }
+        
+        #search-toggle {
+            cursor: pointer;
+        }
+        
+        .search-results-header {
+            padding: 40px 0;
+            background-color: #f9f9f9;
+            text-align: center;
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 60px 0;
+        }
+        
+        .no-results h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        
+        .no-results p {
+            margin-bottom: 30px;
+            color: #666;
+        }
+        
+        .shop-btn {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .shop-btn:hover {
+            background-color: var(--secondary-color);
+        }
+    </style>
+</head>
+<body>
+    <!-- Announcement Bar -->
+    <div class="announcement-bar">
+        Free shipping on all orders above ₹1000 | WhatsApp: +91 9654270726
+    </div>
+    
+    <!-- Header -->
+    <header class="site-header">
+        <div class="header-container">
+            <div class="logo-container">
+                <a href="/">
+                    <img src="{% static 'store/images/logo.png' %}" alt="Pure Desi Ghee" class="logo" onerror="this.src='{% static 'store/images/banner1.jpg' %}'">
+                </a>
+            </div>
+            
+            <nav class="navigation">
+                <ul class="nav-links">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/shop/">Shop</a></li>
+                    <li><a href="/benefits/">Benefits</a></li>
+                    <li><a href="#">About</a></li>
+                    <li><a href="/contact/">Contact</a></li>
+                </ul>
+            </nav>
+            
+            <div class="header-actions">
+                <div class="header-icon search-icon" id="search-toggle">
+                    <i class="fas fa-search"></i>
+                </div>
+                <div class="search-form-container">
+                    <form action="{% url 'search_products' %}" method="GET" class="search-form">
+                        <input type="text" name="q" placeholder="Search products..." value="{{ query }}" required>
+                        <button type="submit"><i class="fas fa-search"></i></button>
+                    </form>
+                </div>
+                <a href="/cart/" class="header-icon cart-icon">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count">{{ cart_items|default:"0" }}</span>
+                </a>
+                {% if user.is_authenticated %}
+                <a href="{% url 'logout' %}" class="header-icon user-icon" title="Logout">
+                    <i class="fas fa-sign-out-alt"></i>
+                </a>
+                {% else %}
+                <a href="{% url 'login' %}" class="header-icon user-icon" title="Login">
+                    <i class="fas fa-user"></i>
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+    
+    <!-- Search Results Header -->
+    <section class="search-results-header">
+        <div class="container">
+            <h1>Search Results for "{{ query }}"</h1>
+        </div>
+    </section>
+    
+    <!-- Products Section -->
+    <section class="products-section">
+        <div class="container">
+            {% if products %}
+                <div class="product-grid">
+                    {% for product in products %}
+                    <div class="product-card">
+                        <div class="product-image">
+                            <img class="product-img" src="{% static 'store/images/productcow.jpg' %}" alt="{{ product.name }}" onerror="this.src='{{ fallback_image }}'">
+                        </div>
+                        <div class="product-info">
+                            <h3 class="product-name">{{ product.name }}</h3>
+                            <div class="product-price">
+                                {% if product.discount_percent %}
+                                <span class="old-price">₹{{ product.price }}</span>
+                                {% endif %}
+                                <span class="current-price">₹{{ product.discounted_price|floatformat:2 }}</span>
+                            </div>
+                            <div class="product-actions">
+                                {% if user.is_authenticated %}
+                                <form action="/cart/" method="post">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="product_id" value="{{ product.id }}">
+                                    <input type="hidden" name="quantity" value="1">
+                                    <button type="submit" class="add-to-cart-btn">Add to Cart</button>
+                                </form>
+                                {% else %}
+                                <a href="{% url 'login' %}?next={{ request.path }}" class="add-to-cart-btn" style="display: block; text-align: center; text-decoration: none;">LOGIN TO BUY</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="no-results">
+                    <h2>No products found</h2>
+                    <p>We couldn't find any products that match your search criteria.</p>
+                    <a href="/shop/" class="shop-btn">Browse All Products</a>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container footer-container">
+            <div class="footer-column">
+                <h3>About Us</h3>
+                <p>We provide the highest quality A2 desi ghee made from the milk of indigenous cows, processed using traditional methods to preserve all natural nutrients.</p>
+                <div class="social-links">
+                    <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+            
+            <div class="footer-column">
+                <h3>Quick Links</h3>
+                <ul class="footer-links">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/shop/">Shop</a></li>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">FAQs</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h3>Customer Service</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Shipping Policy</a></li>
+                    <li><a href="#">Return Policy</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms & Conditions</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h3>Contact Us</h3>
+                <ul class="footer-links footer-contact">
+                    <li><i class="fas fa-map-marker-alt"></i> 123 Desi Ghee Road, New Delhi</li>
+                    <li><i class="fas fa-phone"></i> +91 96542 70726</li>
+                    <li><i class="fas fa-envelope"></i> info@puredesiabhee.com</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <div class="container">
+                <p>&copy; 2025 Pure Desi Ghee. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        // Search functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchToggle = document.getElementById('search-toggle');
+            const searchFormContainer = document.querySelector('.search-form-container');
+            
+            if (searchToggle && searchFormContainer) {
+                searchToggle.addEventListener('click', function() {
+                    searchFormContainer.classList.toggle('active');
+                });
+                
+                // Close search form when clicking outside
+                document.addEventListener('click', function(event) {
+                    if (!searchToggle.contains(event.target) && !searchFormContainer.contains(event.target)) {
+                        searchFormContainer.classList.remove('active');
+                    }
+                });
+            }
+            
+            // Handle image errors
+            const productImages = document.querySelectorAll('.product-img');
+            const fallbackImage = "{{ fallback_image }}";
+            productImages.forEach(function(img) {
+                img.onerror = function() {
+                    this.src = fallbackImage;
+                };
+            });
+        });
+    </script>
+</body>
+</html>

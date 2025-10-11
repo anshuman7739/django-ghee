@@ -1,0 +1,1405 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heritage A2 Desi Ghee - Premium Purity</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'store/css/oziva-2.css' %}">
+    <!-- Custom JS -->
+    <script src="{% static 'store/js/premium-homepage.js' %}?v=2" defer></script>
+    <style>
+        :root {
+            --royal-gold: #D4AF37;
+            --deep-gold: #B8860B;
+            --light-gold: #F5E7A9;
+            --cream: #FFF8E1;
+            --white: #FFFFFF;
+            --off-white: #FAFAFA;
+            --dark-text: #333333;
+            --primary: #D4AF37;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--off-white);
+            color: var(--dark-text);
+            transition: all 0.3s ease;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        /* Header & Navigation */
+        .header {
+            background-color: var(--white);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 100;
+            transition: all 0.3s ease;
+        }
+        
+        .header.scrolled {
+            padding: 10px 0;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+        }
+        
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--royal-gold);
+            text-decoration: none;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo img {
+            height: 40px;
+            margin-right: 10px;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .nav-links li {
+            margin: 0 15px;
+        }
+        
+        .nav-links a {
+            color: var(--dark-text);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 16px;
+            position: relative;
+            transition: color 0.3s ease;
+        }
+        
+        .nav-links a:hover {
+            color: var(--royal-gold);
+        }
+        
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background-color: var(--royal-gold);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        
+        .nav-icons {
+            display: flex;
+            align-items: center;
+        }
+        
+        .nav-icon {
+            margin-left: 20px;
+            color: var(--dark-text);
+            font-size: 18px;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        
+        .nav-icon:hover {
+            color: var(--royal-gold);
+        }
+        
+        /* Search form styling */
+        .search-form-container {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            padding: 15px;
+            background-color: white;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            z-index: 1000;
+            border: 1px solid var(--light-gold);
+        }
+        
+        .search-form-container.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .search-form {
+            display: flex;
+            align-items: center;
+        }
+        
+        .search-form input[type="text"] {
+            padding: 12px 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px 0 0 6px;
+            outline: none;
+            width: 250px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .search-form input[type="text"]:focus {
+            border-color: var(--royal-gold);
+            box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+        }
+        
+        .search-form button {
+            background-color: var(--royal-gold);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 0 6px 6px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .search-form button:hover {
+            background-color: var(--deep-gold);
+        }
+        
+        #search-toggle {
+            cursor: pointer;
+        }
+        
+        /* Hero Section */
+        .hero {
+            position: relative;
+            overflow: hidden;
+            height: 80vh;
+            margin-top: 80px;
+        }
+        
+        .hero-slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 1s ease;
+            display: flex;
+            align-items: center;
+            background-position: center;
+        }
+        
+        .hero-slide.active {
+            opacity: 1;
+        }
+        
+        .hero-content {
+            max-width: 600px;
+            padding: 40px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 12px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.08);
+            border-left: 5px solid var(--royal-gold);
+            animation: slideIn 1s ease;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(-50px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        .hero-tagline {
+            font-family: 'Playfair Display', serif;
+            color: var(--royal-gold);
+            font-size: 18px;
+            font-weight: 500;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+        
+        .hero-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 48px;
+            color: var(--dark-text);
+            margin: 15px 0;
+            line-height: 1.2;
+        }
+        
+        .hero-subtitle {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        
+        .btn-primary {
+            background-color: var(--royal-gold);
+            color: white;
+            padding: 14px 32px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 500;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--deep-gold);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(184, 134, 11, 0.3);
+        }
+        
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--dark-text);
+            padding: 13px 30px;
+            border: 1px solid var(--royal-gold);
+            border-radius: 50px;
+            font-weight: 500;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-left: 15px;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn-secondary:hover {
+            background-color: var(--cream);
+            color: var(--dark-text);
+        }
+            background-color: rgba(255, 255, 255, 0.7);
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(5px);
+            animation: fadeInUp 1s ease;
+        }
+        
+        .hero-subtitle {
+            color: var(--royal-gold);
+            font-weight: 600;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+        
+        .hero-title {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: var(--dark-text);
+        }
+        
+        .hero-description {
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        
+        .primary-btn {
+            display: inline-block;
+            background-color: var(--royal-gold);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: 2px solid var(--royal-gold);
+        }
+        
+        .primary-btn:hover {
+            background-color: transparent;
+            color: var(--royal-gold);
+        }
+        
+        .hero-indicators {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+        }
+        
+        .indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .indicator.active {
+            background-color: var(--royal-gold);
+            transform: scale(1.3);
+        }
+        
+        /* Enhanced header styling */
+        .header {
+            background-color: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .announcement-bar {
+            background-color: var(--royal-gold);
+            color: white;
+            text-align: center;
+            padding: 8px 0;
+            font-size: 0.9rem;
+        }
+        
+        /* Animation keyframes */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Moving Announcement Bar -->
+    <div class="moving-announcement-bar" style="background-color: var(--royal-gold); color: white; padding: 8px 0; overflow: hidden; position: relative;">
+        <div class="moving-text" style="white-space: nowrap; animation: moveText 30s linear infinite;">
+            <span style="margin-right: 100px;">Free shipping on all orders above ₹1000 | WhatsApp: +91 9654270726</span>
+            <span style="margin-right: 100px;">Free shipping on all orders above ₹1000 | WhatsApp: +91 9654270726</span>
+            <span style="margin-right: 100px;">Free shipping on all orders above ₹1000 | WhatsApp: +91 9654270726</span>
+            <span style="margin-right: 100px;">Free shipping on all orders above ₹1000 | WhatsApp: +91 9654270726</span>
+        </div>
+    </div>
+
+    <style>
+        @keyframes moveText {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+        
+        .moving-announcement-bar {
+            font-size: 14px;
+            font-weight: 500;
+        }
+    </style>
+    
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <nav class="navbar">
+                <a href="/" class="logo">
+                    <img src="{% static 'store/images/banner2.jpg' %}" alt="Heritage A2 Ghee" style="max-height: 40px; border-radius: 50%;">
+                    <span>Heritage A2</span>
+                </a>
+                
+                <ul class="nav-links">
+                    <li><a href="/" class="active">Home</a></li>
+                    <li><a href="/shop/">Shop</a></li>
+                    <li><a href="{% url 'benefits' %}">Benefits</a></li>
+                    <li><a href="{% url 'about' %}">About Us</a></li>
+                    <li><a href="{% url 'contact' %}">Contact</a></li>
+                </ul>
+                
+                <div class="nav-icons">
+                    <div class="nav-icon" id="search-toggle">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <div class="search-form-container">
+                        <form action="{% url 'search_products' %}" method="GET" class="search-form">
+                            <input type="text" name="q" placeholder="Search premium ghee products..." required>
+                            <button type="submit"><i class="fas fa-search"></i></button>
+                        </form>
+                    </div>
+                    <a href="/cart/" class="nav-icon" title="Cart">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="cart-count" style="background-color: var(--royal-gold); color: white; font-size: 10px; width: 18px; height: 18px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; position: absolute; top: -8px; right: -8px;">0</span>
+                    </a>
+                    {% if user.is_authenticated %}
+                    <a href="{% url 'logout' %}" class="nav-icon" title="Logout">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </a>
+                    {% else %}
+                    <a href="{% url 'login' %}" class="nav-icon" title="Login">
+                        <i class="fas fa-user"></i>
+                    </a>
+                    {% endif %}
+                </div>
+            </nav>
+        </div>
+    </header>
+    
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-slide active" style="background-image: url('{% static "store/images/banner1.jpg" %}'); background-size: cover; background-position: center;">
+            <div class="container">
+                <div class="hero-content">
+                    <p class="hero-tagline">Pure & Authentic</p>
+                    <h1 class="hero-title">Premium A2 Desi Ghee</h1>
+                    <p class="hero-subtitle">Experience the richness of traditionally crafted ghee from indigenous cow milk, prepared using the ancient 'Bilona' method to preserve all nutrients and medicinal properties.</p>
+                    <div>
+                        <a href="/shop/" class="btn-primary">Shop Now</a>
+                        <a href="/benefits/" class="btn-secondary">Learn More</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="hero-slide" style="background-image: url('{% static "store/images/banner2.jpg" %}'); background-size: cover; background-position: center;">
+            <div class="container">
+                <div class="hero-content">
+                    <p class="hero-tagline">Farm to Table</p>
+                    <h1 class="hero-title">Nature's Golden Elixir</h1>
+                    <p class="hero-subtitle">Our premium A2 ghee is sourced directly from grass-fed indigenous cows, ensuring purity and maximum health benefits for your family.</p>
+                    <div>
+                        <a href="/shop/" class="btn-primary">View Collection</a>
+                        <a href="#process" class="btn-secondary">Our Process</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Hero Navigation -->
+        <div class="hero-nav" style="position: absolute; bottom: 30px; left: 0; width: 100%; display: flex; justify-content: center; gap: 12px;">
+            <span class="hero-dot active" style="width: 12px; height: 12px; border-radius: 50%; background-color: var(--royal-gold); cursor: pointer; opacity: 0.8; transition: all 0.3s ease;" data-slide="0"></span>
+            <span class="hero-dot" style="width: 12px; height: 12px; border-radius: 50%; background-color: white; cursor: pointer; opacity: 0.5; transition: all 0.3s ease;" data-slide="1"></span>
+        </div>
+    </section>
+    
+    <!-- Benefits Section -->
+    <section id="benefits-overview" style="padding: 120px 0 80px; background-color: var(--cream);">
+        <div class="container">
+            <div style="text-align: center; margin-bottom: 60px;">
+                <span style="font-family: 'Playfair Display', serif; color: var(--royal-gold); font-size: 18px; text-transform: uppercase; letter-spacing: 3px; display: block; margin-bottom: 15px;">Why Choose Our Ghee</span>
+                <h2 style="font-family: 'Playfair Display', serif; font-size: 42px; color: var(--dark-text); margin-bottom: 20px;">Benefits of Premium A2 Desi Ghee</h2>
+                <div style="width: 80px; height: 3px; background-color: var(--royal-gold); margin: 0 auto;"></div>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-top: 30px;">
+                <div style="background-color: white; border-radius: 12px; overflow: hidden; box-shadow: 0 15px 30px rgba(0,0,0,0.06); transition: transform 0.3s ease;">
+                    <div style="padding: 40px 30px; position: relative;">
+                        <div style="position: absolute; top: -30px; left: 30px; width: 60px; height: 60px; background-color: var(--royal-gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 20px rgba(212,175,55,0.3);">
+                            <i class="fas fa-leaf" style="font-size: 24px; color: white;"></i>
+                        </div>
+                        <h3 style="font-family: 'Playfair Display', serif; font-size: 24px; margin: 20px 0 15px; padding-top: 10px; color: var(--dark-text);">100% Organic</h3>
+                        <p style="color: #666; line-height: 1.8; font-size: 16px;">Sourced from grass-fed indigenous cows raised without hormones or antibiotics. Pure and natural as nature intended.</p>
+                    </div>
+                </div>
+                
+                <div style="background-color: white; border-radius: 12px; overflow: hidden; box-shadow: 0 15px 30px rgba(0,0,0,0.06); transition: transform 0.3s ease;">
+                    <div style="padding: 40px 30px; position: relative;">
+                        <div style="position: absolute; top: -30px; left: 30px; width: 60px; height: 60px; background-color: var(--royal-gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 20px rgba(212,175,55,0.3);">
+                            <i class="fas fa-dna" style="font-size: 24px; color: white;"></i>
+                        </div>
+                        <h3 style="font-family: 'Playfair Display', serif; font-size: 24px; margin: 20px 0 15px; padding-top: 10px; color: var(--dark-text);">A2 Protein Only</h3>
+                        <p style="color: #666; line-height: 1.8; font-size: 16px;">Contains only A2 beta-casein protein which is easier to digest and healthier than commercial A1 milk products.</p>
+                    </div>
+                </div>
+                
+                <div style="background-color: white; border-radius: 12px; overflow: hidden; box-shadow: 0 15px 30px rgba(0,0,0,0.06); transition: transform 0.3s ease;">
+                    <div style="padding: 40px 30px; position: relative;">
+                        <div style="position: absolute; top: -30px; left: 30px; width: 60px; height: 60px; background-color: var(--royal-gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 20px rgba(212,175,55,0.3);">
+                            <i class="fas fa-mortar-pestle" style="font-size: 24px; color: white;"></i>
+                        </div>
+                        <h3 style="font-family: 'Playfair Display', serif; font-size: 24px; margin: 20px 0 15px; padding-top: 10px; color: var(--dark-text);">Traditional Method</h3>
+                        <p style="color: #666; line-height: 1.8; font-size: 16px;">Hand-churned using the ancient 'Bilona' method to preserve all nutrients and medicinal properties.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Process Section -->
+    <section id="process" style="padding: 100px 0; background: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), url('{% static 'store/images/banner1.jpg' %}') center/cover no-repeat fixed;">
+        <div class="container">
+            <div style="text-align: center; margin-bottom: 60px;">
+                <span style="font-family: 'Playfair Display', serif; color: var(--royal-gold); font-size: 18px; text-transform: uppercase; letter-spacing: 3px; display: block; margin-bottom: 15px;">Our Heritage</span>
+                <h2 style="font-family: 'Playfair Display', serif; font-size: 42px; color: var(--dark-text); margin-bottom: 20px;">The Traditional Process</h2>
+                <div style="width: 80px; height: 3px; background-color: var(--royal-gold); margin: 0 auto 20px;"></div>
+                <p style="max-width: 700px; margin: 0 auto; color: #666; line-height: 1.8; font-size: 16px;">Our ghee is prepared using the traditional 'Bilona' method that has been passed down for generations. This method preserves all the natural nutrients and enhances the aroma.</p>
+            </div>
+            
+            <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 40px; margin-top: 50px;">
+                <div style="flex: 1; min-width: 250px; max-width: 280px; text-align: center;">
+                    <div style="width: 100px; height: 100px; background-color: var(--cream); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; border: 2px solid var(--royal-gold); position: relative;">
+                        <span style="position: absolute; top: -10px; right: -10px; width: 30px; height: 30px; background-color: var(--royal-gold); border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; font-weight: bold;">1</span>
+                        <i class="fas fa-cow" style="font-size: 36px; color: var(--royal-gold);"></i>
+                    </div>
+                    <h3 style="font-family: 'Playfair Display', serif; font-size: 22px; margin-bottom: 15px; color: var(--dark-text);">Sourcing A2 Milk</h3>
+                    <p style="color: #666; line-height: 1.7;">We collect fresh milk from indigenous cows that produce only A2 protein milk, ensuring purity and quality.</p>
+                </div>
+                
+                <div style="flex: 1; min-width: 250px; max-width: 280px; text-align: center;">
+                    <div style="width: 100px; height: 100px; background-color: var(--cream); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; border: 2px solid var(--royal-gold); position: relative;">
+                        <span style="position: absolute; top: -10px; right: -10px; width: 30px; height: 30px; background-color: var(--royal-gold); border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; font-weight: bold;">2</span>
+                        <i class="fas fa-blender" style="font-size: 36px; color: var(--royal-gold);"></i>
+                    </div>
+                    <h3 style="font-family: 'Playfair Display', serif; font-size: 22px; margin-bottom: 15px; color: var(--dark-text);">Churning Curd</h3>
+                    <p style="color: #666; line-height: 1.7;">The milk is fermented into curd and then hand-churned to extract fresh butter using traditional equipment.</p>
+                </div>
+                
+                <div style="flex: 1; min-width: 250px; max-width: 280px; text-align: center;">
+                    <div style="width: 100px; height: 100px; background-color: var(--cream); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; border: 2px solid var(--royal-gold); position: relative;">
+                        <span style="position: absolute; top: -10px; right: -10px; width: 30px; height: 30px; background-color: var(--royal-gold); border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; font-weight: bold;">3</span>
+                        <i class="fas fa-fire" style="font-size: 36px; color: var(--royal-gold);"></i>
+                    </div>
+                    <h3 style="font-family: 'Playfair Display', serif; font-size: 22px; margin-bottom: 15px; color: var(--dark-text);">Slow Cooking</h3>
+                    <p style="color: #666; line-height: 1.7;">The butter is slowly simmered in copper vessels over low heat until all moisture evaporates, leaving behind pure ghee.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px;">
+                <!-- Product 1 -->
+                <div style="background-color: white; border-radius: 12px; overflow: hidden; box-shadow: 0 15px 30px rgba(0,0,0,0.06); transition: transform 0.3s ease; position: relative;">
+                    <span style="position: absolute; top: 20px; left: 0; background-color: var(--royal-gold); color: white; padding: 8px 15px; font-size: 12px; font-weight: 600; letter-spacing: 1px; border-radius: 0 4px 4px 0;">BEST SELLER</span>
+                    <div style="height: 250px; background-color: var(--cream); display: flex; align-items: center; justify-content: center; padding: 20px;">
+                        <img src="{% static 'store/images/banner1.jpg' %}" alt="A2 Desi Cow Ghee" style="max-height: 90%; max-width: 90%; object-fit: contain;">
+                    </div>
+                    <div style="padding: 25px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                            <span style="font-size: 14px; color: #777;">Premium</span>
+                            <div style="display: flex; gap: 3px;">
+                                <i class="fas fa-star" style="color: var(--royal-gold); font-size: 14px;"></i>
+                                <i class="fas fa-star" style="color: var(--royal-gold); font-size: 14px;"></i>
+                                <i class="fas fa-star" style="color: var(--royal-gold); font-size: 14px;"></i>
+                                <i class="fas fa-star" style="color: var(--royal-gold); font-size: 14px;"></i>
+                                <i class="fas fa-star" style="color: var(--royal-gold); font-size: 14px;"></i>
+                            </div>
+                        </div>
+                        <h3 style="font-family: 'Playfair Display', serif; font-size: 20px; margin-bottom: 10px; color: var(--dark-text);">A2 Desi Cow Ghee</h3>
+                        <p style="color: #666; margin-bottom: 20px; font-size: 14px; line-height: 1.6;">Premium quality A2 ghee made from indigenous cow milk using traditional methods.</p>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <span style="color: #999; text-decoration: line-through; margin-right: 8px;">₹1200</span>
+                                <span style="color: var(--dark-text); font-weight: 600; font-size: 18px;">₹999</span>
+                            </div>
+                            <a href="/shop/" style="background-color: var(--royal-gold); color: white; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 50%;">
+                                <i class="fas fa-shopping-cart"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Product 2 -->
+                <div style="background-color: white; border-radius: 12px; overflow: hidden; box-shadow: 0 15px 30px rgba(0,0,0,0.06); transition: transform 0.3s ease;">
+                    <div style="height: 250px; background-color: var(--cream); display: flex; align-items: center; justify-content: center; padding: 20px;">
+                        <img src="{% static 'store/images/banner2.jpg' %}" alt="A2 Desi Cow Ghee - Large Pack" style="max-height: 90%; max-width: 90%; object-fit: contain;">
+                    </div>
+                    <div style="padding: 25px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                            <span style="font-size: 14px; color: #777;">Family Pack</span>
+                            <div style="display: flex; gap: 3px;">
+                                <i class="fas fa-star" style="color: var(--royal-gold); font-size: 14px;"></i>
+                                <i class="fas fa-star" style="color: var(--royal-gold); font-size: 14px;"></i>
+                                <i class="fas fa-star" style="color: var(--royal-gold); font-size: 14px;"></i>
+                                <i class="fas fa-star" style="color: var(--royal-gold); font-size: 14px;"></i>
+                                <i class="fas fa-star-half-alt" style="color: var(--royal-gold); font-size: 14px;"></i>
+                            </div>
+                        </div>
+                        <h3 style="font-family: 'Playfair Display', serif; font-size: 20px; margin-bottom: 10px; color: var(--dark-text);">A2 Desi Cow Ghee - Large Pack</h3>
+                        <p style="color: #666; margin-bottom: 20px; font-size: 14px; line-height: 1.6;">Family size pack of our premium A2 ghee. Great value for regular users.</p>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <span style="color: #999; text-decoration: line-through; margin-right: 8px;">₹2100</span>
+                                <span style="color: var(--dark-text); font-weight: 600; font-size: 18px;">₹1799</span>
+                            </div>
+                            <a href="/shop/" style="background-color: var(--royal-gold); color: white; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 50%;">
+                                <i class="fas fa-shopping-cart"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Product 3 -->
+                <div style="background-color: white; border-radius: 12px; overflow: hidden; box-shadow: 0 15px 30px rgba(0,0,0,0.06); transition: transform 0.3s ease; position: relative;">
+                    <span style="position: absolute; top: 20px; left: 0; background-color: #28a745; color: white; padding: 8px 15px; font-size: 12px; font-weight: 600; letter-spacing: 1px; border-radius: 0 4px 4px 0;">NEW</span>
+                    <div style="height: 250px; background-color: var(--cream); display: flex; align-items: center; justify-content: center; padding: 20px;">
+                        <img src="{% static 'store/images/banner1.jpg' %}" alt="Herbal Infused A2 Ghee" style="max-height: 90%; max-width: 90%; object-fit: contain;">
+                    </div>
+                    <div style="padding: 25px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                            <span style="font-size: 14px; color: #777;">Special</span>
+                            <div style="display: flex; gap: 3px;">
+                                <i class="fas fa-star" style="color: var(--royal-gold); font-size: 14px;"></i>
+                                <i class="fas fa-star" style="color: var(--royal-gold); font-size: 14px;"></i>
+                                <i class="fas fa-star" style="color: var(--royal-gold); font-size: 14px;"></i>
+                                <i class="fas fa-star" style="color: var(--royal-gold); font-size: 14px;"></i>
+                                <i class="fas fa-star" style="color: var(--royal-gold); font-size: 14px;"></i>
+                            </div>
+                        </div>
+                        <h3 style="font-family: 'Playfair Display', serif; font-size: 20px; margin-bottom: 10px; color: var(--dark-text);">Herbal Infused A2 Ghee</h3>
+                        <p style="color: #666; margin-bottom: 20px; font-size: 14px; line-height: 1.6;">Our signature A2 ghee infused with traditional Ayurvedic herbs for enhanced benefits.</p>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <span style="color: #999; text-decoration: line-through; margin-right: 8px;">₹1500</span>
+                                <span style="color: var(--dark-text); font-weight: 600; font-size: 18px;">₹1299</span>
+                            </div>
+                            <a href="/shop/" style="background-color: var(--royal-gold); color: white; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 50%;">
+                                <i class="fas fa-shopping-cart"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 50px;">
+                <a href="/shop/" style="display: inline-block; border: 2px solid var(--royal-gold); color: var(--royal-gold); background-color: transparent; padding: 14px 35px; border-radius: 50px; font-weight: 500; text-decoration: none; transition: all 0.3s ease; font-size: 16px;">View All Products</a>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Testimonials Section -->
+    <section id="testimonials" style="padding: 100px 0; background-color: var(--cream);">
+        <div class="container">
+            <div style="text-align: center; margin-bottom: 60px;">
+                <span style="font-family: 'Playfair Display', serif; color: var(--royal-gold); font-size: 18px; text-transform: uppercase; letter-spacing: 3px; display: block; margin-bottom: 15px;">Testimonials</span>
+                <h2 style="font-family: 'Playfair Display', serif; font-size: 42px; color: var(--dark-text); margin-bottom: 20px;">What Our Customers Say</h2>
+                <div style="width: 80px; height: 3px; background-color: var(--royal-gold); margin: 0 auto;"></div>
+            </div>
+            
+            <div style="max-width: 900px; margin: 0 auto; position: relative;">
+                <div style="padding: 40px; background-color: white; border-radius: 12px; box-shadow: 0 15px 30px rgba(0,0,0,0.06); text-align: center; margin-bottom: 30px; position: relative;">
+                    <div style="width: 70px; height: 70px; border-radius: 50%; overflow: hidden; margin: -75px auto 20px; border: 5px solid white; box-shadow: 0 10px 20px rgba(0,0,0,0.1);">
+                        <i class="fas fa-user" style="font-size: 40px; color: var(--royal-gold); background-color: #f5f5f5; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;"></i>
+                    </div>
+                    <div style="color: var(--royal-gold); font-size: 30px; margin-bottom: 20px;">
+                        <i class="fas fa-quote-left"></i>
+                    </div>
+                    <p style="font-size: 18px; color: #555; line-height: 1.8; margin-bottom: 25px; font-style: italic;">"I've been using this premium A2 ghee for three months now. The aroma is incredible, and it has significantly improved my digestion. This is truly authentic desi ghee just like my grandmother used to make!"</p>
+                    <h4 style="font-family: 'Playfair Display', serif; color: var(--dark-text); font-size: 20px; margin-bottom: 5px;">Priya Sharma</h4>
+                    <span style="color: #777; font-size: 14px;">Loyal Customer</span>
+                    <div style="margin-top: 15px;">
+                        <i class="fas fa-star" style="color: var(--royal-gold);"></i>
+                        <i class="fas fa-star" style="color: var(--royal-gold);"></i>
+                        <i class="fas fa-star" style="color: var(--royal-gold);"></i>
+                        <i class="fas fa-star" style="color: var(--royal-gold);"></i>
+                        <i class="fas fa-star" style="color: var(--royal-gold);"></i>
+                    </div>
+                </div>
+                
+                <div style="display: flex; justify-content: center; gap: 15px; margin-top: 30px;">
+                    <span style="width: 12px; height: 12px; border-radius: 50%; background-color: var(--royal-gold); opacity: 1; cursor: pointer;"></span>
+                    <span style="width: 12px; height: 12px; border-radius: 50%; background-color: #ccc; opacity: 0.5; cursor: pointer;"></span>
+                    <span style="width: 12px; height: 12px; border-radius: 50%; background-color: #ccc; opacity: 0.5; cursor: pointer;"></span>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Newsletter Section -->
+    <section id="contact-section" style="padding: 80px 0; background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('{% static 'store/images/banner2.jpg' %}') center/cover no-repeat fixed;">
+        <div class="container">
+            <div style="max-width: 600px; margin: 0 auto; text-align: center;">
+                <h2 style="font-family: 'Playfair Display', serif; font-size: 38px; color: white; margin-bottom: 20px;">Join Our Newsletter</h2>
+                <p style="color: #ddd; margin-bottom: 30px; font-size: 16px; line-height: 1.7;">Subscribe to receive updates on new products, special offers, and traditional recipes using A2 ghee.</p>
+                <form style="display: flex; gap: 10px;">
+                    <input type="email" placeholder="Your email address" style="flex: 1; padding: 15px 20px; border-radius: 50px; border: none; font-size: 16px; outline: none;">
+                    <button type="submit" style="background-color: var(--royal-gold); color: white; border: none; padding: 0 30px; border-radius: 50px; font-weight: 500; cursor: pointer; transition: all 0.3s ease;">Subscribe</button>
+                </form>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer style="background-color: #222; color: #aaa; padding-top: 80px;">
+        <div class="container">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; margin-bottom: 60px;">
+                <div>
+                    <div style="display: flex; align-items: center; margin-bottom: 20px;">
+                        <img src="{% static 'store/images/banner2.jpg' %}" alt="Heritage A2" style="height: 40px; width: 40px; border-radius: 50%; margin-right: 10px;">
+                        <h3 style="font-family: 'Playfair Display', serif; color: white; font-size: 24px; margin: 0;">Heritage A2</h3>
+                    </div>
+                    <p style="line-height: 1.8; margin-bottom: 25px; font-size: 15px;">We bring you premium A2 desi ghee made using the traditional 'bilona' method, preserving all the nutrients and medicinal properties of pure ghee.</p>
+                    <div style="display: flex; gap: 15px;">
+                        <a href="#" style="width: 40px; height: 40px; background-color: rgba(255,255,255,0.05); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--royal-gold); transition: all 0.3s ease;">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" style="width: 40px; height: 40px; background-color: rgba(255,255,255,0.05); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--royal-gold); transition: all 0.3s ease;">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" style="width: 40px; height: 40px; background-color: rgba(255,255,255,0.05); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--royal-gold); transition: all 0.3s ease;">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" style="width: 40px; height: 40px; background-color: rgba(255,255,255,0.05); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--royal-gold); transition: all 0.3s ease;">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 style="color: white; font-size: 18px; margin-bottom: 25px; position: relative; padding-bottom: 10px;">Quick Links</h4>
+                    <ul style="list-style: none; padding: 0; margin: 0;">
+                        <li style="margin-bottom: 12px;">
+                            <a href="/" style="color: #aaa; text-decoration: none; transition: color 0.3s ease; display: inline-flex; align-items: center;">
+                                <i class="fas fa-chevron-right" style="font-size: 12px; margin-right: 10px; color: var(--royal-gold);"></i>
+                                Home
+                            </a>
+                        </li>
+                        <li style="margin-bottom: 12px;">
+                            <a href="/shop/" style="color: #aaa; text-decoration: none; transition: color 0.3s ease; display: inline-flex; align-items: center;">
+                                <i class="fas fa-chevron-right" style="font-size: 12px; margin-right: 10px; color: var(--royal-gold);"></i>
+                                Shop
+                            </a>
+                        </li>
+                        <li style="margin-bottom: 12px;">
+                            <a href="{% url 'benefits' %}" style="color: #aaa; text-decoration: none; transition: color 0.3s ease; display: inline-flex; align-items: center;">
+                                <i class="fas fa-chevron-right" style="font-size: 12px; margin-right: 10px; color: var(--royal-gold);"></i>
+                                Benefits
+                            </a>
+                        </li>
+                        <li style="margin-bottom: 12px;">
+                            <a href="#process" style="color: #aaa; text-decoration: none; transition: color 0.3s ease; display: inline-flex; align-items: center;">
+                                <i class="fas fa-chevron-right" style="font-size: 12px; margin-right: 10px; color: var(--royal-gold);"></i>
+                                Our Process
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 style="color: white; font-size: 18px; margin-bottom: 25px; position: relative; padding-bottom: 10px;">Customer Support</h4>
+                    <ul style="list-style: none; padding: 0; margin: 0;">
+                        <li style="margin-bottom: 12px;">
+                            <a href="#" style="color: #aaa; text-decoration: none; transition: color 0.3s ease; display: inline-flex; align-items: center;">
+                                <i class="fas fa-chevron-right" style="font-size: 12px; margin-right: 10px; color: var(--royal-gold);"></i>
+                                Shipping Policy
+                            </a>
+                        </li>
+                        <li style="margin-bottom: 12px;">
+                            <a href="#" style="color: #aaa; text-decoration: none; transition: color 0.3s ease; display: inline-flex; align-items: center;">
+                                <i class="fas fa-chevron-right" style="font-size: 12px; margin-right: 10px; color: var(--royal-gold);"></i>
+                                Return Policy
+                            </a>
+                        </li>
+                        <li style="margin-bottom: 12px;">
+                            <a href="#" style="color: #aaa; text-decoration: none; transition: color 0.3s ease; display: inline-flex; align-items: center;">
+                                <i class="fas fa-chevron-right" style="font-size: 12px; margin-right: 10px; color: var(--royal-gold);"></i>
+                                FAQs
+                            </a>
+                        </li>
+                        <li style="margin-bottom: 12px;">
+                            <a href="#" style="color: #aaa; text-decoration: none; transition: color 0.3s ease; display: inline-flex; align-items: center;">
+                                <i class="fas fa-chevron-right" style="font-size: 12px; margin-right: 10px; color: var(--royal-gold);"></i>
+                                Privacy Policy
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 style="color: white; font-size: 18px; margin-bottom: 25px; position: relative; padding-bottom: 10px;">Contact Info</h4>
+                    <div style="margin-bottom: 15px; display: flex; align-items: center;">
+                        <div style="width: 40px; height: 40px; background-color: rgba(255,255,255,0.05); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px;">
+                            <i class="fas fa-map-marker-alt" style="color: var(--royal-gold);"></i>
+                        </div>
+                        <p style="margin: 0;">Delhi, India</p>
+                    </div>
+                    <div style="margin-bottom: 15px; display: flex; align-items: center;">
+                        <div style="width: 40px; height: 40px; background-color: rgba(255,255,255,0.05); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px;">
+                            <i class="fas fa-phone-alt" style="color: var(--royal-gold);"></i>
+                        </div>
+                        <p style="margin: 0;">+91 9654270726</p>
+                    </div>
+                    <div style="margin-bottom: 15px; display: flex; align-items: center;">
+                        <div style="width: 40px; height: 40px; background-color: rgba(255,255,255,0.05); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px;">
+                            <i class="fas fa-envelope" style="color: var(--royal-gold);"></i>
+                        </div>
+                        <p style="margin: 0;">info@heritagea2.com</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="padding: 25px 0; border-top: 1px solid rgba(255,255,255,0.1); text-align: center;">
+                <p style="margin: 0; font-size: 14px;"></p>
+            </div>
+        </div>
+    </footer>
+                    <div class="product-badge" style="position: absolute; top: 15px; left: 15px; background-color: var(--royal-gold); color: white; padding: 5px 10px; border-radius: 3px; font-size: 0.8rem; font-weight: 600; z-index: 1;">BESTSELLER</div>
+                    <div class="product-discount" style="position: absolute; top: 15px; right: 15px; background-color: #e74c3c; color: white; padding: 5px 10px; border-radius: 3px; font-size: 0.8rem; font-weight: 600; z-index: 1;">10% OFF</div>
+                    <div class="product-image" style="position: relative; height: 250px; overflow: hidden;">
+                        <img src="{% static 'store/images/productbuff.jpg' %}" alt="Buffalo Ghee" class="product-img" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease;">
+                        <div class="product-actions" style="position: absolute; bottom: -50px; left: 0; width: 100%; display: flex; justify-content: center; gap: 10px; padding: 15px 0; background-color: rgba(255,255,255,0.9); transition: bottom 0.3s ease;">
+                            <button class="action-btn wishlist-btn" style="width: 40px; height: 40px; border-radius: 50%; background-color: white; border: none; display: flex; align-items: center; justify-content: center; box-shadow: 0 3px 10px rgba(0,0,0,0.1); cursor: pointer; transition: all 0.3s ease;"><i class="far fa-heart" style="color: #e74c3c;"></i></button>
+                            <button class="action-btn quick-view-btn" style="width: 40px; height: 40px; border-radius: 50%; background-color: white; border: none; display: flex; align-items: center; justify-content: center; box-shadow: 0 3px 10px rgba(0,0,0,0.1); cursor: pointer; transition: all 0.3s ease;"><i class="fas fa-eye" style="color: var(--royal-gold);"></i></button>
+                        </div>
+                    </div>
+                    <div class="product-info" style="padding: 20px;">
+                        <h3 class="product-name" style="margin: 0 0 10px; font-size: 1.2rem; color: var(--dark-text); text-align: center;">Premium Buffalo Ghee</h3>
+                        <div class="product-rating" style="display: flex; justify-content: center; align-items: center; gap: 5px; margin-bottom: 15px;">
+                            <div class="stars" style="display: flex; gap: 2px;">
+                                <i class="fas fa-star" style="color: #ffc107;"></i>
+                                <i class="fas fa-star" style="color: #ffc107;"></i>
+                                <i class="fas fa-star" style="color: #ffc107;"></i>
+                                <i class="fas fa-star" style="color: #ffc107;"></i>
+                                <i class="fas fa-star" style="color: #ffc107;"></i>
+                            </div>
+                            <span class="rating-count" style="font-size: 0.9rem; color: #777;">(45)</span>
+                        </div>
+                        <div class="product-price" style="display: flex; justify-content: center; align-items: center; gap: 10px; margin-bottom: 20px;">
+                            <span class="current-price" style="font-size: 1.5rem; font-weight: 600; color: var(--royal-gold);">₹630</span>
+                            <span class="original-price" style="font-size: 1rem; font-weight: 400; color: #999; text-decoration: line-through;">₹700</span>
+                        </div>
+                        {% if user.is_authenticated %}
+                        <form action="/cart/" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="product_id" value="1">
+                            <input type="hidden" name="quantity" value="1">
+                            <button type="submit" class="add-to-cart-btn" style="width: 100%; background-color: var(--royal-gold); color: white; border: none; padding: 12px 0; border-radius: 5px; font-weight: 600; cursor: pointer; transition: background-color 0.3s ease;">ADD TO CART</button>
+                        </form>
+                        {% else %}
+                        <a href="{% url 'login' %}?next={{ request.path }}" class="add-to-cart-btn" style="display: block; width: 100%; background-color: var(--royal-gold); color: white; border: none; padding: 12px 0; border-radius: 5px; font-weight: 600; cursor: pointer; transition: background-color 0.3s ease; text-align: center; text-decoration: none;">LOGIN TO BUY</a>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="product-card" style="background-color: white; border-radius: 10px; overflow: hidden; box-shadow: 0 10px 20px rgba(0,0,0,0.05); transition: transform 0.3s ease, box-shadow 0.3s ease;">
+                    <div class="product-badge" style="position: absolute; top: 15px; left: 15px; background-color: var(--royal-gold); color: white; padding: 5px 10px; border-radius: 3px; font-size: 0.8rem; font-weight: 600; z-index: 1;">BESTSELLER</div>
+                    <div class="product-image" style="position: relative; height: 250px; overflow: hidden;">
+                        <img src="{% static 'store/images/productcow.jpg' %}" alt="Cow Ghee" class="product-img" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease;">
+                        <div class="product-actions" style="position: absolute; bottom: -50px; left: 0; width: 100%; display: flex; justify-content: center; gap: 10px; padding: 15px 0; background-color: rgba(255,255,255,0.9); transition: bottom 0.3s ease;">
+                            <button class="action-btn wishlist-btn" style="width: 40px; height: 40px; border-radius: 50%; background-color: white; border: none; display: flex; align-items: center; justify-content: center; box-shadow: 0 3px 10px rgba(0,0,0,0.1); cursor: pointer; transition: all 0.3s ease;"><i class="far fa-heart" style="color: #e74c3c;"></i></button>
+                            <button class="action-btn quick-view-btn" style="width: 40px; height: 40px; border-radius: 50%; background-color: white; border: none; display: flex; align-items: center; justify-content: center; box-shadow: 0 3px 10px rgba(0,0,0,0.1); cursor: pointer; transition: all 0.3s ease;"><i class="fas fa-eye" style="color: var(--royal-gold);"></i></button>
+                        </div>
+                    </div>
+                    <div class="product-info" style="padding: 20px;">
+                        <h3 class="product-name" style="margin: 0 0 10px; font-size: 1.2rem; color: var(--dark-text); text-align: center;">A2 Desi Cow Ghee</h3>
+                        <div class="product-rating" style="display: flex; justify-content: center; align-items: center; gap: 5px; margin-bottom: 15px;">
+                            <div class="stars" style="display: flex; gap: 2px;">
+                                <i class="fas fa-star" style="color: #ffc107;"></i>
+                                <i class="fas fa-star" style="color: #ffc107;"></i>
+                                <i class="fas fa-star" style="color: #ffc107;"></i>
+                                <i class="fas fa-star" style="color: #ffc107;"></i>
+                                <i class="fas fa-star-half-alt" style="color: #ffc107;"></i>
+                            </div>
+                            <span class="rating-count" style="font-size: 0.9rem; color: #777;">(38)</span>
+                        </div>
+                        <div class="product-price" style="display: flex; justify-content: center; align-items: center; gap: 10px; margin-bottom: 20px;">
+                            <span class="current-price" style="font-size: 1.5rem; font-weight: 600; color: var(--royal-gold);">₹850</span>
+                        </div>
+                        {% if user.is_authenticated %}
+                        <form action="/cart/" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="product_id" value="2">
+                            <input type="hidden" name="quantity" value="1">
+                            <button type="submit" class="add-to-cart-btn" style="width: 100%; background-color: var(--royal-gold); color: white; border: none; padding: 12px 0; border-radius: 5px; font-weight: 600; cursor: pointer; transition: background-color 0.3s ease;">ADD TO CART</button>
+                        </form>
+                        {% else %}
+                        <a href="{% url 'login' %}?next={{ request.path }}" class="add-to-cart-btn" style="display: block; width: 100%; background-color: var(--royal-gold); color: white; border: none; padding: 12px 0; border-radius: 5px; font-weight: 600; cursor: pointer; transition: background-color 0.3s ease; text-align: center; text-decoration: none;">LOGIN TO BUY</a>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="product-card">
+                    <div class="product-discount">15% OFF</div>
+                    <div class="product-image">
+                        <img src="{% static 'store/images/banner1.jpg' %}" alt="Special Ghee" class="product-img">
+                        <div class="product-actions">
+                            <button class="action-btn wishlist-btn"><i class="far fa-heart"></i></button>
+                            <button class="action-btn quick-view-btn"><i class="fas fa-eye"></i></button>
+                        </div>
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-name">Special Bilona Ghee</h3>
+                        <div class="product-rating">
+                            <div class="stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <span class="rating-count">(27)</span>
+                        </div>
+                        <div class="product-price">
+                            <span class="current-price">₹765</span>
+                            <span class="original-price">₹900</span>
+                        </div>
+                        {% if user.is_authenticated %}
+                        <form action="/cart/" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="product_id" value="3">
+                            <input type="hidden" name="quantity" value="1">
+                            <button type="submit" class="add-to-cart-btn">ADD TO CART</button>
+                        </form>
+                        {% else %}
+                        <a href="{% url 'login' %}?next={{ request.path }}" class="add-to-cart-btn" style="display: block; text-align: center; text-decoration: none;">LOGIN TO BUY</a>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="product-card">
+                    <div class="product-badge">NEW</div>
+                    <div class="product-image">
+                        <img src="{% static 'store/images/banner2.jpg' %}" alt="Premium Ghee" class="product-img">
+                        <div class="product-actions">
+                            <button class="action-btn wishlist-btn"><i class="far fa-heart"></i></button>
+                            <button class="action-btn quick-view-btn"><i class="fas fa-eye"></i></button>
+                        </div>
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-name">Premium Gir Cow Ghee</h3>
+                        <div class="product-rating">
+                            <div class="stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                            <span class="rating-count">(15)</span>
+                        </div>
+                        <div class="product-price">
+                            <span class="current-price">₹950</span>
+                        </div>
+                        {% if user.is_authenticated %}
+                        <form action="/cart/" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="product_id" value="4">
+                            <input type="hidden" name="quantity" value="1">
+                            <button type="submit" class="add-to-cart-btn">ADD TO CART</button>
+                        </form>
+                        {% else %}
+                        <a href="{% url 'login' %}?next={{ request.path }}" class="add-to-cart-btn" style="display: block; text-align: center; text-decoration: none;">LOGIN TO BUY</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="view-all-container">
+                <a href="/shop/" class="secondary-btn">View All Products</a>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Benefits Section -->
+    <section class="benefits">
+        <div class="container">
+            <div class="section-title">
+                <h2>Benefits of A2 Desi Ghee</h2>
+            </div>
+            
+            <div class="benefits-grid">
+                <div class="benefit-item">
+                    <div class="benefit-icon">
+                        <i class="fas fa-utensils"></i>
+                    </div>
+                    <h3>Improves Digestion</h3>
+                    <p>Contains butyric acid that promotes gut health and helps in the absorption of nutrients.</p>
+                </div>
+                
+                <div class="benefit-item">
+                    <div class="benefit-icon">
+                        <i class="fas fa-shield-virus"></i>
+                    </div>
+                    <h3>Boosts Immunity</h3>
+                    <p>Rich in antioxidants that strengthen the immune system and fight free radicals.</p>
+                </div>
+                
+                <div class="benefit-item">
+                    <div class="benefit-icon">
+                        <i class="fas fa-bone"></i>
+                    </div>
+                    <h3>Joint Health</h3>
+                    <p>Contains vitamin K2 which helps in calcium absorption and improves bone density.</p>
+                </div>
+                
+                <div class="benefit-item">
+                    <div class="benefit-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3>Sustainable Energy</h3>
+                    <p>Provides medium-chain fatty acids that are quickly metabolized by the liver for energy.</p>
+                </div>
+                
+                <div class="benefit-item">
+                    <div class="benefit-icon">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                    <h3>Eye Health</h3>
+                    <p>Contains vitamin A which is essential for vision and eye health maintenance.</p>
+                </div>
+                
+                <div class="benefit-item">
+                    <div class="benefit-icon">
+                        <i class="fas fa-smile"></i>
+                    </div>
+                    <h3>Skin & Hair</h3>
+                    <p>Rich in vitamin E and antioxidants that promote healthy skin and hair.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Testimonial Section -->
+    <section class="testimonials">
+        <div class="container">
+            <div class="section-title">
+                <h2>What Our Customers Say</h2>
+            </div>
+            
+            <div class="testimonial-slider">
+                <div class="testimonial-slide active">
+                    <div class="testimonial-content">
+                        <div class="quote-icon">
+                            <i class="fas fa-quote-left"></i>
+                        </div>
+                        <p class="testimonial-text">I've been using this ghee for a month now and can feel a significant difference in my digestion and energy levels. The aroma is so authentic!</p>
+                        <div class="testimonial-author">
+                            <div class="author-image">
+                                <i class="fas fa-user-circle"></i>
+                            </div>
+                            <div class="author-info">
+                                <h4>Priya Sharma</h4>
+                                <div class="author-rating">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial-slide">
+                    <div class="testimonial-content">
+                        <div class="quote-icon">
+                            <i class="fas fa-quote-left"></i>
+                        </div>
+                        <p class="testimonial-text">The traditional bilona method really makes a difference. This ghee has a rich golden color and tastes just like the one my grandmother used to make.</p>
+                        <div class="testimonial-author">
+                            <div class="author-image">
+                                <i class="fas fa-user-circle"></i>
+                            </div>
+                            <div class="author-info">
+                                <h4>Rahul Verma</h4>
+                                <div class="author-rating">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial-slide">
+                    <div class="testimonial-content">
+                        <div class="quote-icon">
+                            <i class="fas fa-quote-left"></i>
+                        </div>
+                        <p class="testimonial-text">As an Ayurvedic practitioner, I recommend this ghee to all my clients. The quality is exceptional and it's perfect for both cooking and medicinal purposes.</p>
+                        <div class="testimonial-author">
+                            <div class="author-image">
+                                <i class="fas fa-user-circle"></i>
+                            </div>
+                            <div class="author-info">
+                                <h4>Dr. Karthik Iyer</h4>
+                                <div class="author-rating">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star-half-alt"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="testimonial-indicators">
+                <span class="indicator active" data-slide="0"></span>
+                <span class="indicator" data-slide="1"></span>
+                <span class="indicator" data-slide="2"></span>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Newsletter Section -->
+    <section class="newsletter">
+        <div class="container">
+            <div class="newsletter-content">
+                <h2>Subscribe to Our Newsletter</h2>
+                <p>Get updates on new products, special offers, and health tips.</p>
+                <form class="newsletter-form" method="post" action="{% url 'newsletter_subscribe' %}">
+                    {% csrf_token %}
+                    <input type="email" name="email" placeholder="Enter your email address" required>
+                    <button type="submit" class="primary-btn">Subscribe</button>
+                </form>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-column">
+                    <div class="footer-logo">
+                        <img src="{% static 'store/images/banner2.jpg' %}" alt="Pure Desi Ghee" style="max-height: 40px; object-fit: contain;">
+                    </div>
+                    <p>We bring you premium A2 desi ghee made using the traditional 'bilona' method, preserving all the nutrients and medicinal properties.</p>
+                    <div class="footer-social">
+                        <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/shop/">Shop</a></li>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">FAQs</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Customer Service</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Track Order</a></li>
+                        <li><a href="#">Shipping Policy</a></li>
+                        <li><a href="#">Return Policy</a></li>
+                        <li><a href="#">Terms & Conditions</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Contact Us</h3>
+                    <div class="contact-info">
+                        <p><i class="fas fa-phone-alt"></i> +91 9654270726</p>
+                        <p><i class="fas fa-envelope"></i> info@desighee.com</p>
+                        <p><i class="fas fa-map-marker-alt"></i> Delhi, India</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="payment-methods">
+                <h4>We Accept</h4>
+                <div class="payment-icons">
+                    <i class="fab fa-cc-visa"></i>
+                    <i class="fab fa-cc-mastercard"></i>
+                    <i class="fab fa-cc-amex"></i>
+                    <i class="fab fa-cc-paypal"></i>
+                    <i class="fab fa-google-pay"></i>
+                    <i class="fab fa-amazon-pay"></i>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 Pure Desi Ghee. All Rights Reserved.</p>
+                <p style="margin-top: 10px; font-style: italic; color: #888;">Made with Love by gaumaatri</p>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Hero Slider
+            const heroSlides = document.querySelectorAll('.hero-slide');
+            const heroIndicators = document.querySelectorAll('.hero-indicators .indicator');
+            let currentHeroSlide = 0;
+            
+            function showHeroSlide(index) {
+                heroSlides.forEach(slide => slide.classList.remove('active'));
+                heroIndicators.forEach(indicator => indicator.classList.remove('active'));
+                
+                heroSlides[index].classList.add('active');
+                heroIndicators[index].classList.add('active');
+            }
+            
+            heroIndicators.forEach((indicator, index) => {
+                indicator.addEventListener('click', () => {
+                    showHeroSlide(index);
+                    currentHeroSlide = index;
+                });
+            });
+            
+            // Auto slide for hero
+            setInterval(() => {
+                currentHeroSlide = (currentHeroSlide + 1) % heroSlides.length;
+                showHeroSlide(currentHeroSlide);
+            }, 5000);
+            
+            // Testimonial Slider
+            const testimonialSlides = document.querySelectorAll('.testimonial-slide');
+            const testimonialIndicators = document.querySelectorAll('.testimonial-indicators .indicator');
+            let currentTestimonialSlide = 0;
+            
+            function showTestimonialSlide(index) {
+                testimonialSlides.forEach(slide => slide.classList.remove('active'));
+                testimonialIndicators.forEach(indicator => indicator.classList.remove('active'));
+                
+                testimonialSlides[index].classList.add('active');
+                testimonialIndicators[index].classList.add('active');
+            }
+            
+            testimonialIndicators.forEach((indicator, index) => {
+                indicator.addEventListener('click', () => {
+                    showTestimonialSlide(index);
+                    currentTestimonialSlide = index;
+                });
+            });
+            
+            // Auto slide for testimonials
+            setInterval(() => {
+                currentTestimonialSlide = (currentTestimonialSlide + 1) % testimonialSlides.length;
+                showTestimonialSlide(currentTestimonialSlide);
+            }, 7000);
+        });
+    </script>
+    <script>
+        // Handle image errors
+        document.addEventListener('DOMContentLoaded', function() {
+            const productImages = document.querySelectorAll('.product-img');
+            const fallbackImage = "{{ fallback_image }}";
+            productImages.forEach(function(img) {
+                img.onerror = function() {
+                    this.src = fallbackImage;
+                };
+            });
+            
+            // Search functionality
+            const searchToggle = document.getElementById('search-toggle');
+            const searchFormContainer = document.querySelector('.search-form-container');
+            
+            if (searchToggle && searchFormContainer) {
+                searchToggle.addEventListener('click', function() {
+                    searchFormContainer.classList.toggle('active');
+                });
+                
+                // Close search form when clicking outside
+                document.addEventListener('click', function(event) {
+                    if (!searchToggle.contains(event.target) && !searchFormContainer.contains(event.target)) {
+                        searchFormContainer.classList.remove('active');
+                    }
+                });
+            }
+            
+            // Hero slider functionality
+            const heroSlides = document.querySelectorAll('.hero-slide');
+            const indicators = document.querySelectorAll('.hero-indicators .indicator');
+            let currentSlide = 0;
+            let slideInterval;
+            
+            function showSlide(index) {
+                heroSlides.forEach(slide => slide.classList.remove('active'));
+                indicators.forEach(indicator => indicator.classList.remove('active'));
+                
+                heroSlides[index].classList.add('active');
+                indicators[index].classList.add('active');
+                currentSlide = index;
+            }
+            
+            function nextSlide() {
+                currentSlide = (currentSlide + 1) % heroSlides.length;
+                showSlide(currentSlide);
+            }
+            
+            // Start automatic slideshow
+            function startSlideshow() {
+                slideInterval = setInterval(nextSlide, 5000);
+            }
+            
+            // Initialize slideshow
+            if (heroSlides.length > 0) {
+                startSlideshow();
+                
+                // Click event for indicators
+                indicators.forEach((indicator, index) => {
+                    indicator.addEventListener('click', () => {
+                        clearInterval(slideInterval);
+                        showSlide(index);
+                        startSlideshow();
+                    });
+                });
+            }
+            
+            // Product card hover effects
+            const productCards = document.querySelectorAll('.product-card');
+            
+            productCards.forEach(card => {
+                const actions = card.querySelector('.product-actions');
+                const image = card.querySelector('.product-img');
+                
+                card.addEventListener('mouseenter', () => {
+                    if (actions) actions.style.bottom = '0';
+                    if (image) image.style.transform = 'scale(1.05)';
+                    card.style.transform = 'translateY(-5px)';
+                    card.style.boxShadow = '0 15px 30px rgba(0,0,0,0.1)';
+                });
+                
+                card.addEventListener('mouseleave', () => {
+                    if (actions) actions.style.bottom = '-50px';
+                    if (image) image.style.transform = 'scale(1)';
+                    card.style.transform = 'translateY(0)';
+                    card.style.boxShadow = '0 10px 20px rgba(0,0,0,0.05)';
+                });
+            });
+            
+            // Add to cart button hover effect
+            const addToCartButtons = document.querySelectorAll('.add-to-cart-btn');
+            
+            addToCartButtons.forEach(button => {
+                button.addEventListener('mouseenter', () => {
+                    button.style.backgroundColor = '#333';
+                });
+                
+                button.addEventListener('mouseleave', () => {
+                    button.style.backgroundColor = 'var(--royal-gold)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

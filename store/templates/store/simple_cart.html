@@ -1,0 +1,158 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Cart - Premium A2 Desi Ghee</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .cart-item {
+            border-bottom: 1px solid #eee;
+            padding: 15px 0;
+            display: flex;
+            align-items: center;
+        }
+        .product-name {
+            flex-grow: 1;
+            font-weight: 500;
+        }
+        .product-price {
+            font-weight: bold;
+            color: #D4AF37;
+            margin: 0 20px;
+        }
+        .quantity-control {
+            display: flex;
+            align-items: center;
+        }
+        button {
+            background-color: #D4AF37;
+            border: none;
+            color: white;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        input[type="number"] {
+            width: 50px;
+            padding: 5px;
+            text-align: center;
+            margin: 0 10px;
+        }
+        .total {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid #eee;
+            text-align: right;
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Your Shopping Cart</h1>
+        
+        {% if cart_items %}
+            {% for item in cart_items %}
+            <div class="cart-item">
+                <span class="product-name">{{ item.product.name }}</span>
+                <span class="product-price">₹{{ item.product.discounted_price|floatformat:2 }}</span>
+                <div class="quantity-control">
+                    <button onclick="decreaseQuantity('{{ item.product.id }}')">-</button>
+                    <input type="number" id="quantity-{{ item.product.id }}" value="{{ item.quantity }}" min="1" onchange="updateItemTotal('{{ item.product.id }}')">
+                    <button onclick="increaseQuantity('{{ item.product.id }}')">+</button>
+                </div>
+                <span class="item-total" id="item-total-{{ item.product.id }}">₹{{ item.item_total|floatformat:2 }}</span>
+            </div>
+            {% endfor %}
+            
+            <div class="total">
+                <div>Subtotal: <span id="subtotal">₹{{ subtotal|floatformat:2 }}</span></div>
+                <div>Shipping: <span id="shipping">{% if shipping_cost == 0 %}Free{% else %}₹{{ shipping_cost|floatformat:2 }}{% endif %}</span></div>
+                <div>Total: <span id="total">₹{{ total|floatformat:2 }}</span></div>
+            </div>
+        {% else %}
+            <p>Your cart is empty.</p>
+        {% endif %}
+    </div>
+
+    <script>
+        function decreaseQuantity(productId) {
+            const input = document.getElementById('quantity-' + productId);
+            if (parseInt(input.value) > 1) {
+                input.value = parseInt(input.value) - 1;
+                updateItemTotal(productId);
+                updateCart(productId);
+            }
+        }
+        
+        function increaseQuantity(productId) {
+            const input = document.getElementById('quantity-' + productId);
+            input.value = parseInt(input.value) + 1;
+            updateItemTotal(productId);
+            updateCart(productId);
+        }
+        
+        function updateItemTotal(productId) {
+            const quantity = document.getElementById('quantity-' + productId).value;
+            const price = parseFloat(document.querySelector('.cart-item:has(#quantity-' + productId + ') .product-price').innerText.replace('₹', ''));
+            const total = price * quantity;
+            document.getElementById('item-total-' + productId).innerText = '₹' + total.toFixed(2);
+        }
+        
+        function updateCart(productId) {
+            // Get CSRF token
+            const csrfToken = '{{ csrf_token }}';
+            const quantity = document.getElementById('quantity-' + productId).value;
+            
+            // Create form data
+            const formData = new FormData();
+            formData.append('csrfmiddlewaretoken', csrfToken);
+            formData.append('update_cart', '1');
+            formData.append('single_product_id', productId);
+            formData.append('quantity_' + productId, quantity);
+            
+            // Send AJAX request
+            fetch('/simple_cart/', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('subtotal').innerText = '₹' + data.subtotal.toFixed(2);
+                    document.getElementById('shipping').innerText = data.shipping_cost === 0 ? 'Free' : '₹' + data.shipping_cost.toFixed(2);
+                    document.getElementById('total').innerText = '₹' + data.total.toFixed(2);
+                }
+            })
+            .catch(error => {
+                console.error('Error updating cart:', error);
+            });
+        }
+    </script>
+</body>
+</html>
