@@ -199,6 +199,83 @@ def cart(request):
     cart = request.session.get('cart', [])
     saved_for_later = request.session.get('saved_for_later', [])
     
+    print(f"\n=== CART VIEW START ===")
+    print(f"Session ID: {request.session.session_key}")
+    print(f"Raw cart from session BEFORE normalization: {cart}")
+
+    # Normalize legacy cart data IMMEDIATELY to ensure consistent comparisons (e.g., size_id as '')
+    # This MUST happen before any POST processing so delete operations work correctly
+    try:
+        normalized = False
+        # First pass: normalize fields
+        for item in cart:
+            if isinstance(item, dict):
+                # Ensure product_id is present and stringable
+                if 'product_id' in item and item['product_id'] is None:
+                    item['product_id'] = ''
+                    normalized = True
+                # Normalize size_id to '' (empty string) if missing or None
+                if item.get('size_id') is None:
+                    item['size_id'] = ''
+                    normalized = True
+                    print(f"  Normalized size_id from None to '' for product {item.get('product_id')}")
+                # Ensure quantity is an int >= 1
+                try:
+                    if 'quantity' in item:
+                        q = int(item['quantity'])
+                        if q <= 0:
+                            item['quantity'] = 1
+                            normalized = True
+                        else:
+                            item['quantity'] = q
+                    else:
+                        item['quantity'] = 1
+                        normalized = True
+                except Exception:
+                    item['quantity'] = 1
+                    normalized = True
+
+        # Second pass: deduplicate by (product_id, size_id)
+        combined = {}
+        for item in cart:
+            if not isinstance(item, dict):
+                continue
+            pid = str(item.get('product_id', ''))
+            sid = str(item.get('size_id') or '')
+            if not pid:
+                continue
+            key = (pid, sid)
+            if key not in combined:
+                combined[key] = {
+                    'product_id': pid,
+                    'size_id': sid,
+                    'quantity': int(item.get('quantity', 1)),
+                    'price': item.get('price')
+                }
+            else:
+                # Merge quantities; prefer existing price
+                combined[key]['quantity'] += int(item.get('quantity', 1))
+                normalized = True
+                print(f"  Merged duplicate entry for product {pid}, size {sid}")
+
+        new_cart_norm = list(combined.values()) if combined else []
+        if normalized or (combined and new_cart_norm != cart):
+            cart = new_cart_norm
+            request.session['cart'] = cart
+            request.session.modified = True
+            request.session.save()
+            print(f"Normalized & saved cart to DB: {cart}")
+        else:
+            cart = new_cart_norm if combined else cart
+            
+    except Exception as e:
+        print(f"ERROR normalizing cart data: {e}")
+        import traceback
+        traceback.print_exc()
+    
+    print(f"Cart AFTER normalization: {cart}")
+    print(f"=== END CART VIEW START ===\n")
+    
     # Debug: Add session tracking
     session_id = request.session.session_key
     logging.debug(f"Cart view - Session ID: {session_id}, Cart: {cart}")
@@ -236,14 +313,24 @@ def cart(request):
         if request.POST.get('delete_product'):
             product_id = request.POST.get('delete_product')
             size_id = request.POST.get('size_id')
-            logging.debug(f"Deleting product ID (POST): {product_id}, size: {size_id}")
-            logging.debug(f"Session ID before deletion: {request.session.session_key}")
-            logging.debug(f"Current cart contents: {cart}")
-            logging.debug(f"Cart item types: {[(type(item), item.keys() if isinstance(item, dict) else 'not dict') for item in cart]}")
+            print(f"\n=== DELETE REQUEST ===")
+            print(f"Deleting product ID (POST): {product_id}, size: {size_id}")
+            print(f"Session ID before deletion: {request.session.session_key}")
+            print(f"Current cart contents BEFORE delete: {cart}")
+            print(f"Cart has {len(cart)} items")
+            print(f"Cart item types: {[(type(item), item.keys() if isinstance(item, dict) else 'not dict') for item in cart]}")
             
             # Filter out the product-size combination to delete
             cart_before = len(cart)
-            logging.debug(f"Filtering with product_id='{product_id}' (type: {type(product_id)}), size_id='{size_id}' (type: {type(size_id)})")
+            print(f"\nFiltering with product_id='{product_id}' (type: {type(product_id)}), size_id='{size_id}' (type: {type(size_id)})")
+            
+            # Show each comparison
+            for idx, item in enumerate(cart):
+                pid_match = str(item.get('product_id', '')) == str(product_id)
+                sid_match = str(item.get('size_id') or '') == str(size_id or '')
+                will_remove = pid_match and sid_match
+                print(f"  Item {idx}: pid={repr(item.get('product_id'))}, sid={repr(item.get('size_id'))}")
+                print(f"    -> pid_match={pid_match}, sid_match={sid_match}, REMOVE={will_remove}")
             
             new_cart = [item for item in cart if not (
                 str(item.get('product_id', '')) == str(product_id) and 
@@ -255,12 +342,13 @@ def cart(request):
                 str(item.get('product_id', '')) == str(product_id) and 
                 str(item.get('size_id') or '') == str(size_id or '')
             )]
-            logging.debug(f"Items that would be removed: {removed_items}")
+            print(f"\nItems that WERE removed: {removed_items}")
             
             cart_after = len(new_cart)
             
-            logging.debug(f"Cart before deletion: {cart_before} items, after: {cart_after} items")
-            logging.debug(f"Items removed: {cart_before - cart_after}")
+            print(f"\nCart before deletion: {cart_before} items, after: {cart_after} items")
+            print(f"Items removed: {cart_before - cart_after}")
+            print(f"New cart contents: {new_cart}")
             
             # Save the new cart to session and force save for critical operation
             request.session['cart'] = new_cart
@@ -268,20 +356,21 @@ def cart(request):
             request.session.save()  # Force save for delete operations to ensure persistence
             
             # Verify the session was actually saved
-            logging.debug(f"Cart after save: {request.session.get('cart', [])}")
-            logging.debug(f"Session key after save: {request.session.session_key}")
-            logging.debug(f"Session modified: {request.session.modified}")
+            print(f"Cart after save: {request.session.get('cart', [])}")
+            print(f"Session key after save: {request.session.session_key}")
+            print(f"Session modified: {request.session.modified}")
             
             # Check database session
             from django.contrib.sessions.models import Session
             try:
                 db_session = Session.objects.get(session_key=request.session.session_key)
                 decoded = db_session.get_decoded()
-                logging.debug(f"Database session cart: {decoded.get('cart', [])}")
+                print(f"Database session cart: {decoded.get('cart', [])}")
             except Session.DoesNotExist:
-                logging.error(f"Session {request.session.session_key} not found in database!")
+                print(f"ERROR: Session {request.session.session_key} not found in database!")
             except Exception as e:
-                logging.error(f"Error checking database session: {e}")
+                print(f"ERROR checking database session: {e}")
+            print(f"=== END DELETE REQUEST ===\n")
 
             # Return minimal JSON for AJAX delete (fast response, no DB queries)
             if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
@@ -597,25 +686,27 @@ def cart(request):
             # Get size information and determine price (prefer stored cart item price)
             selected_size = None
             available_stock = product.stock_quantity
+            
+            # ALWAYS load the size object if size_id exists (needed for template display)
+            if size_id and str(size_id).isdigit():
+                try:
+                    selected_size = ProductSize.objects.get(id=int(size_id))
+                    # Try to get ProductStock for exact stock
+                    try:
+                        stock_obj = ProductStock.objects.get(product=product, size_id=size_id)
+                        available_stock = stock_obj.quantity
+                    except ProductStock.DoesNotExist:
+                        available_stock = product.stock_quantity
+                except ProductSize.DoesNotExist:
+                    pass
+            
             # Determine price: prefer the price saved in the cart session
             item_price = item.get('price')
             if item_price is None:
                 if size_id:
-                    try:
-                        selected_size = ProductSize.objects.get(id=size_id)
-                        # Try to get ProductStock for exact stock
-                        try:
-                            stock_obj = ProductStock.objects.get(product=product, size_id=size_id)
-                            available_stock = stock_obj.quantity
-                        except ProductStock.DoesNotExist:
-                            available_stock = product.stock_quantity
-                        item_price = product.get_price_for_size(int(size_id))
-                    except ProductSize.DoesNotExist:
-                        item_price = product.discounted_price
-                        available_stock = product.stock_quantity
+                    item_price = product.get_price_for_size(int(size_id)) if selected_size else product.discounted_price
                 else:
                     item_price = product.discounted_price
-                    available_stock = product.stock_quantity
 
             item_total = Decimal(str(item_price)) * quantity
 
@@ -741,7 +832,43 @@ import time
 
 def checkout(request):
     cart = request.session.get('cart', [])
-    print(f"Checkout cart contents: {cart}")
+    
+    # Normalize cart data immediately (same as cart view)
+    print(f"\n=== CHECKOUT VIEW START ===")
+    print(f"Session ID: {request.session.session_key}")
+    print(f"Raw cart from session: {cart}")
+    
+    try:
+        normalized = False
+        for item in cart:
+            if isinstance(item, dict):
+                if 'product_id' in item and item['product_id'] is None:
+                    item['product_id'] = ''
+                    normalized = True
+                if item.get('size_id') is None:
+                    item['size_id'] = ''
+                    normalized = True
+                    print(f"  Normalized size_id from None to '' for product {item.get('product_id')}")
+                try:
+                    if 'quantity' in item:
+                        q = int(item['quantity'])
+                        item['quantity'] = max(1, q)
+                    else:
+                        item['quantity'] = 1
+                        normalized = True
+                except Exception:
+                    item['quantity'] = 1
+                    normalized = True
+        
+        if normalized:
+            request.session['cart'] = cart
+            request.session.modified = True
+            request.session.save()
+            print(f"Normalized cart in checkout: {cart}")
+    except Exception as e:
+        print(f"ERROR normalizing cart in checkout: {e}")
+    
+    print(f"=== END CHECKOUT VIEW START ===\n")
     
     # Get checkout session ID or create a new one
     session_id = request.GET.get('session_id')
@@ -752,13 +879,28 @@ def checkout(request):
         session_id = str(uuid.uuid4().hex)
         return redirect(f'/checkout/?session_id={session_id}&step=address')
     
-    # Handle delete product request
+    # Handle delete product request - NOW WITH SIZE SUPPORT
     if request.method == 'POST' and request.POST.get('delete_product'):
         product_id = request.POST.get('delete_product')
-        # Filter out the product to delete
-        new_cart = [item for item in cart if str(item.get('product_id', '')) != str(product_id)]
+        size_id = request.POST.get('size_id', '')  # Get size_id from POST
+        
+        print(f"\n=== CHECKOUT DELETE REQUEST ===")
+        print(f"Deleting product_id={product_id}, size_id={size_id}")
+        print(f"Cart before: {cart}")
+        
+        # Filter out the product-size combination to delete (same logic as cart view)
+        new_cart = [item for item in cart if not (
+            str(item.get('product_id', '')) == str(product_id) and 
+            str(item.get('size_id') or '') == str(size_id or '')
+        )]
+        
+        print(f"Cart after: {new_cart}")
+        print(f"Removed {len(cart) - len(new_cart)} items")
+        print(f"=== END CHECKOUT DELETE REQUEST ===\n")
+        
         request.session['cart'] = new_cart
         request.session.modified = True
+        request.session.save()  # Force save
         return redirect(f'/checkout/?session_id={session_id}&step={checkout_step}')
     
     # Update quantities
