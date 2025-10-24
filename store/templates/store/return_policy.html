@@ -1,0 +1,241 @@
+{% extends 'store/base.html' %}
+{% load static %}
+
+{% block title %}Return Policy - Gaumaatri{% endblock %}
+
+{% block content %}
+<style>
+    .return-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 40px 20px;
+        font-family: 'Lato', sans-serif;
+        line-height: 1.8;
+        color: #333;
+    }
+    .return-header {
+        text-align: center;
+        margin-bottom: 40px;
+        padding: 30px 0;
+        background: linear-gradient(135deg, #D4AF37 0%, #F5E7A9 100%);
+        color: white;
+        border-radius: 10px;
+    }
+    .return-header h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
+    .return-section {
+        background: white;
+        padding: 30px;
+        margin-bottom: 20px;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    .return-section h2 {
+        color: #D4AF37;
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 15px;
+        border-bottom: 2px solid #F5E7A9;
+        padding-bottom: 10px;
+    }
+    .highlight {
+        background: #FFF8DC;
+        padding: 15px;
+        border-radius: 5px;
+        border-left: 4px solid #D4AF37;
+        margin: 15px 0;
+    }
+    .steps {
+        counter-reset: step-counter;
+        list-style: none;
+        padding: 0;
+    }
+    .steps li {
+        counter-increment: step-counter;
+        margin-bottom: 20px;
+        padding-left: 50px;
+        position: relative;
+    }
+    .steps li::before {
+        content: counter(step-counter);
+        position: absolute;
+        left: 0;
+        top: 0;
+        background: #D4AF37;
+        color: white;
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+    }
+    @media (max-width: 768px) {
+        .return-header h1 {
+            font-size: 2rem;
+        }
+        .return-container {
+            padding: 20px 15px;
+        }
+    }
+</style>
+
+<div class="return-container">
+    <div class="return-header">
+        <h1>Return & Refund Policy</h1>
+        <p>Gaumaatri - Your Satisfaction is Our Priority</p>
+    </div>
+
+    <div class="return-section">
+        <h2>1. Return Eligibility</h2>
+        <p>We accept returns under the following conditions:</p>
+        <ul>
+            <li><strong>Time Frame:</strong> Within 7 days of delivery</li>
+            <li><strong>Product Condition:</strong> Unopened, unused, and in original packaging</li>
+            <li><strong>Seal Intact:</strong> Product seal must be unbroken</li>
+            <li><strong>Original Receipt:</strong> Order invoice or receipt must be provided</li>
+        </ul>
+        <div class="highlight">
+            <strong>Food Safety Note:</strong> Due to the nature of food products, we cannot accept returns of opened or used items unless there is a quality issue.
+        </div>
+    </div>
+
+    <div class="return-section">
+        <h2>2. Non-Returnable Items</h2>
+        <p>The following items cannot be returned:</p>
+        <ul>
+            <li>Opened or partially used products</li>
+            <li>Products with broken or tampered seals</li>
+            <li>Items damaged due to misuse or negligence</li>
+            <li>Products purchased during special promotional sales (unless defective)</li>
+            <li>Products returned after 7 days of delivery</li>
+        </ul>
+    </div>
+
+    <div class="return-section">
+        <h2>3. Valid Reasons for Return</h2>
+        <p>We accept returns for:</p>
+        <ul>
+            <li><strong>Wrong Product:</strong> Received a different product than ordered</li>
+            <li><strong>Damaged in Transit:</strong> Product received in damaged condition</li>
+            <li><strong>Quality Issues:</strong> Product not meeting quality standards</li>
+            <li><strong>Expired Product:</strong> Product received past expiry date (highly unlikely but covered)</li>
+            <li><strong>Manufacturing Defect:</strong> Seal or container defects</li>
+        </ul>
+    </div>
+
+    <div class="return-section">
+        <h2>4. Return Process</h2>
+        <ol class="steps">
+            <li>
+                <strong>Contact Us</strong><br>
+                Reach out within 7 days via email, phone, or WhatsApp with your order number and reason for return.
+            </li>
+            <li>
+                <strong>Approval</strong><br>
+                Our team will review your request and approve if eligible. You'll receive return instructions.
+            </li>
+            <li>
+                <strong>Packaging</strong><br>
+                Pack the product securely in its original packaging with all accessories and invoice.
+            </li>
+            <li>
+                <strong>Pickup/Shipping</strong><br>
+                We'll arrange pickup or provide return shipping address. Keep tracking details safe.
+            </li>
+            <li>
+                <strong>Inspection</strong><br>
+                Once received, we'll inspect the product within 2-3 business days.
+            </li>
+            <li>
+                <strong>Refund/Replacement</strong><br>
+                After approval, refund or replacement will be processed within 7-10 business days.
+            </li>
+        </ol>
+    </div>
+
+    <div class="return-section">
+        <h2>5. Refund Methods</h2>
+        <ul>
+            <li><strong>Original Payment Method:</strong> Refunds processed to original payment source</li>
+            <li><strong>UPI Payments:</strong> Refunded to the same UPI ID</li>
+            <li><strong>Cash on Delivery:</strong> Refunded via bank transfer (account details required)</li>
+            <li><strong>Processing Time:</strong> 7-10 business days after approval</li>
+        </ul>
+        <p><em>Note: Bank processing times may vary. Please allow 5-7 additional days for amount to reflect in your account.</em></p>
+    </div>
+
+    <div class="return-section">
+        <h2>6. Replacement Policy</h2>
+        <p>You may choose replacement instead of refund for:</p>
+        <ul>
+            <li>Wrong product delivered</li>
+            <li>Damaged products</li>
+            <li>Quality issues</li>
+        </ul>
+        <p>Replacement products will be shipped within 3-5 business days of approval, subject to stock availability.</p>
+    </div>
+
+    <div class="return-section">
+        <h2>7. Return Shipping Costs</h2>
+        <ul>
+            <li><strong>Our Fault:</strong> We cover return shipping for wrong/damaged products</li>
+            <li><strong>Customer Change of Mind:</strong> Customer bears return shipping costs (only if unopened)</li>
+            <li><strong>Pickup Service:</strong> Free pickup arranged for eligible returns</li>
+        </ul>
+    </div>
+
+    <div class="return-section">
+        <h2>8. Cancellation Policy</h2>
+        <ul>
+            <li><strong>Before Dispatch:</strong> Orders can be cancelled free of charge</li>
+            <li><strong>After Dispatch:</strong> Regular return policy applies</li>
+            <li><strong>How to Cancel:</strong> Contact customer service immediately with order number</li>
+            <li><strong>Refund:</strong> Full refund processed within 3-5 business days for cancelled orders</li>
+        </ul>
+        <div class="highlight">
+            <strong>Quick Tip:</strong> To cancel your order, contact us immediately at +91 7739305520 or via WhatsApp.
+        </div>
+    </div>
+
+    <div class="return-section">
+        <h2>9. Quality Guarantee</h2>
+        <p>At Gaumaatri, we stand behind the quality of our products:</p>
+        <ul>
+            <li>100% authentic A2 Desi Ghee made using traditional Bilona method</li>
+            <li>Sourced from healthy, indigenous cows</li>
+            <li>No additives, preservatives, or adulterants</li>
+            <li>Quality tested at every stage</li>
+        </ul>
+        <p>If you're not satisfied with the quality, we'll make it right!</p>
+    </div>
+
+    <div class="return-section">
+        <h2>10. Important Notes</h2>
+        <ul>
+            <li>Always inspect products upon delivery in presence of delivery personnel</li>
+            <li>Report damage or quality issues within 24 hours with photos</li>
+            <li>Keep original packaging and invoice for returns</li>
+            <li>Refund amount does not include shipping charges (except in case of our error)</li>
+            <li>Promotional discounts cannot be refunded separately</li>
+        </ul>
+    </div>
+
+    <div class="return-section" style="background: linear-gradient(135deg, #D4AF37 0%, #F5E7A9 100%); color: white;">
+        <h2 style="color: white; border-bottom-color: white;">Need Help with Returns?</h2>
+        <p>Our customer service team is here to help!</p>
+        <p><strong>📧 Email:</strong> gaumaatri@gmail.com</p>
+        <p><strong>📞 Phone:</strong> +91 7739305520</p>
+        <p><strong>💬 WhatsApp:</strong> <a href="https://wa.me/+917739305520" style="color: white; text-decoration: underline;" target="_blank">Click to chat</a></p>
+        <p><strong>⏰ Hours:</strong> Monday-Saturday, 9 AM - 6 PM IST</p>
+    </div>
+
+    <div style="text-align: center; margin-top: 30px; padding: 20px; background: #f8f9fa; border-radius: 10px;">
+        <p style="margin: 0; color: #666;">© 2025 Gaumaatri. All Rights Reserved.</p>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,243 @@
+{% extends 'store/base.html' %}
+{% load static %}
+
+{% block title %}Customer Service - Gaumaatri{% endblock %}
+
+{% block content %}
+<style>
+    .service-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 40px 20px;
+        font-family: 'Lato', sans-serif;
+    }
+    .service-header {
+        text-align: center;
+        margin-bottom: 50px;
+        padding: 30px 0;
+        background: linear-gradient(135deg, #D4AF37 0%, #F5E7A9 100%);
+        color: white;
+        border-radius: 10px;
+    }
+    .service-header h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
+    .contact-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 30px;
+        margin-bottom: 40px;
+    }
+    .contact-card {
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        text-align: center;
+        transition: transform 0.3s;
+    }
+    .contact-card:hover {
+        transform: translateY(-5px);
+    }
+    .contact-card i {
+        font-size: 3rem;
+        color: #D4AF37;
+        margin-bottom: 15px;
+    }
+    .contact-card h3 {
+        color: #333;
+        margin-bottom: 15px;
+    }
+    .contact-card a {
+        display: inline-block;
+        margin-top: 15px;
+        padding: 10px 25px;
+        background: linear-gradient(135deg, #D4AF37 0%, #F5E7A9 100%);
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        font-weight: 600;
+        transition: transform 0.3s;
+    }
+    .contact-card a:hover {
+        transform: scale(1.05);
+    }
+    .faq-section {
+        background: white;
+        padding: 40px;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        margin-bottom: 30px;
+    }
+    .faq-section h2 {
+        color: #D4AF37;
+        font-size: 2rem;
+        margin-bottom: 30px;
+        text-align: center;
+        border-bottom: 2px solid #F5E7A9;
+        padding-bottom: 15px;
+    }
+    .faq-item {
+        margin-bottom: 25px;
+        padding: 20px;
+        background: #f8f9fa;
+        border-radius: 8px;
+        border-left: 4px solid #D4AF37;
+    }
+    .faq-item h3 {
+        color: #333;
+        margin-bottom: 10px;
+        font-size: 1.2rem;
+    }
+    .faq-item p {
+        color: #666;
+        line-height: 1.6;
+        margin: 0;
+    }
+    .service-hours {
+        background: linear-gradient(135deg, #D4AF37 0%, #F5E7A9 100%);
+        color: white;
+        padding: 30px;
+        border-radius: 10px;
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    .service-hours h3 {
+        margin-top: 0;
+    }
+    @media (max-width: 768px) {
+        .service-header h1 {
+            font-size: 2rem;
+        }
+        .faq-section {
+            padding: 25px;
+        }
+    }
+</style>
+
+<div class="service-container">
+    <div class="service-header">
+        <h1>Customer Service</h1>
+        <p>We're here to help! Reach out to us anytime</p>
+    </div>
+
+    <div class="service-hours">
+        <h3>⏰ Service Hours</h3>
+        <p style="font-size: 1.2rem; margin: 10px 0;"><strong>Monday - Saturday: 9:00 AM - 6:00 PM IST</strong></p>
+        <p>Sunday: Closed</p>
+        <p style="margin-top: 15px; font-size: 0.9rem;">We typically respond within 2-4 hours during business hours</p>
+    </div>
+
+    <div class="contact-grid">
+        <div class="contact-card">
+            <i class="fas fa-phone-alt"></i>
+            <h3>Call Us</h3>
+            <p>Speak directly with our customer service team</p>
+            <p style="font-size: 1.3rem; font-weight: 600; color: #D4AF37; margin: 15px 0;">+91 7739305520</p>
+            <a href="tel:+917739305520">📞 Call Now</a>
+        </div>
+
+        <div class="contact-card">
+            <i class="fab fa-whatsapp"></i>
+            <h3>WhatsApp</h3>
+            <p>Get instant support via WhatsApp chat</p>
+            <p style="font-size: 1.3rem; font-weight: 600; color: #D4AF37; margin: 15px 0;">+91 7739305520</p>
+            <a href="https://wa.me/+917739305520" target="_blank">💬 Chat on WhatsApp</a>
+        </div>
+
+        <div class="contact-card">
+            <i class="fas fa-envelope"></i>
+            <h3>Email Support</h3>
+            <p>Send us your queries and feedback</p>
+            <p style="font-size: 1.1rem; font-weight: 600; color: #D4AF37; margin: 15px 0;">gaumaatri@gmail.com</p>
+            <a href="mailto:gaumaatri@gmail.com">📧 Send Email</a>
+        </div>
+
+        <div class="contact-card">
+            <i class="fas fa-comments"></i>
+            <h3>Contact Form</h3>
+            <p>Fill out our contact form for detailed inquiries</p>
+            <p style="margin: 15px 0;">Quick response guaranteed</p>
+            <a href="{% url 'contact' %}">✍️ Contact Form</a>
+        </div>
+    </div>
+
+    <div class="faq-section">
+        <h2>Frequently Asked Questions</h2>
+
+        <div class="faq-item">
+            <h3>❓ How do I place an order?</h3>
+            <p>Browse our <a href="{% url 'shop' %}" style="color: #D4AF37;">products</a>, add items to cart, proceed to checkout, and complete payment. You'll receive order confirmation via email and WhatsApp.</p>
+        </div>
+
+        <div class="faq-item">
+            <h3>📦 How can I track my order?</h3>
+            <p>Visit our <a href="{% url 'track_order' %}" style="color: #D4AF37;">Track Order</a> page or check your email for tracking details. You can also contact us with your order ID.</p>
+        </div>
+
+        <div class="faq-item">
+            <h3>🚚 What are the shipping charges?</h3>
+            <p>Free shipping on orders above ₹999. For orders below ₹999, shipping charges range from ₹50-100 depending on location. See our <a href="{% url 'shipping_policy' %}" style="color: #D4AF37;">Shipping Policy</a> for details.</p>
+        </div>
+
+        <div class="faq-item">
+            <h3>💳 What payment methods do you accept?</h3>
+            <p>We accept Cash on Delivery (COD) and UPI payments. Both methods are secure and convenient.</p>
+        </div>
+
+        <div class="faq-item">
+            <h3>🔄 Can I return or exchange my order?</h3>
+            <p>Yes! We accept returns within 7 days for unopened products in original packaging. See our <a href="{% url 'return_policy' %}" style="color: #D4AF37;">Return Policy</a> for complete details.</p>
+        </div>
+
+        <div class="faq-item">
+            <h3>🐄 Is your ghee really made from A2 milk?</h3>
+            <p>Absolutely! Our ghee is made from 100% pure A2 milk sourced from indigenous Indian cows using the traditional Bilona method. No additives or preservatives.</p>
+        </div>
+
+        <div class="faq-item">
+            <h3>📅 How long does delivery take?</h3>
+            <p>Delivery times vary by location:
+                <ul style="margin-top: 10px; padding-left: 20px;">
+                    <li>Delhi NCR: 2-3 business days</li>
+                    <li>Major Cities: 3-5 business days</li>
+                    <li>Other Areas: 5-7 business days</li>
+                </ul>
+            </p>
+        </div>
+
+        <div class="faq-item">
+            <h3>🏷️ Do you offer discounts or coupons?</h3>
+            <p>Yes! Subscribe to our newsletter for exclusive offers. Follow us on social media for updates on seasonal sales and promotions.</p>
+        </div>
+
+        <div class="faq-item">
+            <h3>👤 How do I create an account?</h3>
+            <p>Click on "Login" in the navigation menu, then select "Register" to create your account. You'll enjoy faster checkouts and order tracking.</p>
+        </div>
+
+        <div class="faq-item">
+            <h3>📱 Can I modify my order after placing it?</h3>
+            <p>Contact us immediately at +91 7739305520 or via WhatsApp. We can modify orders before they're dispatched.</p>
+        </div>
+    </div>
+
+    <div class="faq-section">
+        <h2>Still Have Questions?</h2>
+        <p style="text-align: center; font-size: 1.1rem; margin-bottom: 20px;">
+            Can't find the answer you're looking for? Our customer service team is always ready to help!
+        </p>
+        <div style="text-align: center;">
+            <a href="{% url 'contact' %}" style="display: inline-block; padding: 15px 40px; background: linear-gradient(135deg, #D4AF37 0%, #F5E7A9 100%); color: white; text-decoration: none; border-radius: 5px; font-weight: 600; font-size: 1.1rem;">
+                Contact Us Now
+            </a>
+        </div>
+    </div>
+
+    <div style="text-align: center; margin-top: 30px; padding: 20px; background: #f8f9fa; border-radius: 10px;">
+        <p style="margin: 0; color: #666;">© 2025 Gaumaatri. All Rights Reserved.</p>
+    </div>
+</div>
+{% endblock %}

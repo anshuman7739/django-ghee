@@ -1,42 +1,94 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Checkout - Premium A2 Desi Ghee</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'store/css/premium-cart.css' %}">
+{% extends 'store/base.html' %}
+{% load static %}
+
+{% block title %}Checkout - Gaumaatri{% endblock %}
+
+{% block extra_css %}
     <style>
         :root {
             --royal-gold: #D4AF37;
-                });
-            }
-            
-            // Add selection styling to payment methods
-            const paymentMethodInputs = document.querySelectorAll('input[name="payment_method"]');
-            paymentMethodInputs.forEach(input => {
-                input.addEventListener('change', function() {
-                    document.querySelectorAll('.payment-method').forEach(method => {
-                        method.classList.remove('selected');
-                    });
-                    
-                    this.closest('.payment-method').classList.add('selected');
-                });
-            });
-        });
-    </script>
-</body>
-</html>ight-gold: #F5E7A9;
+            --light-gold: #F5E7A9;
             --white: #FFFFFF;
             --off-white: #F8F8F8;
             --dark-text: #333333;
             --light-text: #777777;
             --gray-bg: #F5F5F5;
             --border-color: #E5E5E5;
+        }
+        
+        /* Ensure footer appears below checkout content */
+        .checkout-page {
+            min-height: 60vh;
+            padding-bottom: 40px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .page-title {
+            text-align: center;
+            font-size: 32px;
+            margin: 30px 0;
+            color: var(--dark-text);
+        }
+        
+        .checkout-content {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 30px;
+            margin-top: 30px;
+        }
+        
+        @media (max-width: 992px) {
+            .checkout-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .order-summary-container {
+                order: -1;
+            }
+            
+            .page-title {
+                font-size: 24px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .page-title {
+                font-size: 20px;
+                margin: 15px 0;
+            }
+            
+            .checkout-steps {
+                margin: 15px 0;
+            }
+            
+            .step-text {
+                font-size: 12px;
+            }
+            
+            .checkout-form,
+            .order-summary-container {
+                padding: 15px;
+            }
+            
+            .checkout-actions {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .checkout-back-btn,
+            .checkout-continue-btn {
+                width: 100%;
+                text-align: center;
+            }
         }
         
         /* Checkout Process Styles */
@@ -345,35 +397,9 @@
             background-color: #c19a30;
         }
     </style>
-</head>
-<body>
-    <!-- Top Announcement Bar -->
-    <div class="top-bar">WhatsApp: +91 9654270726 | Free Shipping on Orders Above ₹1000 | We're Happy to Help!</div>
-    
-    <!-- Header with Navigation -->
-    <header class="site-header">
-        <div class="container">
-            <nav class="navbar">
-                <a href="/" class="logo">
-                    <img src="{% static 'store/images/banner2.jpg' %}" alt="Premium Ghee Store" style="max-height: 50px; object-fit: contain;">
-                </a>
-                
-                <div class="nav-links">
-                    <a href="/" class="nav-link">Home</a>
-                    <a href="/shop/" class="nav-link">Shop</a>
-                    <a href="/benefits/" class="nav-link">Benefits</a>
-                    <a href="/about/" class="nav-link">About Us</a>
-                    <a href="/contact/" class="nav-link">Contact</a>
-                </div>
-                
-                <a href="/cart/" class="cart-icon">
-                    <i class="fas fa-shopping-cart"></i>
-                    <span class="badge">{{ cart_items|length }}</span>
-                </a>
-            </nav>
-        </div>
-    </header>
-    
+{% endblock %}
+
+{% block content %}
     <!-- Main Checkout Content -->
     <main class="checkout-page">
         <div class="container">
@@ -381,16 +407,20 @@
             
             <!-- Checkout Progress Steps -->
             <div class="checkout-steps">
-                <div class="step {% if step == 'address' or step == 'payment' or step == 'confirmation' %}active{% endif %}" id="step-address">
+                <div class="step {% if step == 'address' or step == 'payment' or step == 'payment-qr' or step == 'review' or step == 'confirmation' %}active{% endif %}" id="step-address">
                     <div class="step-number">1</div>
                     <div class="step-text">Shipping</div>
                 </div>
-                <div class="step {% if step == 'payment' or step == 'confirmation' %}active{% endif %}" id="step-payment">
+                <div class="step {% if step == 'payment' or step == 'payment-qr' or step == 'review' or step == 'confirmation' %}active{% endif %}" id="step-payment">
                     <div class="step-number">2</div>
                     <div class="step-text">Payment</div>
                 </div>
-                <div class="step {% if step == 'confirmation' %}active{% endif %}" id="step-confirmation">
+                <div class="step {% if step == 'review' or step == 'confirmation' %}active{% endif %}" id="step-review">
                     <div class="step-number">3</div>
+                    <div class="step-text">Review</div>
+                </div>
+                <div class="step {% if step == 'confirmation' %}active{% endif %}" id="step-confirmation">
+                    <div class="step-number">4</div>
                     <div class="step-text">Confirmation</div>
                 </div>
             </div>
@@ -538,32 +568,35 @@
                 
                 <!-- Step 2: Payment Method -->
                 {% elif step == 'payment' %}
-                <div class="checkout-form" id="payment-form">
-                    <h2 class="form-title">Payment Method</h2>
-                    <div class="payment-methods">
-                        <label class="payment-method selected">
-                            <input type="radio" name="payment_method" value="cod" checked>
-                            <strong>Cash on Delivery</strong>
-                            <p style="margin: 5px 0 0 25px; font-size: 14px; color: #777;">Pay with cash upon delivery.</p>
-                        </label>
+                <form method="POST" id="payment-form">
+                    {% csrf_token %}
+                    <div class="checkout-form">
+                        <h2 class="form-title">Payment Method</h2>
+                        <div class="payment-methods">
+                            <label class="payment-method selected">
+                                <input type="radio" name="payment_method" value="cod" checked>
+                                <strong>Cash on Delivery</strong>
+                                <p style="margin: 5px 0 0 25px; font-size: 14px; color: #777;">Pay with cash upon delivery.</p>
+                            </label>
+                            
+                            <label class="payment-method">
+                                <input type="radio" name="payment_method" value="upi">
+                                <strong>UPI Payment (Online)</strong>
+                                <p style="margin: 5px 0 0 25px; font-size: 14px; color: #777;">Pay online with UPI - Google Pay, PhonePe, Paytm, etc.</p>
+                            </label>
+                            
+                            <div class="form-group" style="margin-top: 20px;">
+                                <label class="form-label" for="payment-notes">Additional Payment Instructions (Optional)</label>
+                                <textarea class="form-input" id="payment-notes" name="payment_notes" rows="2"></textarea>
+                            </div>
+                        </div>
                         
-                        <label class="payment-method">
-                            <input type="radio" name="payment_method" value="upi">
-                            <strong>UPI Payment</strong>
-                            <p style="margin: 5px 0 0 25px; font-size: 14px; color: #777;">Pay with UPI apps like Google Pay, PhonePe or Paytm.</p>
-                        </label>
-                        
-                        <div class="form-group" style="margin-top: 20px;">
-                            <label class="form-label" for="payment-notes">Additional Payment Instructions (Optional)</label>
-                            <textarea class="form-input" id="payment-notes" name="payment_notes" rows="2"></textarea>
+                        <div class="checkout-actions">
+                            <a href="/checkout/?session_id={{ session_id }}&step=address" class="checkout-back-btn"><i class="fas fa-arrow-left"></i> Back to Shipping</a>
+                            <button type="submit" class="checkout-continue-btn">Continue <i class="fas fa-arrow-right"></i></button>
                         </div>
                     </div>
-                    
-                    <div class="checkout-actions">
-                        <a href="/checkout/?session_id={{ session_id }}&step=address" class="checkout-back-btn"><i class="fas fa-arrow-left"></i> Back to Shipping</a>
-                        <button type="button" class="checkout-continue-btn" id="payment-continue-btn">Complete Order <i class="fas fa-arrow-right"></i></button>
-                    </div>
-                </div>
+                </form>
                 
                 <!-- Order Summary Sidebar (same as in address step) -->
                 <div class="order-summary-container">
@@ -607,7 +640,168 @@
                     {% endif %}
                 </div>
                 
-                <!-- Step 3: Order Confirmation -->
+                <!-- Step 2.5: UPI Payment QR Code -->
+                {% elif step == 'payment-qr' %}
+                <div class="checkout-form" style="max-width: 600px;">
+                    <h2 class="form-title">Complete Your Payment</h2>
+                    
+                    <div style="background: #f8f9fa; padding: 30px; border-radius: 10px; text-align: center;">
+                        <div style="background: white; padding: 20px; border-radius: 10px; display: inline-block; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                            <img src="{% static 'store/images/payment-qr.png' %}" alt="UPI Payment QR Code" style="max-width: 300px; width: 100%; height: auto;">
+                        </div>
+                        
+                        <div style="margin-top: 30px;">
+                            <h3 style="color: var(--royal-gold); margin-bottom: 15px;"><i class="fas fa-qrcode"></i> Scan & Pay</h3>
+                            <p style="font-size: 18px; font-weight: 600; color: var(--dark-text); margin-bottom: 10px;">
+                                Amount to Pay: ₹{{ total|floatformat:2 }}
+                            </p>
+                            <p style="color: var(--light-text); margin-bottom: 20px;">
+                                Scan this QR code with any UPI app<br>
+                                (Google Pay, PhonePe, Paytm, etc.)
+                            </p>
+                            
+                            <div style="background: #fff3cd; padding: 15px; border-radius: 8px; margin-top: 20px;">
+                                <p style="margin: 0; font-size: 14px; color: #856404;">
+                                    <i class="fas fa-info-circle"></i> <strong>Important:</strong> After completing the payment, click "I Have Paid" below to confirm your order.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <form method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="place_order" value="true">
+                        <input type="hidden" name="payment_verified" value="true">
+                        
+                        <div class="checkout-actions" style="margin-top: 30px;">
+                            <a href="/checkout/?session_id={{ session_id }}&step=payment" class="checkout-back-btn">
+                                <i class="fas fa-arrow-left"></i> Change Payment Method
+                            </a>
+                            <button type="submit" class="checkout-continue-btn" style="background: #28a745;">
+                                <i class="fas fa-check-circle"></i> I Have Paid - Confirm Order
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- Order Summary for Payment QR -->
+                <div class="order-summary-container">
+                    <h2 class="form-title">Order Summary</h2>
+                    
+                    {% if cart_items %}
+                        {% for item in cart_items %}
+                        <div class="order-summary-item">
+                            <div>
+                                <div class="item-name">{{ item.product.name }} × {{ item.quantity }}</div>
+                            </div>
+                            <div>₹{{ item.total|floatformat:2 }}</div>
+                        </div>
+                        {% endfor %}
+                        
+                        <div class="order-summary-item">
+                            <div class="item-name">Subtotal</div>
+                            <div>₹{{ subtotal|floatformat:2 }}</div>
+                        </div>
+                        
+                        {% if coupon_discount > 0 %}
+                        <div class="order-summary-item">
+                            <div class="item-name">Coupon Discount</div>
+                            <div style="color: green;">-₹{{ coupon_discount|floatformat:2 }}</div>
+                        </div>
+                        {% endif %}
+                        
+                        <div class="order-summary-item">
+                            <div class="item-name">Shipping</div>
+                            <div>{% if shipping_cost == 0 %}Free{% else %}₹{{ shipping_cost|floatformat:2 }}{% endif %}</div>
+                        </div>
+                        
+                        <div class="order-summary-item" style="font-weight: 600; border-top: 2px solid #eee; padding-top: 10px;">
+                            <div class="item-name">Total</div>
+                            <div>₹{{ total|floatformat:2 }}</div>
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Step 3: Review Order (for COD) -->
+                {% elif step == 'review' %}
+                <div class="checkout-form">
+                    <h2 class="form-title">Review Your Order</h2>
+                    
+                    <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                        <h3 style="margin-bottom: 15px; color: var(--dark-text);">Shipping Details</h3>
+                        <p style="margin: 5px 0;"><strong>Name:</strong> {{ checkout_data.full_name }}</p>
+                        <p style="margin: 5px 0;"><strong>Email:</strong> {{ checkout_data.email }}</p>
+                        <p style="margin: 5px 0;"><strong>Phone:</strong> {{ checkout_data.phone }}</p>
+                        <p style="margin: 5px 0;"><strong>Address:</strong> {{ checkout_data.address }}</p>
+                        <p style="margin: 5px 0;"><strong>City:</strong> {{ checkout_data.city }}, {{ checkout_data.state }} - {{ checkout_data.pincode }}</p>
+                    </div>
+                    
+                    <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                        <h3 style="margin-bottom: 15px; color: var(--dark-text);">Payment Method</h3>
+                        <p style="margin: 5px 0;">
+                            <i class="fas fa-money-bill-wave" style="color: var(--royal-gold);"></i> 
+                            <strong>Cash on Delivery (COD)</strong>
+                        </p>
+                        <p style="margin: 5px 0; font-size: 14px; color: var(--light-text);">
+                            Pay with cash when you receive your order
+                        </p>
+                    </div>
+                    
+                    <form method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="place_order" value="true">
+                        <input type="hidden" name="payment_verified" value="false">
+                        
+                        <div class="checkout-actions">
+                            <a href="/checkout/?session_id={{ session_id }}&step=payment" class="checkout-back-btn">
+                                <i class="fas fa-arrow-left"></i> Back to Payment
+                            </a>
+                            <button type="submit" class="checkout-continue-btn">
+                                <i class="fas fa-check-circle"></i> Place Order
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- Order Summary for Review -->
+                <div class="order-summary-container">
+                    <h2 class="form-title">Order Summary</h2>
+                    
+                    {% if cart_items %}
+                        {% for item in cart_items %}
+                        <div class="order-summary-item">
+                            <div>
+                                <div class="item-name">{{ item.product.name }} × {{ item.quantity }}</div>
+                            </div>
+                            <div>₹{{ item.total|floatformat:2 }}</div>
+                        </div>
+                        {% endfor %}
+                        
+                        <div class="order-summary-item">
+                            <div class="item-name">Subtotal</div>
+                            <div>₹{{ subtotal|floatformat:2 }}</div>
+                        </div>
+                        
+                        {% if coupon_discount > 0 %}
+                        <div class="order-summary-item">
+                            <div class="item-name">Coupon Discount</div>
+                            <div style="color: green;">-₹{{ coupon_discount|floatformat:2 }}</div>
+                        </div>
+                        {% endif %}
+                        
+                        <div class="order-summary-item">
+                            <div class="item-name">Shipping</div>
+                            <div>{% if shipping_cost == 0 %}Free{% else %}₹{{ shipping_cost|floatformat:2 }}{% endif %}</div>
+                        </div>
+                        
+                        <div class="order-summary-item" style="font-weight: 600; border-top: 2px solid #eee; padding-top: 10px;">
+                            <div class="item-name">Total</div>
+                            <div>₹{{ total|floatformat:2 }}</div>
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Step 4: Order Confirmation -->
                 {% elif step == 'confirmation' %}
                 <div class="order-confirmation">
                     <div class="confirmation-icon">
@@ -819,8 +1013,4 @@
             });
         });
     </script>
-</body>
-</html>
-    </script>
-</body>
-</html>
+{% endblock %}

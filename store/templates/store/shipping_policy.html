@@ -1,0 +1,209 @@
+{% extends 'store/base.html' %}
+{% load static %}
+
+{% block title %}Shipping Policy - Gaumaatri{% endblock %}
+
+{% block content %}
+<style>
+    .shipping-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 40px 20px;
+        font-family: 'Lato', sans-serif;
+        line-height: 1.8;
+        color: #333;
+    }
+    .shipping-header {
+        text-align: center;
+        margin-bottom: 40px;
+        padding: 30px 0;
+        background: linear-gradient(135deg, #D4AF37 0%, #F5E7A9 100%);
+        color: white;
+        border-radius: 10px;
+    }
+    .shipping-header h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
+    .shipping-section {
+        background: white;
+        padding: 30px;
+        margin-bottom: 20px;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    .shipping-section h2 {
+        color: #D4AF37;
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 15px;
+        border-bottom: 2px solid #F5E7A9;
+        padding-bottom: 10px;
+    }
+    .shipping-section table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+    }
+    .shipping-section th, .shipping-section td {
+        padding: 12px;
+        text-align: left;
+        border: 1px solid #ddd;
+    }
+    .shipping-section th {
+        background-color: #F5E7A9;
+        color: #333;
+        font-weight: 600;
+    }
+    .highlight {
+        background: #FFF8DC;
+        padding: 15px;
+        border-radius: 5px;
+        border-left: 4px solid #D4AF37;
+        margin: 15px 0;
+    }
+    @media (max-width: 768px) {
+        .shipping-header h1 {
+            font-size: 2rem;
+        }
+        .shipping-container {
+            padding: 20px 15px;
+        }
+        .shipping-section table {
+            font-size: 0.9rem;
+        }
+    }
+</style>
+
+<div class="shipping-container">
+    <div class="shipping-header">
+        <h1>Shipping Policy</h1>
+        <p>Gaumaatri - Delivering Pure Ghee to Your Doorstep</p>
+    </div>
+
+    <div class="shipping-section">
+        <h2>1. Shipping Coverage</h2>
+        <p>We currently ship across India. We aim to expand our delivery network to serve you better.</p>
+        <div class="highlight">
+            <strong>Note:</strong> Some remote areas may have limited delivery options. Please contact us to confirm delivery availability in your area.
+        </div>
+    </div>
+
+    <div class="shipping-section">
+        <h2>2. Processing Time</h2>
+        <ul>
+            <li><strong>Order Processing:</strong> 1-2 business days</li>
+            <li><strong>Quality Check:</strong> Each order is carefully inspected before dispatch</li>
+            <li><strong>Packaging:</strong> Products are securely packed to prevent damage during transit</li>
+            <li><strong>Dispatch Notification:</strong> You will receive tracking details via email and WhatsApp</li>
+        </ul>
+    </div>
+
+    <div class="shipping-section">
+        <h2>3. Delivery Time</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Location</th>
+                    <th>Estimated Delivery Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Delhi NCR</td>
+                    <td>2-3 business days</td>
+                </tr>
+                <tr>
+                    <td>Major Metro Cities</td>
+                    <td>3-5 business days</td>
+                </tr>
+                <tr>
+                    <td>Other Cities/Towns</td>
+                    <td>5-7 business days</td>
+                </tr>
+                <tr>
+                    <td>Remote Areas</td>
+                    <td>7-10 business days</td>
+                </tr>
+            </tbody>
+        </table>
+        <p><em>*Delivery times are estimates and may vary due to unforeseen circumstances like weather, festivals, or courier delays.</em></p>
+    </div>
+
+    <div class="shipping-section">
+        <h2>4. Shipping Charges</h2>
+        <ul>
+            <li><strong>Free Shipping:</strong> On orders above ₹999</li>
+            <li><strong>Standard Shipping:</strong> ₹50-100 (varies by location and order weight)</li>
+            <li><strong>Express Shipping:</strong> Available on request (additional charges apply)</li>
+        </ul>
+        <p>Shipping charges are calculated at checkout based on your delivery location and order value.</p>
+    </div>
+
+    <div class="shipping-section">
+        <h2>5. Order Tracking</h2>
+        <ul>
+            <li>Track your order using the tracking number sent via email/WhatsApp</li>
+            <li>Visit our <a href="{% url 'track_order' %}" style="color: #D4AF37;">Track Order</a> page</li>
+            <li>Contact our customer service for tracking assistance</li>
+        </ul>
+    </div>
+
+    <div class="shipping-section">
+        <h2>6. Packaging</h2>
+        <p>We take special care in packaging our products:</p>
+        <ul>
+            <li><strong>Food-Grade Containers:</strong> Ghee is packed in high-quality, airtight containers</li>
+            <li><strong>Protective Wrapping:</strong> Multiple layers of bubble wrap and cushioning</li>
+            <li><strong>Tamper-Proof Sealing:</strong> All products are sealed to ensure authenticity</li>
+            <li><strong>Eco-Friendly:</strong> We use recyclable packaging materials wherever possible</li>
+        </ul>
+    </div>
+
+    <div class="shipping-section">
+        <h2>7. Failed Delivery Attempts</h2>
+        <p>If delivery fails due to:</p>
+        <ul>
+            <li><strong>Incorrect Address:</strong> Please verify your address during checkout</li>
+            <li><strong>Customer Unavailable:</strong> Multiple delivery attempts will be made</li>
+            <li><strong>Refused Delivery:</strong> Return shipping charges may apply</li>
+        </ul>
+        <div class="highlight">
+            <strong>Important:</strong> Please ensure someone is available to receive the order. Courier partners typically attempt delivery 2-3 times before returning the package.
+        </div>
+    </div>
+
+    <div class="shipping-section">
+        <h2>8. Damaged or Lost Shipments</h2>
+        <ul>
+            <li><strong>Damaged Products:</strong> Report within 24 hours of delivery with photos</li>
+            <li><strong>Lost Shipments:</strong> Contact us if order is not received within estimated time</li>
+            <li><strong>Resolution:</strong> We will arrange for replacement or refund</li>
+        </ul>
+        <p>Please inspect your order upon delivery and report any issues immediately.</p>
+    </div>
+
+    <div class="shipping-section">
+        <h2>9. International Shipping</h2>
+        <p>Currently, we only ship within India. International shipping will be available soon. Stay tuned for updates!</p>
+    </div>
+
+    <div class="shipping-section">
+        <h2>10. Delivery Address Changes</h2>
+        <p>Address changes can only be made before the order is dispatched. Once shipped, the delivery address cannot be modified. Please contact us immediately if you need to change your delivery address.</p>
+    </div>
+
+    <div class="shipping-section" style="background: linear-gradient(135deg, #D4AF37 0%, #F5E7A9 100%); color: white;">
+        <h2 style="color: white; border-bottom-color: white;">Need Help with Shipping?</h2>
+        <p><strong>📧 Email:</strong> gaumaatri@gmail.com</p>
+        <p><strong>📞 Phone:</strong> +91 7739305520</p>
+        <p><strong>💬 WhatsApp:</strong> <a href="https://wa.me/+917739305520" style="color: white; text-decoration: underline;" target="_blank">Click to chat</a></p>
+        <p>Our customer service team is available Monday-Saturday, 9 AM - 6 PM IST</p>
+    </div>
+
+    <div style="text-align: center; margin-top: 30px; padding: 20px; background: #f8f9fa; border-radius: 10px;">
+        <p style="margin: 0; color: #666;">© 2025 Gaumaatri. All Rights Reserved.</p>
+    </div>
+</div>
+{% endblock %}

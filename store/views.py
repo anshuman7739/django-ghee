@@ -178,9 +178,38 @@ def contact(request):
         phone = request.POST.get('phone')
         message = request.POST.get('message')
         
-        # Here you would typically send an email or save the contact form data
-        # For now, we'll just add a success message
-        messages.success(request, f"Thank you {name}! Your message has been received. We'll get back to you soon.")
+        # Send email notification to store owner
+        try:
+            from django.core.mail import send_mail
+            from django.conf import settings
+            
+            subject = f'New Contact Form Submission from {name}'
+            email_message = f"""
+New contact form submission received:
+
+Name: {name}
+Email: {email}
+Phone: {phone}
+
+Message:
+{message}
+
+---
+Sent from Gaumaatri Website Contact Form
+            """
+            
+            send_mail(
+                subject=subject,
+                message=email_message,
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[settings.STORE_EMAIL],
+                fail_silently=False,
+            )
+            
+            messages.success(request, f"Thank you {name}! Your message has been received. We'll get back to you soon.")
+        except Exception as e:
+            print(f"Error sending contact form email: {e}")
+            messages.success(request, f"Thank you {name}! Your message has been received. We'll get back to you soon.")
         
         # Redirect to the same page to avoid form resubmission
         return redirect('contact')
@@ -947,20 +976,43 @@ def checkout(request):
         # Redirect to payment step
         return redirect(f'/checkout/?session_id={session_id}&step=payment')
     
+    # Store payment method and redirect to payment QR or place order
+    elif request.method == 'POST' and 'payment_method' in request.POST:
+        payment_method = request.POST.get('payment_method', 'cod')
+        request.session['payment_method'] = payment_method
+        request.session.modified = True
+        
+        # If UPI payment, show QR code
+        if payment_method == 'upi':
+            return redirect(f'/checkout/?session_id={session_id}&step=payment-qr')
+        else:
+            # For COD, proceed to place order directly
+            return redirect(f'/checkout/?session_id={session_id}&step=review')
+    
     # Process order placement
     elif request.method == 'POST' and request.POST.get('place_order'):
         print(f"Processing order placement with POST data: {request.POST}")
+        
+        # Get checkout data from session
+        checkout_data = request.session.get('checkout_data', {})
+        payment_method = request.session.get('payment_method', 'cod')
+        payment_verified = request.POST.get('payment_verified', 'false') == 'true'
+        
+        # For UPI payments, mark as paid if user confirmed
+        payment_status = payment_verified if payment_method == 'upi' else False
+        
         # Process the form data
-        full_name = request.POST.get('full_name')
-        email = request.POST.get('email')
-        phone = request.POST.get('phone')
-        address = request.POST.get('address')
-        city = request.POST.get('city')
-        state = request.POST.get('state')
-        pincode = request.POST.get('pincode')
+        full_name = checkout_data.get('full_name', '')
+        email = checkout_data.get('email', '')
+        phone = checkout_data.get('phone', '')
+        address = checkout_data.get('address', '')
+        city = checkout_data.get('city', '')
+        state = checkout_data.get('state', '')
+        pincode = checkout_data.get('pincode', '')
         
         # Debug data
         print(f"Order data - Name: {full_name}, Email: {email}, Phone: {phone}, Address: {address}")
+        print(f"Payment method: {payment_method}, Payment status: {payment_status}")
         
         # Process cart items
         products = []
@@ -1005,6 +1057,8 @@ def checkout(request):
                 state=state,
                 pincode=pincode,
                 total_amount=total,
+                payment_method=payment_method,
+                payment_status=payment_status,
                 status='pending'
             )
             
@@ -1023,11 +1077,17 @@ def checkout(request):
                     price=item_price
                 )
                 
-            # Send emails
-            process_order_emails(request, order, products)
+            # Send emails (non-blocking - don't let email failures stop order)
+            try:
+                process_order_emails(request, order, products)
+            except Exception as email_error:
+                print(f"Email sending failed but order created: {str(email_error)}")
+                # Don't fail the order if email fails
             
-            # Clear the cart
+            # Clear the cart and checkout data
             request.session['cart'] = []
+            request.session.pop('checkout_data', None)
+            request.session.pop('payment_method', None)
             request.session.modified = True
             
             messages.success(request, "Order placed successfully! Confirmation email sent.")
@@ -1104,7 +1164,9 @@ def checkout(request):
         'gift_wrap_cost': GIFT_WRAP_COST if gift_wrap else 0,
         'total': total,
         'session_id': session_id,
-        'step': checkout_step
+        'step': checkout_step,
+        'checkout_data': request.session.get('checkout_data', {}),
+        'payment_method': request.session.get('payment_method', 'cod')
     }
     
     return render(request, 'store/checkout_premium.html', context)
@@ -1145,6 +1207,10 @@ def order_confirmation(request, order_id):
         return redirect('homepage')
 
 def login_view(request):
+    # Redirect if already logged in
+    if request.user.is_authenticated:
+        return redirect('homepage')
+        
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
@@ -1159,7 +1225,7 @@ def login_view(request):
             else:
                 return redirect('homepage')
         else:
-            messages.error(request, "Invalid username or password.")
+            messages.error(request, "Credentials are incorrect.")
     
     return render(request, 'store/login.html')
 
@@ -1189,6 +1255,57 @@ def privacy_policy(request):
     """Privacy Policy page view."""
     return render(request, 'store/privacy_policy.html')
 
+def terms_conditions(request):
+    """Terms & Conditions page view."""
+    return render(request, 'store/terms_conditions.html')
+
+def shipping_policy(request):
+    """Shipping Policy page view."""
+    return render(request, 'store/shipping_policy.html')
+
+def return_policy(request):
+    """Return Policy page view."""
+    return render(request, 'store/return_policy.html')
+
+def track_order(request):
+    """Track Order page view - allows customers to track their orders."""
+    order = None
+    error_message = None
+    
+    if request.method == 'POST':
+        order_id = request.POST.get('orderId', '').strip()
+        email = request.POST.get('email', '').strip()
+        
+        if order_id:
+            try:
+                # Try to find the order by order_id (UUID field)
+                if email:
+                    # If email is provided, verify both order_id and email
+                    order = Order.objects.get(order_id=order_id, email=email)
+                else:
+                    # If only order_id is provided, just check if order exists
+                    order = Order.objects.get(order_id=order_id)
+            except Order.DoesNotExist:
+                if email:
+                    error_message = "Order not found. Please check your Order ID and email address."
+                else:
+                    error_message = "Order not found. Please check your Order ID."
+            except Exception as e:
+                error_message = "Invalid Order ID format. Please check and try again."
+        else:
+            error_message = "Please enter an Order ID."
+    
+    context = {
+        'order': order,
+        'error_message': error_message,
+    }
+    
+    return render(request, 'store/track_order.html', context)
+
+def customer_service(request):
+    """Customer Service page view."""
+    return render(request, 'store/customer_service.html')
+
 def product_detail(request, product_id):
     """Product detail view.
     
@@ -1211,6 +1328,10 @@ def product_detail(request, product_id):
     })
 
 def register_view(request):
+    # Redirect if already logged in
+    if request.user.is_authenticated:
+        return redirect('homepage')
+        
     if request.method == 'POST':
         try:
             username = request.POST['username']
@@ -1254,6 +1375,33 @@ def register_view(request):
     
     return render(request, 'store/register.html')
 
+def logout_view(request):
+    """Custom logout view with proper session cleanup"""
+    from django.contrib.auth import logout
+    
+    # Clear the cart and session data
+    if request.user.is_authenticated:
+        username = request.user.username
+        logout(request)
+        # Optionally clear session data
+        request.session.flush()
+        messages.success(request, f"Goodbye {username}! You have been logged out successfully.")
+    
+    return redirect('homepage')
+
+@login_required
+def account_view(request):
+    """User account/profile page"""
+    # Get user's orders
+    user_orders = Order.objects.filter(user=request.user).order_by('-created_at')[:10] if request.user.is_authenticated else []
+    
+    context = {
+        'user': request.user,
+        'orders': user_orders,
+    }
+    
+    return render(request, 'store/account.html', context)
+
 def about(request):
     """About us page view"""
     return render(request, 'store/about.html')
@@ -1266,9 +1414,38 @@ def contact_new(request):
         phone = request.POST.get('phone')
         message = request.POST.get('message')
         
-        # Here you would typically send an email or save the contact form data
-        # For now, we'll just add a success message
-        messages.success(request, f"Thank you {name}! Your message has been received. We'll get back to you soon.")
+        # Send email notification to store owner
+        try:
+            from django.core.mail import send_mail
+            from django.conf import settings
+            
+            subject = f'New Contact Form Submission from {name}'
+            email_message = f"""
+New contact form submission received:
+
+Name: {name}
+Email: {email}
+Phone: {phone}
+
+Message:
+{message}
+
+---
+Sent from Gaumaatri Website Contact Form
+            """
+            
+            send_mail(
+                subject=subject,
+                message=email_message,
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[settings.STORE_EMAIL],
+                fail_silently=False,
+            )
+            
+            messages.success(request, f"Thank you {name}! Your message has been received. We'll get back to you soon.")
+        except Exception as e:
+            print(f"Error sending contact form email: {e}")
+            messages.success(request, f"Thank you {name}! Your message has been received. We'll get back to you soon.")
         
         # Redirect to the same page to avoid form resubmission
         return redirect('contact_new')

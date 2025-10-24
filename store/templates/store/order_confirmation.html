@@ -121,6 +121,14 @@
             <p><strong>Order Number:</strong> #{{ order.order_id }}</p>
             <p><strong>Order Date:</strong> {{ order.created_at|date:"F j, Y" }}</p>
             <p><strong>Order Status:</strong> {{ order.status|title }}</p>
+            <p><strong>Payment Method:</strong> {{ order.get_payment_method_display }}</p>
+            <p><strong>Payment Status:</strong> 
+                {% if order.payment_status %}
+                    <span style="color: #4CAF50; font-weight: bold;">✓ Paid</span>
+                {% else %}
+                    <span style="color: #ff9800; font-weight: bold;">⏳ Pending ({{ order.get_payment_method_display }})</span>
+                {% endif %}
+            </p>
         </div>
         
         <div class="order-items">

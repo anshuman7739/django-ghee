@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -142,24 +143,23 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # IMPORTANT: Gmail requires an App Password for SMTP access, not your regular password!
 # Regular passwords will not work, even if correct, due to Google's security policies.
 
-# DEVELOPMENT EMAIL SETUP - Use this for testing (prints emails to console)
+# For development, use console backend (emails printed to console)
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-# PRODUCTION EMAIL SETUP - Uncomment these lines for actual email sending
-# SMTP settings for Gmail
+# For production, use SMTP
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'gaumaatri@gmail.com'
-EMAIL_HOST_PASSWORD = 'bcjw qhog bzvk zrcb'  # Your 16-character Google App Password
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASSWORD', '')  # Set via environment variable
 
 # IMPORTANT: 
 # 1. You must set up 2-Step Verification in your Google account
 # 2. Generate an App Password at: Google Account > Security > 2-Step Verification > App Passwords
 # 3. Choose "Mail" as the app and "Other" as the device (name it "Django")
-# 4. For security, use environment variables instead of hardcoding passwords
-#    You can set it using: export EMAIL_PASSWORD="your-app-password" before running Django
+# 4. Set the environment variable before running Django:
+#    export EMAIL_PASSWORD="your-16-digit-app-password"
 
 # Store owner email for order notifications
 STORE_EMAIL = 'gaumaatri@gmail.com'  # Email to receive order notifications

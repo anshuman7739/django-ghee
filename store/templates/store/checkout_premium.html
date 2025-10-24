@@ -551,10 +551,10 @@
     <!-- Header -->
     <header>
         <div class="container header-container">
-            <div class="logo">
-                <img src="{% static 'store/images/banner1.jpg' %}" alt="Heritage A2">
-                <h1>Heritage A2 Ghee</h1>
-            </div>
+            <a href="{% url 'homepage' %}" class="logo" style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 15px;">
+                <img src="{% static 'store/images/logo.png' %}" alt="Gaumaatri" style="height: 60px;">
+                <h1>Gaumaatri</h1>
+            </a>
         </div>
     </header>
     
@@ -563,18 +563,25 @@
         <!-- Progress Steps -->
         <div class="progress-container">
             <div class="progress-steps">
-                <div class="step {% if step == 'address' %}active{% elif step == 'payment' or step == 'confirmation' %}completed{% endif %}">
+                <div class="step {% if step == 'address' %}active{% elif step == 'payment' or step == 'payment-qr' or step == 'review' or step == 'confirmation' %}completed{% endif %}">
                     <div class="step-icon">
                         <i class="fas fa-map-marker-alt"></i>
                     </div>
                     <div class="step-text">Shipping</div>
                 </div>
                 
-                <div class="step {% if step == 'payment' %}active{% elif step == 'confirmation' %}completed{% endif %}">
+                <div class="step {% if step == 'payment' or step == 'payment-qr' %}active{% elif step == 'review' or step == 'confirmation' %}completed{% endif %}">
                     <div class="step-icon">
                         <i class="fas fa-credit-card"></i>
                     </div>
                     <div class="step-text">Payment</div>
+                </div>
+                
+                <div class="step {% if step == 'review' %}active{% elif step == 'confirmation' %}completed{% endif %}">
+                    <div class="step-icon">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <div class="step-text">Review</div>
                 </div>
                 
                 <div class="step {% if step == 'confirmation' %}active{% endif %}">
@@ -680,16 +687,6 @@
                     
                     <form action="{% url 'checkout' %}?session_id={{ session_id }}" method="post">
                         {% csrf_token %}
-                        <input type="hidden" name="place_order" value="true">
-                        
-                        <!-- Hidden fields to store customer information from address step -->
-                        <input type="hidden" name="full_name" value="{{ request.POST.first_name }} {{ request.POST.last_name }}">
-                        <input type="hidden" name="email" value="{{ request.POST.email }}">
-                        <input type="hidden" name="phone" value="{{ request.POST.phone }}">
-                        <input type="hidden" name="address" value="{{ request.POST.address }}">
-                        <input type="hidden" name="city" value="{{ request.POST.city }}">
-                        <input type="hidden" name="state" value="{{ request.POST.state }}">
-                        <input type="hidden" name="pincode" value="{{ request.POST.zipcode }}">
                         
                         <div class="form-group">
                             <div class="radio-group">
@@ -706,26 +703,8 @@
                                     <input type="radio" id="payment_upi" name="payment_method" value="upi" class="radio-input">
                                     <i class="fas fa-mobile-alt payment-icon"></i>
                                     <div>
-                                        <div><strong>UPI Payment</strong></div>
+                                        <div><strong>UPI Payment (Online)</strong></div>
                                         <div style="font-size: 13px; color: var(--light-text);">Pay using Google Pay, PhonePe, or any UPI app</div>
-                                    </div>
-                                </label>
-                                
-                                <label class="radio-label" for="payment_card">
-                                    <input type="radio" id="payment_card" name="payment_method" value="card" class="radio-input">
-                                    <i class="fas fa-credit-card payment-icon"></i>
-                                    <div>
-                                        <div><strong>Credit/Debit Card</strong></div>
-                                        <div style="font-size: 13px; color: var(--light-text);">Pay securely with your card</div>
-                                    </div>
-                                </label>
-                                
-                                <label class="radio-label" for="payment_net_banking">
-                                    <input type="radio" id="payment_net_banking" name="payment_method" value="net_banking" class="radio-input">
-                                    <i class="fas fa-university payment-icon"></i>
-                                    <div>
-                                        <div><strong>Net Banking</strong></div>
-                                        <div style="font-size: 13px; color: var(--light-text);">Pay directly from your bank account</div>
                                     </div>
                                 </label>
                             </div>
@@ -733,14 +712,109 @@
                         
                         <div class="form-actions">
                             <a href="{% url 'checkout' %}?session_id={{ session_id }}&step=address" class="btn btn-outline">Back to Shipping</a>
-                            <button type="submit" name="place_order" value="1" class="btn" style="margin-top: 10px;">Place Order</button>
+                            <button type="submit" class="btn" style="margin-top: 10px;">Continue</button>
+                        </div>
+                    </form>
+                </div>
+                
+                {% elif step == 'payment-qr' %}
+                <div class="checkout-form" style="text-align: center;">
+                    <div class="form-header">
+                        <h2>Complete Your Payment</h2>
+                        <p>Scan the QR code to pay ₹{{ total|floatformat:2 }}</p>
+                        <div class="step-number">2</div>
+                    </div>
+                    
+                    <div style="background: #f8f9fa; padding: 30px; border-radius: 15px; margin: 20px 0;">
+                        <div style="background: white; padding: 20px; border-radius: 10px; display: inline-block; box-shadow: 0 2px 15px rgba(0,0,0,0.1);">
+                            <img src="{% static 'store/images/payment-qr.png' %}" alt="UPI Payment QR Code" style="max-width: 300px; width: 100%; height: auto; border-radius: 8px;">
                         </div>
                         
-                        <!-- Hidden fields to store shipping information -->
-                        <input type="hidden" name="full_name" value="{{ request.session.checkout_data.full_name }}">
-                        <input type="hidden" name="email" value="{{ request.session.checkout_data.email }}">
-                        <input type="hidden" name="phone" value="{{ request.session.checkout_data.phone }}">
-                        <input type="hidden" name="address" value="{{ request.session.checkout_data.address }}">
+                        <div style="margin-top: 30px;">
+                            <h3 style="color: var(--royal-gold); margin-bottom: 15px;">
+                                <i class="fas fa-qrcode"></i> Scan & Pay
+                            </h3>
+                            <p style="font-size: 20px; font-weight: 600; color: var(--dark-text); margin-bottom: 15px;">
+                                Amount to Pay: <span style="color: var(--royal-gold);">₹{{ total|floatformat:2 }}</span>
+                            </p>
+                            <p style="color: var(--light-text); margin-bottom: 20px; font-size: 15px;">
+                                Scan this QR code with any UPI app<br>
+                                (Google Pay, PhonePe, Paytm, etc.)
+                            </p>
+                            
+                            <div style="background: #fff3cd; padding: 15px; border-radius: 8px; margin-top: 20px; text-align: left;">
+                                <p style="margin: 0; font-size: 14px; color: #856404;">
+                                    <i class="fas fa-info-circle"></i> <strong>Important:</strong> After completing the payment, click "I Have Paid" below to confirm your order.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <form action="{% url 'checkout' %}?session_id={{ session_id }}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="place_order" value="true">
+                        <input type="hidden" name="payment_verified" value="true">
+                        
+                        <div class="form-actions">
+                            <a href="{% url 'checkout' %}?session_id={{ session_id }}&step=payment" class="btn btn-outline">
+                                <i class="fas fa-arrow-left"></i> Change Payment Method
+                            </a>
+                            <button type="submit" class="btn" style="background: #28a745; margin-top: 10px;">
+                                <i class="fas fa-check-circle"></i> I Have Paid - Confirm Order
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                {% elif step == 'review' %}
+                <div class="checkout-form">
+                    <div class="form-header">
+                        <h2>Review Your Order</h2>
+                        <p>Please review your order details before placing</p>
+                        <div class="step-number">3</div>
+                    </div>
+                    
+                    <div style="background: #f8f9fa; padding: 25px; border-radius: 15px; margin-bottom: 25px;">
+                        <h3 style="margin-bottom: 15px; color: var(--dark-text); font-size: 18px;">
+                            <i class="fas fa-shipping-fast"></i> Shipping Details
+                        </h3>
+                        <div style="display: grid; gap: 10px;">
+                            <p style="margin: 0;"><strong>Name:</strong> {{ checkout_data.full_name }}</p>
+                            <p style="margin: 0;"><strong>Email:</strong> {{ checkout_data.email }}</p>
+                            <p style="margin: 0;"><strong>Phone:</strong> {{ checkout_data.phone }}</p>
+                            <p style="margin: 0;"><strong>Address:</strong> {{ checkout_data.address }}</p>
+                            <p style="margin: 0;"><strong>City:</strong> {{ checkout_data.city }}, {{ checkout_data.state }} - {{ checkout_data.pincode }}</p>
+                        </div>
+                    </div>
+                    
+                    <div style="background: #f8f9fa; padding: 25px; border-radius: 15px; margin-bottom: 25px;">
+                        <h3 style="margin-bottom: 15px; color: var(--dark-text); font-size: 18px;">
+                            <i class="fas fa-credit-card"></i> Payment Method
+                        </h3>
+                        <p style="margin: 0;">
+                            <i class="fas fa-money-bill-wave" style="color: var(--royal-gold);"></i> 
+                            <strong>Cash on Delivery (COD)</strong>
+                        </p>
+                        <p style="margin: 5px 0 0 0; font-size: 14px; color: var(--light-text);">
+                            Pay with cash when you receive your order
+                        </p>
+                    </div>
+                    
+                    <form action="{% url 'checkout' %}?session_id={{ session_id }}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="place_order" value="true">
+                        <input type="hidden" name="payment_verified" value="false">
+                        
+                        <div class="form-actions">
+                            <a href="{% url 'checkout' %}?session_id={{ session_id }}&step=payment" class="btn btn-outline">
+                                <i class="fas fa-arrow-left"></i> Back to Payment
+                            </a>
+                            <button type="submit" class="btn" style="margin-top: 10px;">
+                                <i class="fas fa-check-circle"></i> Place Order
+                            </button>
+                        </div>
+                    </form>
+                </div>
                         <input type="hidden" name="city" value="{{ request.session.checkout_data.city }}">
                         <input type="hidden" name="state" value="{{ request.session.checkout_data.state }}">
                         <input type="hidden" name="pincode" value="{{ request.session.checkout_data.pincode }}">

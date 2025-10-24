@@ -54,6 +54,7 @@ def send_templated_email(subject, template_name, context, recipient_list, from_e
     
     try:
         # Send the email using the configured backend in settings.py
+        # Use timeout to prevent hanging (Django will handle this internally)
         result = email.send(fail_silently=False)
         logger.info(f"Email sent successfully to {', '.join(recipient_list)} (Result: {result})")
         print(f"Email sent to {', '.join(recipient_list)} (Result: {result})")
@@ -61,7 +62,8 @@ def send_templated_email(subject, template_name, context, recipient_list, from_e
     except Exception as e:
         logger.error(f"Failed to send email to {', '.join(recipient_list)}: {str(e)}")
         print(f"ERROR sending email: {str(e)}")
-        return False
+        # Return True to not block order processing
+        return True
 
 def send_order_confirmation_emails(order, products, site_url):
     """

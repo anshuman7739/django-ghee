@@ -1,0 +1,435 @@
+{% extends 'store/base.html' %}
+{% load static %}
+
+{% block title %}My Account - Gaumaatri{% endblock %}
+
+{% block content %}
+<style>
+    .account-container {
+        max-width: 1200px;
+        margin: 40px auto;
+        padding: 0 20px;
+    }
+    
+    .account-header {
+        text-align: center;
+        margin-bottom: 40px;
+        padding: 30px 0;
+        background: linear-gradient(135deg, #D4AF37 0%, #F5E7A9 100%);
+        color: white;
+        border-radius: 10px;
+    }
+    
+    .account-header h1 {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin: 0;
+    }
+    
+    .account-content {
+        display: grid;
+        grid-template-columns: 250px 1fr;
+        gap: 30px;
+        margin-top: 30px;
+    }
+    
+    .account-sidebar {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        height: fit-content;
+        position: sticky;
+        top: 20px;
+    }
+    
+    .account-sidebar h5 {
+        font-family: 'Playfair Display', serif;
+        color: #D4AF37;
+        margin-bottom: 20px;
+        font-size: 1.3rem;
+    }
+    
+    .menu-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    
+    .menu-list a {
+        display: block;
+        padding: 12px 15px;
+        color: #333;
+        text-decoration: none;
+        border-radius: 5px;
+        margin-bottom: 5px;
+        transition: all 0.3s;
+        font-weight: 500;
+    }
+    
+    .menu-list a:hover {
+        background: #FFF8DC;
+        color: #D4AF37;
+        padding-left: 20px;
+    }
+    
+    .menu-list a.active {
+        background: linear-gradient(135deg, #D4AF37 0%, #F5E7A9 100%);
+        color: white;
+    }
+    
+    .menu-list a.logout {
+        color: #dc3545;
+        border: 1px solid #dc3545;
+    }
+    
+    .menu-list a.logout:hover {
+        background: #dc3545;
+        color: white;
+    }
+    
+    .account-main {
+        background: white;
+        padding: 40px;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    .tab-content {
+        display: none;
+    }
+    
+    .tab-content.active {
+        display: block;
+    }
+    
+    .section-title {
+        font-family: 'Playfair Display', serif;
+        color: #D4AF37;
+        margin-bottom: 30px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid #D4AF37;
+        font-size: 1.8rem;
+    }
+    
+    .profile-info {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 25px;
+        margin-bottom: 30px;
+    }
+    
+    .info-item {
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 8px;
+        border-left: 4px solid #D4AF37;
+    }
+    
+    .info-item label {
+        font-weight: 600;
+        color: #666;
+        font-size: 0.9rem;
+        display: block;
+        margin-bottom: 5px;
+    }
+    
+    .info-item p {
+        color: #333;
+        font-size: 1.1rem;
+        margin: 0;
+    }
+    
+    .orders-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+    
+    .orders-table thead {
+        background: linear-gradient(135deg, #D4AF37 0%, #F5E7A9 100%);
+        color: white;
+    }
+    
+    .orders-table th,
+    .orders-table td {
+        padding: 15px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+    
+    .orders-table tbody tr:hover {
+        background: #FFF8DC;
+    }
+    
+    .order-badge {
+        display: inline-block;
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+    
+    .badge-pending { background: #ffc107; color: #000; }
+    .badge-processing { background: #17a2b8; color: white; }
+    .badge-shipped { background: #007bff; color: white; }
+    .badge-delivered { background: #28a745; color: white; }
+    .badge-cancelled { background: #dc3545; color: white; }
+    
+    .btn-view {
+        padding: 8px 20px;
+        background: #D4AF37;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        font-weight: 500;
+        transition: all 0.3s;
+        display: inline-block;
+    }
+    
+    .btn-view:hover {
+        background: #B8941F;
+        color: white;
+        transform: translateY(-2px);
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+    }
+    
+    .empty-state i {
+        font-size: 4rem;
+        color: #D4AF37;
+        margin-bottom: 20px;
+    }
+    
+    .empty-state h5 {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.5rem;
+        color: #333;
+        margin-bottom: 10px;
+    }
+    
+    .empty-state p {
+        color: #666;
+        margin-bottom: 25px;
+    }
+    
+    .btn-shop {
+        padding: 12px 30px;
+        background: linear-gradient(135deg, #D4AF37 0%, #F5E7A9 100%);
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        font-weight: 600;
+        display: inline-block;
+        transition: all 0.3s;
+    }
+    
+    .btn-shop:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
+        color: white;
+    }
+    
+    /* Mobile Responsive */
+    @media (max-width: 992px) {
+        .account-content {
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+        
+        .account-sidebar {
+            position: static;
+        }
+        
+        .account-main {
+            padding: 25px;
+        }
+        
+        .profile-info {
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .account-header h1 {
+            font-size: 2rem;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+        }
+        
+        .account-main {
+            padding: 20px;
+        }
+        
+        .orders-table {
+            font-size: 0.9rem;
+        }
+        
+        .orders-table th,
+        .orders-table td {
+            padding: 10px 8px;
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .account-container {
+            padding: 0 15px;
+            margin: 20px auto;
+        }
+        
+        .account-header {
+            padding: 20px 15px;
+        }
+        
+        .account-header h1 {
+            font-size: 1.5rem;
+        }
+        
+        .account-sidebar {
+            padding: 15px;
+        }
+        
+        .account-main {
+            padding: 15px;
+        }
+        
+        .section-title {
+            font-size: 1.3rem;
+        }
+        
+        /* Make table scrollable on mobile */
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .orders-table {
+            min-width: 600px;
+        }
+    }
+</style>
+
+<div class="account-container">
+    <div class="account-header">
+        <h1><i class="fas fa-user-circle"></i> My Account</h1>
+        <p style="margin: 10px 0 0 0; opacity: 0.95;">Welcome back, {{ user.first_name|default:user.username }}!</p>
+    </div>
+    
+    <div class="account-content">
+        <div class="account-sidebar">
+            <h5>Account Menu</h5>
+            <ul class="menu-list">
+                <li><a href="#profile" class="menu-link active" onclick="showTab(event, 'profile')"><i class="fas fa-user"></i> Profile</a></li>
+                <li><a href="#orders" class="menu-link" onclick="showTab(event, 'orders')"><i class="fas fa-shopping-bag"></i> My Orders</a></li>
+                <li><a href="{% url 'logout' %}" class="logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+        </div>
+        
+        <div class="account-main">
+            <!-- Profile Tab -->
+            <div class="tab-content active" id="profile">
+                <h2 class="section-title">Profile Information</h2>
+                <div class="profile-info">
+                    <div class="info-item">
+                        <label>Username:</label>
+                        <p>{{ user.username }}</p>
+                    </div>
+                    <div class="info-item">
+                        <label>Email:</label>
+                        <p>{{ user.email }}</p>
+                    </div>
+                    <div class="info-item">
+                        <label>First Name:</label>
+                        <p>{{ user.first_name|default:"Not set" }}</p>
+                    </div>
+                    <div class="info-item">
+                        <label>Last Name:</label>
+                        <p>{{ user.last_name|default:"Not set" }}</p>
+                    </div>
+                    <div class="info-item" style="grid-column: 1 / -1;">
+                        <label>Member Since:</label>
+                        <p>{{ user.date_joined|date:"F d, Y" }}</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Orders Tab -->
+            <div class="tab-content" id="orders">
+                <h2 class="section-title">My Orders</h2>
+                {% if orders %}
+                    <div class="table-responsive">
+                        <table class="orders-table">
+                            <thead>
+                                <tr>
+                                    <th>Order #</th>
+                                    <th>Date</th>
+                                    <th>Total</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for order in orders %}
+                                <tr>
+                                    <td><strong>{{ order.order_id|slice:":8" }}...</strong></td>
+                                    <td>{{ order.created_at|date:"M d, Y" }}</td>
+                                    <td><strong>₹{{ order.total_amount }}</strong></td>
+                                    <td>
+                                        <span class="order-badge 
+                                            {% if order.status == 'pending' %}badge-pending
+                                            {% elif order.status == 'processing' %}badge-processing
+                                            {% elif order.status == 'shipped' %}badge-shipped
+                                            {% elif order.status == 'delivered' %}badge-delivered
+                                            {% else %}badge-cancelled
+                                            {% endif %}">
+                                            {{ order.get_status_display|upper }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'order_confirmation' order.order_id %}" class="btn-view">View</a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="empty-state">
+                        <i class="fas fa-shopping-bag"></i>
+                        <h5>No Orders Yet</h5>
+                        <p>You haven't placed any orders yet. Start shopping now!</p>
+                        <a href="{% url 'shop' %}" class="btn-shop"><i class="fas fa-shopping-cart"></i> Start Shopping</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function showTab(event, tabId) {
+        event.preventDefault();
+        
+        // Hide all tabs
+        const tabs = document.querySelectorAll('.tab-content');
+        tabs.forEach(tab => tab.classList.remove('active'));
+        
+        // Remove active class from all menu links
+        const menuLinks = document.querySelectorAll('.menu-link');
+        menuLinks.forEach(link => link.classList.remove('active'));
+        
+        // Show selected tab
+        document.getElementById(tabId).classList.add('active');
+        
+        // Add active class to clicked menu link
+        event.target.classList.add('active');
+    }
+</script>
+{% endblock %}

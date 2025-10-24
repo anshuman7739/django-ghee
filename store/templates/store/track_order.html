@@ -1,0 +1,332 @@
+{% extends 'store/base.html' %}
+{% load static %}
+
+{% block title %}Track Order - Gaumaatri{% endblock %}
+
+{% block content %}
+<style>
+    .track-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 40px 20px;
+        font-family: 'Lato', sans-serif;
+    }
+    .track-header {
+        text-align: center;
+        margin-bottom: 40px;
+        padding: 30px 0;
+        background: linear-gradient(135deg, #D4AF37 0%, #F5E7A9 100%);
+        color: white;
+        border-radius: 10px;
+    }
+    .track-header h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
+    .track-form {
+        background: white;
+        padding: 40px;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        margin-bottom: 30px;
+    }
+    .form-group {
+        margin-bottom: 25px;
+    }
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        color: #333;
+        font-weight: 600;
+    }
+    .form-group input {
+        width: 100%;
+        padding: 12px 15px;
+        border: 2px solid #ddd;
+        border-radius: 5px;
+        font-size: 16px;
+        transition: border-color 0.3s;
+    }
+    .form-group input:focus {
+        outline: none;
+        border-color: #D4AF37;
+    }
+    .track-button {
+        width: 100%;
+        padding: 15px;
+        background: linear-gradient(135deg, #D4AF37 0%, #F5E7A9 100%);
+        color: white;
+        border: none;
+        border-radius: 5px;
+        font-size: 18px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.3s;
+    }
+    .track-button:hover {
+        transform: translateY(-2px);
+    }
+    .info-box {
+        background: #FFF8DC;
+        padding: 20px;
+        border-radius: 10px;
+        border-left: 4px solid #D4AF37;
+        margin-bottom: 30px;
+    }
+    .info-box h3 {
+        color: #D4AF37;
+        margin-top: 0;
+    }
+    .contact-box {
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        text-align: center;
+    }
+    .contact-box h3 {
+        color: #D4AF37;
+        margin-bottom: 20px;
+    }
+    .contact-methods {
+        display: flex;
+        justify-content: space-around;
+        flex-wrap: wrap;
+        gap: 20px;
+        margin-top: 20px;
+    }
+    .contact-method {
+        flex: 1;
+        min-width: 200px;
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 8px;
+    }
+    .contact-method i {
+        font-size: 2rem;
+        color: #D4AF37;
+        margin-bottom: 10px;
+    }
+    @media (max-width: 768px) {
+        .track-header h1 {
+            font-size: 2rem;
+        }
+        .track-form {
+            padding: 25px;
+        }
+        .contact-methods {
+            flex-direction: column;
+        }
+    }
+</style>
+
+<div class="track-container">
+    <div class="track-header">
+        <h1>Track Your Order</h1>
+        <p>Enter your order details to check delivery status</p>
+    </div>
+
+    <div class="track-form">
+        <form method="POST">
+            {% csrf_token %}
+            {% if error_message %}
+            <div style="background: #ffebee; color: #c62828; padding: 15px; border-radius: 5px; margin-bottom: 20px; border-left: 4px solid #c62828;">
+                <i class="fas fa-exclamation-circle"></i> {{ error_message }}
+            </div>
+            {% endif %}
+            
+            <div class="form-group">
+                <label for="orderId">Order ID *</label>
+                <input type="text" id="orderId" name="orderId" placeholder="Enter your Order ID (e.g., a736b6a1-3500-4f89...)" required value="{{ request.POST.orderId|default:'' }}">
+            </div>
+            <div class="form-group">
+                <label for="email">Email Address (Optional)</label>
+                <input type="email" id="email" name="email" placeholder="Enter email used for order (optional for verification)" value="{{ request.POST.email|default:'' }}">
+                <small style="color: #666; font-size: 13px; display: block; margin-top: 5px;">
+                    <i class="fas fa-info-circle"></i> Email is optional but helps verify the order belongs to you
+                </small>
+            </div>
+            <button type="submit" class="track-button">
+                <i class="fas fa-search"></i> Track Order
+            </button>
+        </form>
+    </div>
+    
+    {% if order %}
+    <!-- Order Confirmation Success Banner -->
+    <div style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%); padding: 30px; border-radius: 10px; box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3); margin-bottom: 30px; text-align: center; color: white;">
+        <div style="font-size: 60px; margin-bottom: 15px;">
+            <i class="fas fa-check-circle"></i>
+        </div>
+        <h2 style="margin: 0 0 10px 0; font-size: 32px; font-weight: 700;">
+            Order Confirmed!
+        </h2>
+        <p style="font-size: 18px; margin: 0; opacity: 0.95;">
+            Your order has been successfully placed and is being processed
+        </p>
+        <p style="font-size: 14px; margin: 15px 0 0 0; opacity: 0.9;">
+            Order ID: <strong style="font-family: monospace; background: rgba(255,255,255,0.2); padding: 5px 10px; border-radius: 5px;">{{ order.order_id|slice:":8" }}...{{ order.order_id|slice:"-4:" }}</strong>
+        </p>
+    </div>
+    
+    <div style="background: white; padding: 40px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); margin-bottom: 30px;">
+        <h2 style="color: #D4AF37; margin-bottom: 30px; border-bottom: 2px solid #D4AF37; padding-bottom: 15px;">
+            <i class="fas fa-box"></i> Order Details
+        </h2>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px;">
+            <div>
+                <p style="color: #666; margin-bottom: 5px;"><strong>Order ID:</strong></p>
+                <p style="font-size: 14px; color: #333; font-family: monospace;">
+                    {{ order.order_id|slice:":8" }}...{{ order.order_id|slice:"-4:" }}
+                </p>
+                <p style="font-size: 11px; color: #999; margin-top: 3px;">Full: {{ order.order_id }}</p>
+            </div>
+            <div>
+                <p style="color: #666; margin-bottom: 5px;"><strong>Order Date:</strong></p>
+                <p style="color: #333;">{{ order.created_at|date:"F d, Y" }}</p>
+            </div>
+            <div>
+                <p style="color: #666; margin-bottom: 5px;"><strong>Total Amount:</strong></p>
+                <p style="color: #333; font-size: 20px; font-weight: 600;">₹{{ order.total_amount }}</p>
+            </div>
+            <div>
+                <p style="color: #666; margin-bottom: 5px;"><strong>Payment Status:</strong></p>
+                <p style="color: {% if order.payment_status %}#28a745{% else %}#f0ad4e{% endif %}; font-weight: 600;">
+                    {% if order.payment_status %}PAID{% else %}PENDING{% endif %}
+                </p>
+            </div>
+        </div>
+        
+        <h3 style="color: #D4AF37; margin: 30px 0 20px;">Delivery Status</h3>
+        <div style="position: relative; padding: 30px 0;">
+            <div style="position: absolute; top: 45px; left: 24px; right: 24px; height: 4px; background: #e0e0e0; z-index: 1;"></div>
+            
+            <div style="display: flex; justify-content: space-between; position: relative; z-index: 2;">
+                <div style="text-align: center; flex: 1;">
+                    <div style="width: 50px; height: 50px; border-radius: 50%; background: #D4AF37; color: white; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; font-size: 20px;">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <p style="font-weight: 600; color: #D4AF37;">Order Placed</p>
+                    <p style="font-size: 12px; color: #999;">{{ order.created_at|date:"M d, h:i A" }}</p>
+                </div>
+                
+                <div style="text-align: center; flex: 1;">
+                    {% if order.status == 'processing' or order.status == 'shipped' or order.status == 'delivered' %}
+                    <div style="width: 50px; height: 50px; border-radius: 50%; background: #D4AF37; color: white; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; font-size: 20px;">
+                        <i class="fas fa-cog"></i>
+                    </div>
+                    <p style="font-weight: 600; color: #D4AF37;">Processing</p>
+                    {% else %}
+                    <div style="width: 50px; height: 50px; border-radius: 50%; background: #e0e0e0; color: white; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; font-size: 20px;">
+                        <i class="fas fa-cog"></i>
+                    </div>
+                    <p style="font-weight: 600; color: #666;">Processing</p>
+                    {% endif %}
+                </div>
+                
+                <div style="text-align: center; flex: 1;">
+                    {% if order.status == 'shipped' or order.status == 'delivered' %}
+                    <div style="width: 50px; height: 50px; border-radius: 50%; background: #D4AF37; color: white; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; font-size: 20px;">
+                        <i class="fas fa-shipping-fast"></i>
+                    </div>
+                    <p style="font-weight: 600; color: #D4AF37;">Shipped</p>
+                    {% else %}
+                    <div style="width: 50px; height: 50px; border-radius: 50%; background: #e0e0e0; color: white; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; font-size: 20px;">
+                        <i class="fas fa-shipping-fast"></i>
+                    </div>
+                    <p style="font-weight: 600; color: #666;">Shipped</p>
+                    {% endif %}
+                </div>
+                
+                <div style="text-align: center; flex: 1;">
+                    {% if order.status == 'delivered' %}
+                    <div style="width: 50px; height: 50px; border-radius: 50%; background: #28a745; color: white; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; font-size: 20px;">
+                        <i class="fas fa-home"></i>
+                    </div>
+                    <p style="font-weight: 600; color: #28a745;">Delivered</p>
+                    {% else %}
+                    <div style="width: 50px; height: 50px; border-radius: 50%; background: #e0e0e0; color: white; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; font-size: 20px;">
+                        <i class="fas fa-home"></i>
+                    </div>
+                    <p style="font-weight: 600; color: #666;">Delivered</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <h3 style="color: #D4AF37; margin: 30px 0 20px;">Shipping Address</h3>
+        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px;">
+            <p style="margin: 5px 0;"><strong>{{ order.full_name }}</strong></p>
+            <p style="margin: 5px 0; color: #666;">{{ order.address }}</p>
+            <p style="margin: 5px 0; color: #666;">{{ order.city }}, {{ order.state }} - {{ order.pincode }}</p>
+            <p style="margin: 5px 0; color: #666;"><i class="fas fa-phone"></i> {{ order.phone }}</p>
+        </div>
+        
+        <h3 style="color: #D4AF37; margin: 30px 0 20px;">Order Items</h3>
+        <div style="border: 1px solid #ddd; border-radius: 8px; overflow: hidden;">
+            {% for item in order.items.all %}
+            <div style="display: flex; align-items: center; padding: 15px; border-bottom: 1px solid #ddd; {% if forloop.last %}border-bottom: none;{% endif %}">
+                <div style="flex: 1;">
+                    <p style="font-weight: 600; margin-bottom: 5px;">{{ item.product.name }}</p>
+                    <p style="color: #666; font-size: 14px;">Size: {{ item.size.size }} | Quantity: {{ item.quantity }}</p>
+                </div>
+                <div style="text-align: right;">
+                    <p style="font-weight: 600; color: #D4AF37; font-size: 18px;">₹{{ item.price }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="info-box">
+        <h3>📦 Where to find your Order ID?</h3>
+        <ul style="margin: 10px 0; padding-left: 20px;">
+            <li><strong>Order Confirmation Email:</strong> Check the email sent after placing your order</li>
+            <li><strong>WhatsApp Message:</strong> Order ID was sent via WhatsApp</li>
+            <li><strong>My Account:</strong> <a href="{% url 'account' %}" style="color: #D4AF37;">Login to your account</a> to view all orders</li>
+        </ul>
+    </div>
+
+    <div class="info-box">
+        <h3>🚚 Delivery Status Information</h3>
+        <p><strong>Order Placed:</strong> Your order has been received and is being processed</p>
+        <p><strong>Processing:</strong> We're preparing your order for shipment</p>
+        <p><strong>Dispatched:</strong> Your order has been shipped and is on its way</p>
+        <p><strong>Out for Delivery:</strong> Your order is out for delivery and will reach you soon</p>
+        <p><strong>Delivered:</strong> Your order has been successfully delivered</p>
+    </div>
+
+    <div class="contact-box">
+        <h3>Need Help Tracking Your Order?</h3>
+        <p>Our customer service team is ready to assist you!</p>
+        
+        <div class="contact-methods">
+            <div class="contact-method">
+                <i class="fas fa-phone"></i>
+                <p><strong>Call Us</strong></p>
+                <a href="tel:+917739305520" style="color: #D4AF37; font-weight: 600;">+91 7739305520</a>
+            </div>
+            <div class="contact-method">
+                <i class="fab fa-whatsapp"></i>
+                <p><strong>WhatsApp</strong></p>
+                <a href="https://wa.me/+917739305520" target="_blank" style="color: #D4AF37; font-weight: 600;">Chat Now</a>
+            </div>
+            <div class="contact-method">
+                <i class="fas fa-envelope"></i>
+                <p><strong>Email</strong></p>
+                <a href="mailto:gaumaatri@gmail.com" style="color: #D4AF37; font-weight: 600;">gaumaatri@gmail.com</a>
+            </div>
+        </div>
+        
+        <p style="margin-top: 20px; color: #666;"><strong>Hours:</strong> Monday-Saturday, 9 AM - 6 PM IST</p>
+    </div>
+
+    <div style="text-align: center; margin-top: 30px; padding: 20px; background: #f8f9fa; border-radius: 10px;">
+        <p style="margin: 0; color: #666;">© 2025 Gaumaatri. All Rights Reserved.</p>
+    </div>
+</div>
+
+{% endblock %}

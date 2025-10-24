@@ -30,7 +30,7 @@
         }
         
         body {
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Lato', sans-serif;
             color: var(--dark-text);
             background-color: var(--off-white);
             line-height: 1.6;
@@ -390,6 +390,9 @@
             background-color: var(--dark-text);
             color: var(--white);
             padding: 60px 0 20px;
+            position: relative;
+            z-index: 100;
+            width: 100%;
         }
         
         .footer-top {
@@ -397,6 +400,8 @@
             grid-template-columns: repeat(4, 1fr);
             gap: 30px;
             margin-bottom: 30px;
+            position: relative;
+            z-index: 100;
         }
         
         @media (max-width: 992px) {
@@ -413,6 +418,8 @@
         
         .footer-column {
             margin-bottom: 20px;
+            position: relative;
+            z-index: 100;
         }
         
         .footer-heading {
@@ -420,6 +427,8 @@
             margin-bottom: 20px;
             font-size: 18px;
             font-weight: 600;
+            position: relative;
+            z-index: 100;
         }
         
         .footer-description {
@@ -454,10 +463,14 @@
         
         .footer-links {
             list-style: none;
+            position: relative;
+            z-index: 100;
         }
         
         .footer-links li {
             margin-bottom: 10px;
+            position: relative;
+            z-index: 100;
         }
         
         .footer-links a {
@@ -465,10 +478,16 @@
             text-decoration: none;
             font-size: 14px;
             transition: color 0.3s;
+            position: relative !important;
+            z-index: 100 !important;
+            cursor: pointer !important;
+            display: inline-block;
+            pointer-events: auto !important;
         }
         
         .footer-links a:hover {
             color: var(--royal-gold);
+            padding-left: 5px;
         }
         
         .footer-contact li {
@@ -517,6 +536,53 @@
             .payment-methods {
                 margin-top: 15px;
                 justify-content: center;
+            }
+            
+            .footer-column {
+                text-align: center;
+            }
+            
+            .footer-description {
+                text-align: center;
+            }
+            
+            .footer-social {
+                justify-content: center;
+            }
+            
+            .footer-links {
+                text-align: center;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .footer {
+                padding: 40px 0 15px;
+            }
+            
+            .footer-top {
+                gap: 25px;
+            }
+            
+            .footer-heading {
+                font-size: 16px;
+                margin-bottom: 15px;
+            }
+            
+            .footer-links a {
+                font-size: 13px;
+            }
+            
+            .footer-description {
+                font-size: 13px;
+            }
+            
+            .copyright {
+                font-size: 12px;
+            }
+            
+            .payment-methods img {
+                height: 20px;
             }
         }
 
@@ -883,7 +949,7 @@
             <div class="header-wrapper">
                 <div class="logo">
                     <a href="/">
-                        <img src="{% static 'store/images/banner2.jpg' %}" alt="Pure Desi Ghee">
+                        <img src="{% static 'store/images/logo.png' %}" alt="Gaumaatri" style="height: 60px;">
                     </a>
                 </div>
                 
@@ -1283,7 +1349,7 @@
             <div class="footer-top">
                 <div class="footer-column">
                     <div class="footer-logo">
-                        <img src="{% static 'store/images/banner2.jpg' %}" alt="Pure Desi Ghee" style="max-height: 40px; object-fit: contain;">
+                        <img src="{% static 'store/images/logo.png' %}" alt="Gaumaatri" style="max-height: 50px; object-fit: contain;">
                     </div>
                     <p class="footer-description">Premium quality A2 Desi Ghee made from the milk of indigenous cows using traditional methods to preserve all nutrients and medicinal properties.</p>
                     <div class="footer-social">
@@ -1299,29 +1365,26 @@
                     <ul class="footer-links">
                         <li><a href="/">Home</a></li>
                         <li><a href="/shop/">Shop</a></li>
-                        <li><a href="#">Benefits</a></li>
-                        <li><a href="#">About Us</a></li>
+                        <li><a href="/about/">About Us</a></li>
                         <li><a href="/contact/">Contact Us</a></li>
                     </ul>
                 </div>
                 
                 <div class="footer-column">
-                    <h4 class="footer-heading">Customer Service</h4>
+                    <h4 class="footer-heading">Customer Support</h4>
                     <ul class="footer-links">
-                        <li><a href="#">FAQ</a></li>
-                        <li><a href="#">Shipping Policy</a></li>
-                        <li><a href="#">Return Policy</a></li>
-                        <li><a href="#">Privacy Policy</a></li>
-                        <li><a href="#">Terms & Conditions</a></li>
+                        <li><a href="/customer-service/">Customer Service</a></li>
+                        <li><a href="/track-order/">Track Order</a></li>
+                        <li><a href="/shipping-policy/">Shipping Policy</a></li>
                     </ul>
                 </div>
                 
                 <div class="footer-column">
-                    <h4 class="footer-heading">Contact Us</h4>
-                    <ul class="footer-links footer-contact">
-                        <li><i class="fas fa-map-marker-alt"></i> 123, Green Valley Avenue, New Delhi</li>
-                        <li><i class="fas fa-phone-alt"></i> +91 9654270726</li>
-                        <li><i class="fas fa-envelope"></i> support@puredesighee.com</li>
+                    <h4 class="footer-heading">Legal</h4>
+                    <ul class="footer-links">
+                        <li><a href="/privacy-policy/">Privacy Policy</a></li>
+                        <li><a href="/terms-conditions/">Terms & Conditions</a></li>
+                        <li><a href="/return-policy/">Return Policy</a></li>
                     </ul>
                 </div>
             </div>
@@ -1345,12 +1408,16 @@
         function decreaseQuantity(productId, sizeId) {
             const inputId = sizeId ? `quantity-${productId}-${sizeId}` : `quantity-${productId}`;
             const input = document.getElementById(inputId);
+            if (!input) {
+                console.error('Could not find input:', inputId);
+                return;
+            }
             const currentValue = parseInt(input.value);
             if (currentValue > 1) {
                 input.value = currentValue - 1;
                 
                 // First update the displayed price immediately
-                updateItemTotal(productId);
+                updateItemTotal(productId, sizeId);
                 
                 // Then send to server
                 updateCart(productId, sizeId);
@@ -1360,6 +1427,10 @@
         function increaseQuantity(productId, sizeId) {
             const inputId = sizeId ? `quantity-${productId}-${sizeId}` : `quantity-${productId}`;
             const input = document.getElementById(inputId);
+            if (!input) {
+                console.error('Could not find input:', inputId);
+                return;
+            }
             const currentValue = parseInt(input.value);
             const maxQuantity = parseInt(input.getAttribute('max')) || 100;
             
@@ -1367,7 +1438,7 @@
                 input.value = currentValue + 1;
                 
                 // First update the displayed price immediately
-                updateItemTotal(productId);
+                updateItemTotal(productId, sizeId);
                 
                 // Then send to server
                 updateCart(productId, sizeId);
@@ -1377,28 +1448,54 @@
             }
         }
         
-        function updateItemTotal(productId) {
-            const quantityInput = document.getElementById('quantity-' + productId);
-            const quantity = parseInt(quantityInput.value);
-            const priceElement = quantityInput.closest('.product-details').querySelector('.current-price');
-            const hiddenPrice = quantityInput.closest('.product-details').querySelector('.item-price');
-            const itemTotalElement = quantityInput.closest('.product-details').querySelector('.item-total-value');
+        function updateItemTotal(productId, sizeId) {
+            // Find the correct quantity input with or without size
+            const inputId = sizeId ? `quantity-${productId}-${sizeId}` : `quantity-${productId}`;
+            const quantityInput = document.getElementById(inputId);
             
-            if (priceElement && itemTotalElement) {
-                // Extract just the number from the price text
-                const price = hiddenPrice ? parseFloat(hiddenPrice.getAttribute('data-price')) : parseFloat(priceElement.textContent.replace(/[^0-9.]/g, ''));
-                const newTotal = (price * quantity).toFixed(2);
-                
-                // Update the item total with the new amount
-                itemTotalElement.textContent = '₹' + newTotal;
-                
-                // Simple highlight effect
-                itemTotalElement.style.transition = 'background-color 0.3s';
-                itemTotalElement.style.backgroundColor = 'rgba(255, 255, 150, 0.3)';
-                setTimeout(() => {
-                    itemTotalElement.style.backgroundColor = 'transparent';
-                }, 300);
+            if (!quantityInput) {
+                console.error('Could not find quantity input:', inputId);
+                return;
             }
+            
+            const quantity = parseInt(quantityInput.value);
+            
+            // Find the cart item container that holds this input
+            const cartItem = quantityInput.closest('.cart-item');
+            if (!cartItem) {
+                console.error('Could not find cart item container');
+                return;
+            }
+            
+            // Get the price from the hidden data-price attribute
+            const hiddenPrice = cartItem.querySelector('.item-price');
+            const itemTotalElement = cartItem.querySelector('.item-total-value');
+            
+            if (!hiddenPrice || !itemTotalElement) {
+                console.error('Could not find price or total elements');
+                return;
+            }
+            
+            const price = parseFloat(hiddenPrice.getAttribute('data-price'));
+            if (isNaN(price)) {
+                console.error('Invalid price:', price);
+                return;
+            }
+            
+            const newTotal = (price * quantity).toFixed(2);
+            
+            // Update the item total with the new amount
+            itemTotalElement.textContent = '₹' + newTotal;
+            
+            // Simple highlight effect
+            itemTotalElement.style.transition = 'background-color 0.3s';
+            itemTotalElement.style.backgroundColor = 'rgba(212, 175, 55, 0.3)';
+            setTimeout(() => {
+                itemTotalElement.style.backgroundColor = 'transparent';
+            }, 300);
+            
+            // Update the overall cart totals
+            updateCartTotals();
         }
         
         function removeItem(productId, sizeId) {
@@ -1485,17 +1582,22 @@
                 return isNaN(v) ? 0 : v;
             };
 
-            // Calculate new subtotal from visible cart items
+            // Calculate new subtotal from visible cart items using item totals
             let subtotal = 0;
-            const itemPrices = document.querySelectorAll('.cart-item .item-price');
-            console.log('Found', itemPrices.length, 'items for total calculation');
+            const cartItems = document.querySelectorAll('.cart-item');
+            console.log('Found', cartItems.length, 'items for total calculation');
             
-            itemPrices.forEach(priceElement => {
-                const price = parseFloat(priceElement.getAttribute('data-price')) || 0;
-                const quantityInput = priceElement.closest('.cart-item')?.querySelector('.quantity-input');
-                const quantity = parseInt(quantityInput?.value || '0', 10) || 0;
-                subtotal += price * quantity;
+            cartItems.forEach(cartItem => {
+                // Get the item total value that's displayed (this is price * quantity)
+                const itemTotalElement = cartItem.querySelector('.item-total-value');
+                if (itemTotalElement) {
+                    const itemTotal = parseCurrency(itemTotalElement.textContent);
+                    subtotal += itemTotal;
+                    console.log('Item total:', itemTotal);
+                }
             });
+            
+            console.log('Calculated subtotal:', subtotal);
             
             const subtotalElement = document.querySelector('#subtotal-amount');
             const shippingElement = document.querySelector('#shipping-amount');
@@ -1511,14 +1613,38 @@
             // Update subtotal
             subtotalElement.textContent = '₹' + subtotal.toFixed(2);
 
-            // Determine shipping (free over threshold in DOM if present)
-            const thresholdText = document.querySelector('.shipping-note p')?.textContent || '';
-            const match = thresholdText.match(/Add ₹([0-9.]+)/);
-            let shippingCost = 50;
-            if (subtotal >= 1000 || /Free/i.test(shippingElement.textContent)) {
-                shippingCost = 0;
-            }
+            // Determine shipping (free over 1000)
+            const shippingThreshold = 1000;
+            let shippingCost = subtotal >= shippingThreshold ? 0 : 50;
             shippingElement.textContent = shippingCost === 0 ? 'Free' : '₹' + shippingCost.toFixed(2);
+
+            // Update shipping progress
+            const shippingNote = document.querySelector('.shipping-note');
+            if (shippingNote) {
+                if (subtotal >= shippingThreshold) {
+                    shippingNote.querySelector('p').innerHTML = '<i class="fas fa-check-circle"></i> Your order qualifies for FREE shipping!';
+                    const progressBar = shippingNote.querySelector('.shipping-progress-bar');
+                    if (progressBar) {
+                        progressBar.style.width = '100%';
+                    }
+                    const progressText = shippingNote.querySelector('.shipping-progress-text');
+                    if (progressText) {
+                        progressText.innerHTML = 'Free shipping unlocked! <i class="fas fa-unlock-alt"></i>';
+                    }
+                } else {
+                    const remaining = shippingThreshold - subtotal;
+                    shippingNote.querySelector('p').textContent = `Add ₹${remaining.toFixed(2)} more to qualify for FREE shipping!`;
+                    const progressBar = shippingNote.querySelector('.shipping-progress-bar');
+                    if (progressBar) {
+                        const progress = (subtotal / shippingThreshold) * 100;
+                        progressBar.style.width = Math.min(progress, 100) + '%';
+                    }
+                    const progressText = shippingNote.querySelector('.shipping-progress-text');
+                    if (progressText) {
+                        progressText.textContent = `₹${Math.round(subtotal)} of ₹${shippingThreshold} for free shipping`;
+                    }
+                }
+            }
 
             // Coupon discount (negative value in DOM)
             let couponDiscount = 0;
@@ -1537,6 +1663,8 @@
             // Update total: subtotal - coupon + shipping + giftWrap
             const total = subtotal - couponDiscount + shippingCost + giftWrap;
             totalElement.textContent = '₹' + total.toFixed(2);
+            
+            console.log('Final calculation - Subtotal:', subtotal, 'Shipping:', shippingCost, 'Coupon:', couponDiscount, 'Gift:', giftWrap, 'Total:', total);
         }
         
         // Save for later functionality

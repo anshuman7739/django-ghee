@@ -1,20 +1,10 @@
+{% extends 'store/base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Heritage A2 Desi Ghee - Premium Quality</title>
-    
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-    
-    <style>
+
+{% block title %}Heritage A2 Desi Ghee - Premium Quality{% endblock %}
+
+{% block content %}
+<style>
         :root {
             --royal-gold: #D4AF37;
             --deep-gold: #B8860B;
@@ -29,7 +19,7 @@
         }
         
         body {
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Lato', sans-serif;
             color: #333;
             line-height: 1.6;
         }
@@ -115,8 +105,9 @@
         
         /* Hero Section */
         .hero {
+            position: relative;
             height: 100vh;
-            background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('{% static "store/images/banner1.jpg" %}') center/cover no-repeat;
+            overflow: hidden;
             display: flex;
             align-items: center;
             text-align: center;
@@ -124,7 +115,29 @@
             padding-top: 80px;
         }
         
+        .hero-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 0;
+        }
+        
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 1;
+        }
+        
         .hero-content {
+            position: relative;
+            z-index: 2;
             max-width: 800px;
             margin: 0 auto;
         }
@@ -555,55 +568,32 @@
                 text-align: center;
                 gap: 10px;
             }
+            
+            .hero {
+                height: 70vh;
+            }
+            
+            .hero h1 {
+                font-size: 36px;
+            }
+            
+            .hero p {
+                font-size: 16px;
+            }
         }
     </style>
-</head>
-<body>
-    <!-- Header -->
-    <header>
-        <div class="container header-container">
-            <div class="logo">
-                <img src="{% static 'store/images/banner1.jpg' %}" alt="Heritage A2">
-                <h1>Heritage A2 Ghee</h1>
-            </div>
-            
-            <nav>
-                <ul>
-                    <li><a href="#home">Home</a></li>
-                    <li><a href="{% url 'benefits' %}">Benefits</a></li>
-                    <li><a href="#process">Our Process</a></li>
-                    <li><a href="#testimonials">Testimonials</a></li>
-                    <li><a href="/shop/">Shop</a></li>
-                    <li><a href="{% url 'contact' %}">Contact</a></li>
-                </ul>
-            </nav>
-            
-            <div class="header-actions">
-                <a href="/shop/" class="nav-icon" title="Shop">
-                    <i class="fas fa-store"></i>
-                </a>
-                <a href="/cart/" class="nav-icon" title="Cart">
-                    <i class="fas fa-shopping-cart"></i>
-                    <span class="cart-count" style="background-color: var(--royal-gold); color: white; font-size: 10px; width: 18px; height: 18px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; position: absolute; top: -8px; right: -8px;">0</span>
-                </a>
-                {% if user.is_authenticated %}
-                <a href="/account/" class="nav-icon" title="My Account">
-                    <i class="fas fa-user"></i>
-                </a>
-                <a href="/logout/" class="nav-icon" title="Logout">
-                    <i class="fas fa-sign-out-alt"></i>
-                </a>
-                {% else %}
-                <a href="/login/" class="nav-icon" title="Login">
-                    <i class="fas fa-sign-in-alt"></i>
-                </a>
-                {% endif %}
-            </div>
-        </div>
-    </header>
-    
+
     <!-- Hero Section -->
     <section id="home" class="hero">
+        <!-- Video Background -->
+        <video autoplay muted loop playsinline class="hero-video">
+            <source src="{% static 'store/videos/banner-video.mp4' %}" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        
+        <!-- Overlay -->
+        <div class="hero-overlay"></div>
+        
         <div class="container">
             <div class="hero-content">
                 <h1>Premium A2 Desi Ghee</h1>
@@ -810,57 +800,6 @@
         </div>
     </section>
     
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-grid">
-                <div class="footer-column">
-                    <div class="footer-logo">
-                        <img src="{% static 'store/images/banner2.jpg' %}" alt="Pure Desi Ghee" style="max-height: 40px; object-fit: contain;">
-                    </div>
-                    <p>We bring you premium A2 desi ghee made using the traditional 'bilona' method, preserving all the nutrients and medicinal properties.</p>
-                    <div class="footer-social">
-                        <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
-                        <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
-                    </div>
-                </div>
-                
-                <div class="footer-column">
-                    <h3>Quick Links</h3>
-                    <ul class="footer-links">
-                        <li><a href="#home"><i class="fas fa-chevron-right"></i>Home</a></li>
-                        <li><a href="{% url 'benefits' %}"><i class="fas fa-chevron-right"></i>Benefits</a></li>
-                        <li><a href="#process"><i class="fas fa-chevron-right"></i>Our Process</a></li>
-                        <li><a href="#testimonials"><i class="fas fa-chevron-right"></i>Testimonials</a></li>
-                        <li><a href="/shop/"><i class="fas fa-chevron-right"></i>Shop</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-column">
-                    <h3>Customer Service</h3>
-                    <ul class="footer-links">
-                        <li><a href="#"><i class="fas fa-chevron-right"></i>Track Order</a></li>
-                        <li><a href="#"><i class="fas fa-chevron-right"></i>Shipping Policy</a></li>
-                        <li><a href="#"><i class="fas fa-chevron-right"></i>Return Policy</a></li>
-                        <li><a href="#"><i class="fas fa-chevron-right"></i>Terms & Conditions</a></li>
-                        <li><a href="#"><i class="fas fa-chevron-right"></i>Privacy Policy</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-column">
-                    <h3>Contact Us</h3>
-                    <div class="contact-info">
-                        <p><i class="fas fa-phone-alt"></i> +91 9654270726</p>
-                        <p><i class="fas fa-envelope"></i> info@desighee.com</p>
-                        <p><i class="fas fa-map-marker-alt"></i> Delhi, India</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </footer>
-    
     <!-- JavaScript -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -914,5 +853,4 @@
             });
         });
     </script>
-</body>
-</html>
+{% endblock %}
