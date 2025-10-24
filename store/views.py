@@ -165,7 +165,6 @@ def shop(request):
         'products': products,
         'product_size_data': json.dumps(product_size_data),
         'initial_prices': initial_prices,
-    'cart_count': sum(item.get('quantity', 0) for item in request.session.get('cart', [])),
     }
     
     return render(request, 'store/shop_new.html', context)

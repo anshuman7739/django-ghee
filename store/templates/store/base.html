@@ -523,17 +523,46 @@
         // Update cart count on page load
         function updateCartCount() {
             const cartCountElement = document.querySelector('.cart-count');
-            if (cartCountElement) {
-                // Simple approach: try to get count from backend or storage
-                // This will be updated when items are added via AJAX
-                const storedCount = sessionStorage.getItem('cart_count');
-                if (storedCount && storedCount !== '0') {
-                    cartCountElement.textContent = storedCount;
+            if (!cartCountElement) return;
+            
+            // First, show the server-rendered count if available
+            const initialCount = cartCountElement.textContent || '0';
+            if (initialCount !== '0') {
+                cartCountElement.style.display = 'inline-flex';
+                sessionStorage.setItem('cart_count', initialCount);
+                return; // Don't fetch if we already have a count
+            }
+            
+            // If count is 0, verify with server
+            fetch('/cart/', {
+                method: 'GET',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.cart_count !== undefined) {
+                    cartCountElement.textContent = data.cart_count;
+                    if (data.cart_count > 0) {
+                        cartCountElement.style.display = 'inline-flex';
+                    } else {
+                        cartCountElement.style.display = 'none';
+                    }
+                    sessionStorage.setItem('cart_count', data.cart_count);
+                }
+            })
+            .catch(error => {
+                console.log('Could not fetch cart count:', error);
+                // Fallback to session storage
+                const storedCount = sessionStorage.getItem('cart_count') || '0';
+                cartCountElement.textContent = storedCount;
+                if (storedCount !== '0') {
                     cartCountElement.style.display = 'inline-flex';
                 } else {
                     cartCountElement.style.display = 'none';
                 }
-            }
+            });
         }
         
         // Run on page load
@@ -542,8 +571,31 @@
         } else {
             updateCartCount();
         }
+        
+        // Update when returning to page
+        window.addEventListener('focus', function() {
+            // Re-fetch cart count when user returns to tab
+            const cartCountElement = document.querySelector('.cart-count');
+            if (cartCountElement) {
+                fetch('/cart/', {
+                    method: 'GET',
+                    headers: {'X-Requested-With': 'XMLHttpRequest'}
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.cart_count !== undefined) {
+                        cartCountElement.textContent = data.cart_count;
+                        cartCountElement.style.display = data.cart_count > 0 ? 'inline-flex' : 'none';
+                        sessionStorage.setItem('cart_count', data.cart_count);
+                    }
+                })
+                .catch(error => console.log('Error updating cart count:', error));
+            }
+        });
     </script>
     
     {% block extra_scripts %}{% endblock %}
 </body>
 </html>
+
+```
