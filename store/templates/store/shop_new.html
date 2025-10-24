@@ -1641,6 +1641,77 @@
             padding: 20px;
         }
         
+        .cart-sidebar-item {
+            display: flex;
+            gap: 15px;
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .cart-sidebar-item:last-child {
+            border-bottom: none;
+        }
+        
+        .cart-sidebar-item .cart-item-image {
+            width: 80px;
+            height: 80px;
+            flex-shrink: 0;
+            border-radius: 8px;
+            overflow: hidden;
+            background-color: #f5f5f5;
+        }
+        
+        .cart-sidebar-item .cart-item-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .cart-sidebar-item .no-image {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: #999;
+            background-color: #f0f0f0;
+        }
+        
+        .cart-sidebar-item .cart-item-details {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .cart-sidebar-item .cart-item-details h4 {
+            font-size: 14px;
+            font-weight: 600;
+            margin: 0;
+            color: #333;
+            line-height: 1.4;
+        }
+        
+        .cart-sidebar-item .item-size {
+            font-size: 12px;
+            color: #666;
+            margin: 0;
+        }
+        
+        .cart-sidebar-item .item-price {
+            font-size: 13px;
+            color: #888;
+            margin: 0;
+        }
+        
+        .cart-sidebar-item .item-total {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 0;
+        }
+        
         .cart-item {
             display: flex;
             gap: 15px;
@@ -1895,25 +1966,63 @@
             fetch('/cart/', {
                 method: 'GET',
                 headers: {
-                    'X-Requested-With': 'XMLHttpRequest'
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Content-Type': 'application/json'
                 }
             })
-            .then(response => response.text())
-            .then(html => {
-                // Parse the HTML to extract cart items
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(html, 'text/html');
-                
-                // Extract cart items from the full cart page
+            .then(response => {
+                console.log('Cart response status:', response.status);
+                console.log('Cart response headers:', response.headers);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Cart data received:', data);
                 const cartItemsContainer = document.getElementById('cart-items-container');
+                const cartSubtotal = document.getElementById('cart-subtotal');
                 
-                // You can customize this based on your cart page structure
-                // For now, show a simple message
-                cartItemsContainer.innerHTML = '<p style="text-align:center; padding:20px;">Loading cart items...</p><p style="text-align:center;"><a href="/cart/" class="view-cart-btn" style="display:inline-block; margin:10px;">View Full Cart</a></p>';
+                if (data.success && data.items && data.items.length > 0) {
+                    // Build cart items HTML
+                    let itemsHTML = '';
+                    data.items.forEach(item => {
+                        itemsHTML += `
+                            <div class="cart-sidebar-item">
+                                <div class="cart-item-image">
+                                    ${item.image ? `<img src="${item.image}" alt="${item.name}">` : '<div class="no-image">No Image</div>'}
+                                </div>
+                                <div class="cart-item-details">
+                                    <h4>${item.name}</h4>
+                                    ${item.size ? `<p class="item-size">${item.size}</p>` : ''}
+                                    <p class="item-price">₹${item.price.toFixed(2)} × ${item.quantity}</p>
+                                    <p class="item-total"><strong>₹${item.total.toFixed(2)}</strong></p>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    
+                    cartItemsContainer.innerHTML = itemsHTML;
+                    cartSubtotal.textContent = `₹${data.subtotal.toFixed(2)}`;
+                    
+                    // Update cart count in header
+                    const cartCountElement = document.querySelector('.cart-count');
+                    if (cartCountElement) {
+                        cartCountElement.textContent = data.cart_count;
+                        if (data.cart_count > 0) {
+                            cartCountElement.style.display = 'inline-flex';
+                        }
+                    }
+                } else {
+                    // Empty cart
+                    cartItemsContainer.innerHTML = '<p class="empty-cart-message"><i class="fas fa-shopping-bag"></i> Your cart is empty</p>';
+                    cartSubtotal.textContent = '₹0.00';
+                }
             })
             .catch(error => {
                 console.error('Error loading cart:', error);
-                document.getElementById('cart-items-container').innerHTML = '<p style="text-align:center; padding:20px; color:red;">Error loading cart. Please refresh the page.</p>';
+                console.error('Error details:', error.message);
+                document.getElementById('cart-items-container').innerHTML = '<p style="text-align:center; padding:20px; color:red;">Error loading cart. Please <a href="/cart/">view full cart</a>.</p>';
             });
         }
         

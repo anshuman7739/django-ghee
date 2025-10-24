@@ -311,6 +311,18 @@ def cart(request):
     
     # Early return for empty cart & GET request to optimize performance
     if not cart and not saved_for_later and request.method == 'GET':
+        # Check if it's an AJAX request
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({
+                'success': True,
+                'items': [],
+                'subtotal': 0,
+                'shipping_cost': 0,
+                'total': 0,
+                'item_count': 0,
+                'cart_count': 0,
+            })
+        
         return render(request, 'store/cart.html', {
             'cart_items': [],
             'saved_items': [],
@@ -840,6 +852,49 @@ def cart(request):
             recently_viewed_products = list(Product.objects.filter(id__in=recently_viewed))
             # Sort them according to the order in the session
             recently_viewed_products.sort(key=lambda x: recently_viewed.index(x.id))
+    
+    # Handle AJAX request for cart sidebar
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest' and request.method == 'GET':
+        try:
+            cart_items_data = []
+            for item_data in products:
+                product = item_data['product']
+                size_obj = item_data.get('size')
+                size_name = str(size_obj) if size_obj else ''
+                
+                cart_items_data.append({
+                    'id': product.id,
+                    'name': product.name,
+                    'price': float(item_data['price']),
+                    'quantity': item_data['quantity'],
+                    'total': float(item_data['item_total']),
+                    'image': product.image.url if product.image else None,
+                    'size': size_name,
+                })
+            
+            return JsonResponse({
+                'success': True,
+                'items': cart_items_data,
+                'subtotal': float(subtotal),
+                'shipping_cost': float(shipping_cost),
+                'total': float(total),
+                'item_count': item_count,
+                'cart_count': item_count,
+            })
+        except Exception as e:
+            logging.error(f"Error creating cart JSON response: {e}")
+            import traceback
+            traceback.print_exc()
+            return JsonResponse({
+                'success': False,
+                'error': str(e),
+                'items': [],
+                'subtotal': 0,
+                'shipping_cost': 0,
+                'total': 0,
+                'item_count': 0,
+                'cart_count': 0,
+            })
     
     return render(request, 'store/cart.html', {
         'cart_items': products,
